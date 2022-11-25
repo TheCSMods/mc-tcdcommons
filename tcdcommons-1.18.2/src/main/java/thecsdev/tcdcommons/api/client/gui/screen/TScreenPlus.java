@@ -2,6 +2,7 @@ package thecsdev.tcdcommons.api.client.gui.screen;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -30,22 +31,28 @@ public abstract class TScreenPlus extends TScreen
 	@SubjectToChange("What if the user wants to find an element regardless of it's properties?")
 	public @Nullable TElement findClosestSideElement(final TElement target, final Direction2D direction)
 	{
-		if(target == null || direction == null) return null;
-		final int x = target.getTpeX(), y = target.getTpeY();
+		//null checks
+		if(target == null || target.getTParent() == null || direction == null)
+			return null;
+		
+		//obtain target's coordinates
+		final int x = target.getTpeX() + (target.getTpeWidth() / 2);
+		final int y = target.getTpeY() + (target.getTpeHeight() / 2);
 		
 		//define the closest element
 		final var closest = new AtomicReference<TElement>(null);
 		final AtomicInteger dX = new AtomicInteger(0), dY = new AtomicInteger(0);
 		
 		//iterate elements
-		forEachChild(child ->
+		Function<TElement, Boolean> func = child ->
 		{
 			//skip these:
 			if(child == target || child.isClickThrough() ||
 					!child.isEnabledAndVisible() ||
 					!child.canChangeFocus(FocusOrigin.TAB, true))
 				return false;
-			int cX = child.getTpeX(), cY = child.getTpeY();
+			final int cX = child.getTpeX() + (child.getTpeWidth() / 2);
+			final int cY = child.getTpeY() + (child.getTpeHeight() / 2);
 			
 			//direction check
 			switch(direction)
@@ -77,8 +84,11 @@ public abstract class TScreenPlus extends TScreen
 			
 			//continue the loop
 			return false;
-		},
-		true);
+		};
+		
+		//TODO - possibly optimize?
+		target.getTParent().forEachChild(func, true);
+		if(closest.get() == null) forEachChild(func, true);
 		
 		//return
 		return closest.get();

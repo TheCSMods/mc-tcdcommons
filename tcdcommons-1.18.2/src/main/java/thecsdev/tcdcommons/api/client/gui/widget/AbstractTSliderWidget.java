@@ -72,27 +72,32 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	 * Sets the value of this {@link AbstractTSliderWidget},
 	 * and then applies the value using {@link #applyValue()}.
 	 * @param value The value ranging from 0 to 1.
+	 * @return True if the given value was affected.
 	 */
-	public void setValue(double value) { setValue(value, true); }
+	public boolean setValue(double value) { return setValue(value, true); }
 	
 	/**
 	 * Sets the value of this {@link AbstractTSliderWidget}
 	 * white letting you choose whether it will get applied or not.
 	 * @param value The value ranging from 0 to 1.
 	 * @param applyValue Will {@link #applyValue()} be called?
+	 * @return True if the given value was affected.
 	 */
-	public void setValue(double value, boolean applyValue)
+	public boolean setValue(double value, boolean applyValue)
 	{
 		double oldValue = this.value;
 		this.value = MathHelper.clamp(value, 0, 1);
+		boolean changed = oldValue != this.value;
 		
-		if(applyValue && oldValue != this.value)
+		if(applyValue && changed)
 		{
 			applyValue();
 			//handle value change events only in here:
 			getEvents().VALUE_CHANGED.p_invoke(handler -> handler.accept(this.value));
 		}
+		
 		updateMessage();
+		return changed;
 	}
 	
 	/**
@@ -201,11 +206,10 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	    	//obtain direction
 	    	float f = (dir.isHorizontal()) ? (keyCode == 263 ? -1 : 1) : (keyCode == 265 ? -1 : 1);
 	    	if(dir == Direction2D.LEFT || dir == Direction2D.UP) f *= -1;
+	    	
 	    	//slide in the obtained direction
 	    	float w = dir.isHorizontal() ? getTpeWidth() : getTpeHeight();
-	    	setValue(getValue() + (f / (w - (getKnobSize()*2))));
-	    	//return
-	    	return true;
+	    	return setValue(getValue() + (f / (w - (getKnobSize()*2))));
 	    }
 	    return false;
 	}

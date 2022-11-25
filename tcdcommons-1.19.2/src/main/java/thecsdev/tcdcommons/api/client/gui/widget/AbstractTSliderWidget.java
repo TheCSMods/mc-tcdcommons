@@ -73,7 +73,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	 * and then applies the value using {@link #applyValue()}.
 	 * @param value The value ranging from 0 to 1.
 	 */
-	public void setValue(double value) { setValue(value, true); }
+	public boolean setValue(double value) { return setValue(value, true); }
 	
 	/**
 	 * Sets the value of this {@link AbstractTSliderWidget}
@@ -81,18 +81,20 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	 * @param value The value ranging from 0 to 1.
 	 * @param applyValue Will {@link #applyValue()} be called?
 	 */
-	public void setValue(double value, boolean applyValue)
+	public boolean setValue(double value, boolean applyValue)
 	{
 		double oldValue = this.value;
 		this.value = MathHelper.clamp(value, 0, 1);
+		boolean changed = oldValue != this.value;
 		
-		if(applyValue && oldValue != this.value)
+		if(applyValue && changed)
 		{
 			applyValue();
 			//handle value change events only in here:
 			getEvents().VALUE_CHANGED.p_invoke(handler -> handler.accept(this.value));
 		}
 		updateMessage();
+		return changed;
 	}
 	
 	/**
