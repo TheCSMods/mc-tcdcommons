@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -125,7 +126,7 @@ public class TPanelElement extends TElement
 	/**
 	 * When true, the mouse scrolling will be smooth.
 	 */
-	public boolean getSmoothScroll() { return this.smoothScroll; }
+	public boolean getSmoothScroll() { return MinecraftClient.isFancyGraphicsOrBetter() && this.smoothScroll; }
 	
 	/**
 	 * Sets {@link #getSmoothScroll()}.

@@ -131,4 +131,18 @@ public final class GuiUtils
 		return screen;
 	}
 	// ==================================================
+	/**
+	 * Re-initializes a {@link Screen} using {@link Screen#init(MinecraftClient, int, int)}.
+	 * @param screen The screen to re-initialize.
+	 */
+	public static Screen initScreen(Screen screen)
+	{
+		Objects.requireNonNull(screen, "screen must not be null.");
+		MinecraftClient c = MinecraftClient.getInstance();
+		int w = c.getWindow().getScaledWidth();
+		int h = c.getWindow().getScaledHeight();
+		screen.init(c, w, h);
+		return screen;
+	}
+	// ==================================================
 }

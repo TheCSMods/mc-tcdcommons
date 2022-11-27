@@ -13,6 +13,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import thecsdev.tcdcommons.TCDCommons;
 import thecsdev.tcdcommons.api.client.gui.screen.TScreen;
+import thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistry;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient
@@ -31,6 +32,7 @@ public abstract class MixinMinecraftClient
 	@Inject(method = "<init>", at = @At("RETURN"), require = 1) //TODO - is it risky to inject into init?
 	public void onInit(RunArgs args, CallbackInfo callback)
 	{
+		//handle reflection
 		try
 		{
 			TSCREEN_METHOD_ONOPENED = TScreen.class.getDeclaredMethod("onOpened");
@@ -41,6 +43,12 @@ public abstract class MixinMinecraftClient
 			String msg = "[" + TCDCommons.getModID() + "] " + "Failed to obtain TScreen#onOpened()";
 			throw new CrashException(new CrashReport(msg, e));
 		}
+		//test HUD screen - may annoy others using this mod in dev. environment
+		/*if(FabricLoader.getInstance().isDevelopmentEnvironment())
+		{
+			var sid = new Identifier(TCDCommons.getModID(), "hud_test");
+			TCDCommonsClientRegistry.InGameHud_Screens.put(sid, new TestTScreenHud());
+		}*/
 	}
 	// --------------------------------------------------
 	@Inject(method = "setScreen", at = @At("RETURN"))
@@ -55,6 +63,13 @@ public abstract class MixinMinecraftClient
 				throw new CrashException(new CrashReport(msg, e));
 			}
 		}
+	}
+	// --------------------------------------------------
+	@Inject(method = "onResolutionChanged", at = @At("RETURN"))
+	public void onResolutionChanged(CallbackInfo callback)
+	{
+		//basically update the sizes of hud screens
+		TCDCommonsClientRegistry.reInitHudScreens();
 	}
 	// ==================================================
 }

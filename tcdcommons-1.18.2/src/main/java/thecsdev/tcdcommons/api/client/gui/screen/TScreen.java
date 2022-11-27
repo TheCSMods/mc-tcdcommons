@@ -98,12 +98,6 @@ public abstract class TScreen extends Screen implements TParentElement
 	@SubjectToChange("This way of doing it is too messy.")
 	protected TTooltipElement __createTooltip() { return new TTooltipElement(getTpeWidth() / 2); }
 	// --------------------------------------------------
-	/**
-	 * Used to initialize this {@link Screen}. Use this method
-	 * to create and define the children of this {@link TScreen}.
-	 */
-	protected abstract @Override void init();
-	// --------------------------------------------------
 	public @Override void close()
 	{
 		//planning to implement something like this in `tcdcommons` later.
@@ -113,6 +107,18 @@ public abstract class TScreen extends Screen implements TParentElement
 		//invoke super and have it close the window
 		super.close();
 	}
+	// --------------------------------------------------
+	/**
+	 * Used to initialize this {@link Screen}. Use this method
+	 * to create and define the children of this {@link TScreen}.
+	 */
+	protected abstract @Override void init();
+	
+	/**
+	 * Re-initializes this screen by calling
+	 * {@link GuiUtils#initScreen(Screen)}.
+	 */
+	public final void reInit() { GuiUtils.initScreen(this); }
 	// ==================================================
 	/**
 	 * Called when this {@link TScreen} is opened with
