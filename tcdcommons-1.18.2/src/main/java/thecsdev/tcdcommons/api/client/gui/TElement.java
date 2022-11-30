@@ -103,7 +103,9 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		this.tooltip = null;
 		
 		//initialize the rectangle
-		updateRenderingBoundingBox();
+		//updateRenderingBoundingBox(); - bad idea, as getTpe...() can be overridden
+		RENDER_RECT.setLocation(this.x, this.y);
+		RENDER_RECT.setSize(this.width, this.height);
 	}
 	// --------------------------------------------------
 	public TElementEvents getEvents() { return this.__events; }

@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistry;
@@ -32,14 +31,29 @@ public abstract class MixinInGameHud
 			callback.cancel();
 	}
 	// --------------------------------------------------
+	private static float tcdcommons_tickDeltaTime = 0;
+	
 	@Inject(method = "render", at = @At("TAIL"))
 	public void onPostRender(MatrixStack matrices, float tickDelta, CallbackInfo callback)
 	{
-		//mouse XY centered
-		int mX = scaledWidth / 2, mY = scaledHeight / 2;
-		//iterate all hud screens
-		for(Screen hScreen : TCDCommonsClientRegistry.InGameHud_Screens.values())
-			hScreen.render(matrices, mX, mY, tickDelta);
+		//keep track of tick delta time
+		tcdcommons_tickDeltaTime += tickDelta;
+		
+		//get mouse XY
+		//int mX = scaledWidth / 2, mY = scaledHeight / 2;
+		int mX = (int)(this.client.mouse.getX() * scaledWidth / this.client.getWindow().getWidth());
+	    int mY = (int)(this.client.mouse.getY() * scaledHeight / this.client.getWindow().getHeight());
+	    
+		//iterate and render all hud screens
+	    boolean tick = tcdcommons_tickDeltaTime > 1;
+		for(var hScreen : TCDCommonsClientRegistry.InGameHud_Screens.entrySet())
+		{
+			hScreen.getValue().render(matrices, mX, mY, tickDelta);
+			if(tick) hScreen.getValue().tick();
+		}
+		
+		//clear delta time if ticked
+		if(tick) tcdcommons_tickDeltaTime = 0;
 	}
 	// ==================================================
 }

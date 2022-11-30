@@ -98,14 +98,17 @@ public abstract class TScreen extends Screen implements TParentElement
 	@SubjectToChange("This way of doing it is too messy.")
 	protected TTooltipElement __createTooltip() { return new TTooltipElement(getTpeWidth() / 2); }
 	// --------------------------------------------------
+	@SuppressWarnings("resource")
 	public @Override void close()
 	{
 		//planning to implement something like this in `tcdcommons` later.
 		//TODO - Maybe hard-coding this isn't the best approach, use a different method?
 		if(getTChildren().removeIf(child -> (child instanceof TContextMenuPanel)))
 			return;
+		//on closed
+		onClosed();
 		//invoke super and have it close the window
-		super.close();
+		if(getClient().currentScreen == this) super.close();
 	}
 	// --------------------------------------------------
 	/**
@@ -321,7 +324,7 @@ public abstract class TScreen extends Screen implements TParentElement
 		if(parentBox == null || childBox == null) return;
 		
 		//update hovered child (only during render, not post render)
-		if(isPreRender && !child.isClickThrough() && child.isEnabled() &&
+		if(isPreRender && !child.isClickThrough() && child.isEnabledAndVisible() &&
 				(this.hoveredTChild == null || child.getZIndex() >= this.hoveredTChild.getZIndex()))
 		{
 			if(childBox != null && childBox.contains(this.cursorPosition)
@@ -656,9 +659,8 @@ public abstract class TScreen extends Screen implements TParentElement
 	 * Unsupported and unused.
 	 * @param lookForwards Is the shift key up?
 	 */
-	@Override
 	@Deprecated
-	public final boolean changeFocus(boolean lookForwards) { return super.changeFocus(lookForwards); }
+	public final @Override boolean changeFocus(boolean lookForwards) { return super.changeFocus(lookForwards); }
 	
 	/**
 	 * Called by {@link MinecraftClient} when the screen
@@ -666,8 +668,7 @@ public abstract class TScreen extends Screen implements TParentElement
 	 * to {@link #onClosed()}.<br/><br/>
 	 * See {@link #onClosed()}.
 	 */
-	@Override
 	@Deprecated
-	public final void removed() { super.removed(); onClosed(); }
+	public final @Override void removed() { super.removed(); }
 	// ==================================================
 }

@@ -114,9 +114,10 @@ public class TSelectWidget extends TButtonWidget
 	 */
 	protected void onOptionSelected(SWEntry option) { setMessage(option.message); }
 	// --------------------------------------------------
-	public TSelectWidget addDropdownOption(Text label, Runnable onSelect)
+	public TSelectWidget addDropdownOption(Text label, Runnable onSelect) { return addDropdownOption(label, onSelect, null); }
+	public TSelectWidget addDropdownOption(Text label, Runnable onSelect, Text tooltip)
 	{
-		this.entries.add(new SWEntry(label, onSelect));
+		this.entries.add(new SWEntry(label, onSelect, tooltip));
 		return this;
 	}
 	
@@ -174,10 +175,13 @@ public class TSelectWidget extends TButtonWidget
 	{
 		public final Text message;
 		public final Runnable onClick;
-		public SWEntry(Text message, Runnable onClick)
+		public final Text tooltip;
+		public SWEntry(Text message, Runnable onClick) { this(message, onClick, null); }
+		public SWEntry(Text message, Runnable onClick, Text tooltip)
 		{
 			this.message = message;
 			this.onClick = onClick;
+			this.tooltip = tooltip;
 		}
 		public void createContextMenuItem(TContextMenuPanel cMenu)
 		{
@@ -189,7 +193,7 @@ public class TSelectWidget extends TButtonWidget
 				TSelectWidget.this.onClick();
 				TSelectWidget.this.onOptionSelected(this);
 				if(this.onClick != null) this.onClick.run();
-			});
+			}).setTooltip(this.tooltip);
 		}
 	}
 	// --------------------------------------------------
