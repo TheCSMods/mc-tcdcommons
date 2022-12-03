@@ -48,6 +48,9 @@ public abstract class MixinInGameHud
 	    boolean tick = tcdcommons_tickDeltaTime > 1;
 		for(var hScreen : TCDCommonsClientRegistry.InGameHud_Screens.entrySet())
 		{
+			//do not handle current screen
+			if(client.currentScreen == hScreen.getValue()) continue;
+			//render and tick if needed
 			hScreen.getValue().render(matrices, mX, mY, tickDelta);
 			if(tick) hScreen.getValue().tick();
 		}

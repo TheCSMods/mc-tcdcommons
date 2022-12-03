@@ -467,7 +467,11 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	
 	/**
 	 * Invoked by the {@link #parent} {@link TScreen} when the
-	 * user drags this {@link TElement}.
+	 * user drags this {@link TElement}.<br/>
+	 * <br/>
+	 * <b>Note:</b><br/>
+	 * In order to allow dragging and scrolling of parent elements,
+	 * {@link #mousePressed(int, int, int)} must return false.
 	 * @param mouseX The X mouse cursor position on the {@link TScreen}.
 	 * @param mouseY The Y mouse cursor position on the {@link TScreen}.
 	 * @param deltaX Cursor X movement.

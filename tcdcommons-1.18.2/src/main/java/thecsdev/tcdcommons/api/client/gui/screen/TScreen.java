@@ -411,7 +411,7 @@ public abstract class TScreen extends Screen implements TParentElement
 		this.clickedTChild = captor;
 		
 		//apply drag (only if the click wasn't accepted)
-		if(!clickAccepted) setDragging(true);
+		if(!clickAccepted && button == 0) setDragging(true);
 		
 		//return the result
 		return captor != null;
