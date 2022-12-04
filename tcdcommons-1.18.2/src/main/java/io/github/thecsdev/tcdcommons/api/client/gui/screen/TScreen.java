@@ -499,6 +499,9 @@ public abstract class TScreen extends Screen implements TParentElement
 			this.close();
 			return true;
 		}
+		//if context menu is pressed
+		else if(keyCode == 348 && getFocusedTChild() != null && getFocusedTChild().showContextMenu() != null)
+			return true;
 		//if tab is pressed
 		else if(keyCode == 258 && getTChildren().size() > 0)
 		{

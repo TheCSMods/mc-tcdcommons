@@ -2,10 +2,12 @@ package io.github.thecsdev.tcdcommons.api.client.gui.events;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.util.TriConsumer;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.util.events.TEventManager;
 
 /**
@@ -45,6 +47,13 @@ public class TElementEvents extends TEventManager
 	 * This may result in {@link IllegalCallerException} in the future. Fix this.
 	 */
 	public final TEvent<TriConsumer<TElement, Boolean, Boolean>> CHILD_AR = new TEvent<>();
+	
+	/**
+	 * This event is invoked whenever a context menu is
+	 * being created for the given {@link TElement}.
+	 * @see TElement#showContextMenu()
+	 */
+	public final TEvent<Consumer<TContextMenuPanel>> CONTEXT_MENU = new TEvent<>();
 	// ==================================================
 	public TElementEvents(TElement owner)
 	{

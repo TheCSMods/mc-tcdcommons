@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.events.TElementEvents;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
@@ -18,6 +19,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 public abstract class TElement extends TDrawableHelper implements TParentElement
 {
@@ -548,6 +550,72 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 				focusOrigin == FocusOrigin.TAB;
 		//will not approve gaining focus from mouse clicks
 	}
+	// ==================================================
+	/**
+	 * Creates and shows a new {@link TContextMenuPanel}
+	 * for this {@link TElement}.
+	 * @return The created and opened context menu, or
+	 * null if the context menu had no entries added to it.
+	 */
+	public final @Nullable TContextMenuPanel showContextMenu() { return showContextMenu(getTpeX(), getTpeEndY()); }
+	
+	/**
+	 * Same as {@link #showContextMenu()}, but you can
+	 * also define the context menu's coordinates here.
+	 * @param x The X coordinate for the context menu.
+	 * @param y The Y coordinate for the context menu.
+	 * @see #showContextMenu()
+	 */
+	public final @Nullable TContextMenuPanel showContextMenu(int x, int y)
+	{
+		if(this.screen == null) return null;
+		
+		//create context menu
+		var contextMenu = createContextMenu(x, y);
+		if(contextMenu == null) return null;
+		
+		//show/open the context menu
+		this.screen.addTChild(contextMenu, false);
+		contextMenu.updatePositionAndSize();
+		
+		//return the context menu
+		return contextMenu;
+	}
+	
+	/**
+	 * Called by {@link #showContextMenu(int, int)} when
+	 * creating the {@link TContextMenuPanel} for this {@link TElement}.<br/>
+	 * <br/>
+	 * Don't forget to call {@link #onContextMenu(TContextMenuPanel)} and
+	 * {@link TElementEvents#CONTEXT_MENU} when overriding this.
+	 * @param x The X coordinate for the context menu.
+	 * @param y The Y coordinate for the context menu.
+	 * @return The created context menu.
+	 * @see #showContextMenu()
+	 */
+	protected @Nullable TContextMenuPanel createContextMenu(int x, int y)
+	{
+		//create context menu and call onContextMenu
+		var contextMenu = new TContextMenuPanel(x, y, MathHelper.clamp(getTpeWidth(), 50, 150));
+		onContextMenu(contextMenu);
+		
+		//invoke the event
+		getEvents().CONTEXT_MENU.p_invoke(handler -> handler.accept(contextMenu));
+		
+		//return null if there are no entries added to it
+		if(contextMenu.getTChildren().size() < 1)
+			return null;
+		
+		//return the context menu
+		return contextMenu;
+	}
+	
+	/**
+	 * Invoked when a {@link TContextMenuPanel} is being created
+	 * for this {@link TElement}. Use this to add entries to
+	 * the context menu.
+	 */
+	protected void onContextMenu(TContextMenuPanel contextMenu) {}
 	// ==================================================
 	/**
 	 * Returns the {@link TElement} that comes before this

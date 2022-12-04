@@ -26,7 +26,13 @@ public class TContextMenuPanel extends TPanelElement
 	// ==================================================
 	protected static final int BORDER_COLOR = 1358954495;
 	// ==================================================
-	public TContextMenuPanel(int x, int y, int width) { super(x, y, width, 0); }
+	public TContextMenuPanel(int x, int y, int width)
+	{
+		super(x, y, width, 0);
+		setZOffset(50);
+		setScrollPadding(0);
+		setScrollFlags(SCROLL_VERTICAL);
+	}
 	// --------------------------------------------------
 	public @Override @Nullable Rectangle getRenderingBoundingBox()
 	{
@@ -44,6 +50,8 @@ public class TContextMenuPanel extends TPanelElement
 				child != this &&
 				TContextMenuPanel.class.isAssignableFrom(child.getClass()));
 	}
+	// --------------------------------------------------
+	protected final @Nullable @Override TContextMenuPanel createContextMenu(int x, int y) { return null; }
 	// ==================================================
 	@Override
 	protected void renderBackground(MatrixStack matrices, int mouseX, int mouseY, float deltaTime)
@@ -59,7 +67,7 @@ public class TContextMenuPanel extends TPanelElement
 	public void updatePositionAndSize()
 	{
 		//update the height
-		this.height = getLocalBottomY();
+		this.height = Math.min(getLocalBottomY(), 150);
 		//update the Y
 		if(getTParent() != null)
 		{
@@ -87,6 +95,12 @@ public class TContextMenuPanel extends TPanelElement
 				(this.topmosts.Item2.getTpeY() + this.topmosts.Item2.getTpeHeight()) - getTpeY() + 1 : 0;
 	}
 	// --------------------------------------------------
+	/**
+	 * Creates and adds a button to this {@link TContextMenuPanel}.
+	 * @param label The button text.
+	 * @param action The action performed when the button is pressed.
+	 * @return The added button.
+	 */
 	public TButtonWidget addButton(Text label, Consumer<TButtonWidget> action)
 	{
 		CMWButton btn = new CMWButton(getLocalBottomY(), 15, label);
@@ -102,6 +116,10 @@ public class TContextMenuPanel extends TPanelElement
 		return btn;
 	}
 	// --------------------------------------------------
+	/**
+	 * Creates and adds a separator {@link TElement} to this {@link TContextMenuPanel}.
+	 * @return The added separator {@link TElement}.
+	 */
 	public TElement addSeparator()
 	{
 		CMWSeparator sep = new CMWSeparator(getLocalBottomY());
@@ -112,9 +130,16 @@ public class TContextMenuPanel extends TPanelElement
 	protected class CMWButton extends TButtonWidget
 	{
 		public CMWButton(int y, int height, Text message) { super(0, y, 0, height, message, null); }
+		protected final @Nullable @Override TContextMenuPanel createContextMenu(int x, int y) { return null; }
 		@Override public int getTpeX() { return TContextMenuPanel.this.getTpeX(); }
 		@Override public int getTpeWidth() { return TContextMenuPanel.this.getTpeWidth(); }
 		@Override public float getAlpha() { return TContextMenuPanel.this.getAlpha(); }
+		protected @Override void onClick()
+		{
+			var parent = TContextMenuPanel.this.getTParent();
+			if(parent != null) parent.removeTChild(TContextMenuPanel.this);
+			super.onClick();
+		}
 		@Override
 		public void render(MatrixStack matrices, int mouseX, int mouseY, float deltaTime)
 		{
@@ -126,6 +151,7 @@ public class TContextMenuPanel extends TPanelElement
 	protected class CMWSeparator extends TElement
 	{
 		public CMWSeparator(int y) { super(0, y, 0, 3); }
+		protected final @Nullable @Override TContextMenuPanel createContextMenu(int x, int y) { return null; }
 		@Override public int getTpeX() { return TContextMenuPanel.this.getTpeX(); }
 		@Override public int getTpeWidth() { return TContextMenuPanel.this.getTpeWidth(); }
 		@Override public float getAlpha() { return TContextMenuPanel.this.getAlpha(); }

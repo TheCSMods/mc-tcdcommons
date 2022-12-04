@@ -1,3 +1,3 @@
 ======== AVAILABLE RANGE: 0 - 100 ========
-TSelectWidget#SWContextMenu - 50
+TContextMenuPanel           - 50
 TTooltipElement             - getItemRenderer().zOffset + 120

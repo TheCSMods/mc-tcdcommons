@@ -201,8 +201,8 @@ public class TSelectWidget extends TButtonWidget
 	{
 		public SWContextMenu()
 		{
-			super(0, 0, TSelectWidget.this.getTpeWidth()); updatePositionAndSize();
-			setZOffset(50);
+			super(0, 0, TSelectWidget.this.getTpeWidth());
+			updatePositionAndSize();
 		}
 		public @Override void updatePositionAndSize()
 		{
