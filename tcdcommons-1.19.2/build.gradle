@@ -33,7 +33,7 @@ dependencies
 	// modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Mod Menu (optional mod unless you use it's APIs)
-	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
+	// modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 	
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

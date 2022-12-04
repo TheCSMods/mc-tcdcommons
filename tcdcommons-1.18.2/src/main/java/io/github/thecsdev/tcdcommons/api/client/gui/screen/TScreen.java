@@ -148,9 +148,15 @@ public abstract class TScreen extends Screen implements TParentElement
 	public @Override void updateRenderingBoundingBox() { RENDER_RECT.setSize(getTpeWidth(), getTpeHeight()); }
 	// ==================================================
 	/**
-	 * Returns the {@link MinecraftClient} from {@link Screen#client}.
+	 * Returns the {@link MinecraftClient} from {@link Screen#client},
+	 * or {@link MinecraftClient#getInstance()} if the assigned client is null.
 	 */
-	public MinecraftClient getClient() { return this.client; }
+	public MinecraftClient getClient()
+	{
+		if(this.client == null)
+			return MinecraftClient.getInstance();
+		return this.client;
+	}
 	
 	/**
 	 * Returns the {@link TextRenderer} that belongs to this {@link Screen}.
