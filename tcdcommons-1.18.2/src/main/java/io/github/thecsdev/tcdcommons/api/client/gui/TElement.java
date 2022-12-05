@@ -170,6 +170,8 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	public @Override int getTpeHeight() { return this.height; }
 	public @Override final int getTpeEndX() { return super.getTpeEndX(); }
 	public @Override final int getTpeEndY() { return super.getTpeEndY(); }
+	public final @Override <T extends TElement> boolean addTChild(T child) { return addTChild(child, true); }
+	public final @Override <T extends TElement> boolean removeTChild(T child) { return removeTChild(child, true); }
 	// ==================================================
 	/**
 	 * This {@link Rectangle} is used as "cache" so

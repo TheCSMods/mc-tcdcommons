@@ -175,6 +175,8 @@ public abstract class TScreen extends Screen implements TParentElement
 	public final @Override int getTpeEndX() { return TParentElement.super.getTpeEndX(); }
 	public final @Override int getTpeEndY() { return TParentElement.super.getTpeEndY(); }
 	public final @Override double getZIndex() { return 0; }
+	public final @Override <T extends TElement> boolean addTChild(T child) { return addTChild(child, true); }
+	public final @Override <T extends TElement> boolean removeTChild(T child) { return removeTChild(child, true); }
 	// --------------------------------------------------
 	/**
 	 * Return true if the {@link InGameHud} should be

@@ -29,7 +29,7 @@ public class TContextMenuPanel extends TPanelElement
 	public TContextMenuPanel(int x, int y, int width)
 	{
 		super(x, y, width, 0);
-		setZOffset(50);
+		setZOffset((int)(getItemRenderer().zOffset + 120));
 		setScrollPadding(0);
 		setScrollFlags(SCROLL_VERTICAL);
 	}
@@ -136,9 +136,11 @@ public class TContextMenuPanel extends TPanelElement
 		@Override public float getAlpha() { return TContextMenuPanel.this.getAlpha(); }
 		protected @Override void onClick()
 		{
+			//first execute super
+			super.onClick();
+			//then close
 			var parent = TContextMenuPanel.this.getTParent();
 			if(parent != null) parent.removeTChild(TContextMenuPanel.this);
-			super.onClick();
 		}
 		@Override
 		public void render(MatrixStack matrices, int mouseX, int mouseY, float deltaTime)
