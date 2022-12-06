@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui;
 
 import java.awt.Rectangle;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -553,6 +554,8 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		//will not approve gaining focus from mouse clicks
 	}
 	// ==================================================
+private WeakReference<TContextMenuPanel> __contextMenu;
+	
 	/**
 	 * Creates and shows a new {@link TContextMenuPanel}
 	 * for this {@link TElement}.
@@ -574,13 +577,27 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		
 		//create context menu
 		var contextMenu = createContextMenu(x, y);
-		if(contextMenu == null) return null;
+		if(contextMenu != null) this.__contextMenu = new WeakReference<>(contextMenu);
+		else { this.__contextMenu = null; return null; }
 		
 		//show/open the context menu
 		this.screen.addTChild(contextMenu, false);
 		contextMenu.updatePositionAndSize();
 		
 		//return the context menu
+		return contextMenu;
+	}
+	
+	/**
+	 * Returns the currently shown {@link TContextMenuPanel},
+	 * or null if there are no related context menus opened.
+	 * @see #showContextMenu().
+	 */
+	public final @Nullable TContextMenuPanel getShownContextMenu()
+	{
+		var contextMenu = (__contextMenu != null) ? __contextMenu.get() : null;
+		if(contextMenu == null || contextMenu.screen == null)
+			return null;
 		return contextMenu;
 	}
 	

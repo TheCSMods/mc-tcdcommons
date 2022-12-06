@@ -110,6 +110,22 @@ public interface TParentElement
 		//return the last one
 		return last;
 	}
+	
+	/**
+	 * Looks for a {@link TElement} child of a given type, and
+	 * if one is found, it is returned.
+	 * @param type The {@link Class} type of the {@link TElement}.
+	 * @param nested Check the children's children?
+	 * @return The found {@link TElement}, or null if is doesn't exist.
+	 */
+	@Nullable
+	@SuppressWarnings("unchecked") //it is checked
+	default <T extends TElement> T findTChildOfType(Class<T> type, boolean nested)
+	{
+		var found = forEachChild(child -> type.isAssignableFrom(child.getClass()), nested);
+		if(found == null) return null;
+		return (@Nullable T) found;
+	}
 	// --------------------------------------------------
 	/**
 	 * Adds a {@link TElement} child to the list of children.<br/>

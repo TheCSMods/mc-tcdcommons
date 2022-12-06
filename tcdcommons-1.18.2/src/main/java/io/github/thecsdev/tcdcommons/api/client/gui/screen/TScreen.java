@@ -67,6 +67,11 @@ public abstract class TScreen extends Screen implements TParentElement
 	 */
 	private TElement hoveredTChild;
 	
+	/**
+	 * An internal {@link Point} used to keep track
+	 * of the mouse cursor position.
+	 * @see #mouseMoved(double, double)
+	 */
 	//keep track of mouse XY as it moves
 	protected final Point cursorPosition;
 	// --------------------------------------------------
@@ -290,7 +295,7 @@ public abstract class TScreen extends Screen implements TParentElement
 		TElement target = this.focusedTChild != null && this.focusedTChild.getTooltip() != null ?
 				this.focusedTChild : this.hoveredTChild;
 		
-		if(target != null && this.tooltipElement != null && target.getTooltip() != null)
+		if(target != null && this.tooltipElement != null && target.getTooltip() != null && target.getShownContextMenu() == null)
 		{
 			//assign tooltip (careful: setTooltip triggers a performance costly update)
 			if(this.tooltipElement.getTooltip() != target.getTooltip())
@@ -391,6 +396,12 @@ public abstract class TScreen extends Screen implements TParentElement
 		//forward the event to the children, until a child captures the click
 		//also, update mouse XY
 		int mX = (int)mouseX, mY = (int)mouseY;
+		this.cursorPosition.setLocation(mX, mY);
+		
+		//handle context menus, used to close a context menu when clicking outside of it
+		//TODO - Find a better way to handle this other than hard-coding?
+		var contextMenu = findTChildOfType(TContextMenuPanel.class, false);
+		//  ^ closing of this context menu is done before returning
 		
 		//obtain the captor
 		TElement captor = this.hoveredTChild;
@@ -420,6 +431,20 @@ public abstract class TScreen extends Screen implements TParentElement
 		
 		//apply drag (only if the click wasn't accepted)
 		if(!clickAccepted && button == 0) setDragging(true);
+		
+		//TODO - close the context menu that was open **before** the click, read above
+		if(contextMenu != null)
+		{
+			//obtain the render box and check if the click was inside of it 
+			var renderRect = contextMenu.getRenderingBoundingBox();
+			if(renderRect == null) removeTChild(contextMenu);
+			else if(!renderRect.contains(this.cursorPosition))
+			{
+				//only remove if the click was outside
+				removeTChild(contextMenu);
+				return true;
+			}
+		}
 		
 		//return the result
 		return captor != null;

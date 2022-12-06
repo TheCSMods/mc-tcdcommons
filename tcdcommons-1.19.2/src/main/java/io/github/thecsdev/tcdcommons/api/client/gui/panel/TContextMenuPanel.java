@@ -78,6 +78,7 @@ public class TContextMenuPanel extends TPanelElement
 			move(moveX, moveY);
 		}
 		//update the children's boxes
+		updateRenderingBoundingBox();
 		for(TElement child : getTChildren()) child.updateRenderingBoundingBox();
 	}
 	// --------------------------------------------------
@@ -110,7 +111,7 @@ public class TContextMenuPanel extends TPanelElement
 		if(label != null)
 		{
 			int lblW = getTextRenderer().getWidth(label.getString());
-			if(lblW > this.width) this.width = lblW + 15;
+			if(lblW > this.width) this.width = lblW + (getScrollPadding() * 2) + 10;
 			updatePositionAndSize();
 		}
 		return btn;

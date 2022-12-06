@@ -7,7 +7,6 @@ import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.SubjectToChange;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 public class TLabelElement extends TElement
@@ -18,7 +17,7 @@ public class TLabelElement extends TElement
 	protected int colorEnabled, colorDisabled;
 	// ==================================================
 	public TLabelElement(int x, int y, int width, int height) { this(x, y, width, height, null); }
-	public TLabelElement(int x, int y, int width, int height, MutableText label)
+	public TLabelElement(int x, int y, int width, int height, Text label)
 	{
 		super(x, y, width, height);
 		setText(label);
