@@ -111,7 +111,7 @@ public class TContextMenuPanel extends TPanelElement
 		if(label != null)
 		{
 			int lblW = getTextRenderer().getWidth(label.getString());
-			if(lblW > this.width) this.width = lblW + (getScrollPadding() * 2) + 10;
+			if(lblW > getTpeWidth() - 10) this.width = lblW + (getScrollPadding() * 2) + 10;
 			updatePositionAndSize();
 		}
 		return btn;
