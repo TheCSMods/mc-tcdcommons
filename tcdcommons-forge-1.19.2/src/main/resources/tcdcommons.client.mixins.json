@@ -4,5 +4,7 @@
 	"package": "io.github.thecsdev.tcdcommons.client.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": ["MixinMinecraftClient", "MixinTitleScreen", "MixinInGameHud"],
-	"injectors": { "defaultRequire": 1 }
+	"injectors": { "defaultRequire": 1 },
+	
+	"refmap": "mixins.tcdcommons.refmap.json"
 }

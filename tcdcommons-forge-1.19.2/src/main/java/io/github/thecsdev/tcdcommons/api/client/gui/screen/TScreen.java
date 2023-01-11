@@ -117,11 +117,12 @@ public abstract class TScreen extends Screen implements TParentElement
 		if(getClient().screen == this) super.onClose();
 	}
 	// --------------------------------------------------
-	/**
+	/*
 	 * Used to initialize this {@link Screen}. Use this method
 	 * to create and define the children of this {@link TScreen}.
-	 */
-	protected abstract @Override void init();
+	 *
+	protected abstract @Override void init(); - bad idea! may work on Fabric, but doesn't work on Forge
+	*/
 	
 	/**
 	 * Re-initializes this screen by calling

@@ -13,7 +13,7 @@ import io.github.thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistr
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-@Mixin(value = Gui.class, priority = 1001)
+@Mixin(value = Gui.class, priority = 1001, remap = true)
 public abstract class MixinInGameHud
 {
 	// ==================================================

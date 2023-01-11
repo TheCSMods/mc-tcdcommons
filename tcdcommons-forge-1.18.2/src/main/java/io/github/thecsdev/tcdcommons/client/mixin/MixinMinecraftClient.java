@@ -1,5 +1,6 @@
 package io.github.thecsdev.tcdcommons.client.mixin;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
 
-@Mixin(Minecraft.class)
+@Mixin(value = Minecraft.class, remap = true)
 public abstract class MixinMinecraftClient
 {
 	// ==================================================
@@ -51,7 +52,7 @@ public abstract class MixinMinecraftClient
 	}
 	// --------------------------------------------------
 	@Inject(method = "setScreen", at = @At("RETURN"))
-	public void onSetScreen(Screen screen, CallbackInfo callback)
+	public void onSetScreen(@Nullable Screen screen, CallbackInfo callback)
 	{
 		if(screen instanceof TScreen && this.screen == screen)
 		{
