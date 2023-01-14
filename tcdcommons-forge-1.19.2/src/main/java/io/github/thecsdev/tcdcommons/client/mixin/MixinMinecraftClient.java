@@ -1,28 +1,23 @@
 package io.github.thecsdev.tcdcommons.client.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import io.github.thecsdev.tcdcommons.TCDCommons;
-import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.main.GameConfig;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraftClient
 {
 	// ==================================================
-	/**
+	/*
 	 * A reference to the {@link #onOpened()} method that used
 	 * my mixins to invoke that method when this {@link TScreen}
 	 * is opened. Please avoid using this yourself, as it may
 	 * be subject to changes.
-	 */
+	 *
 	private java.lang.reflect.Method TSCREEN_METHOD_ONOPENED;
 	// ==================================================
 	@Shadow public Screen screen;
@@ -47,7 +42,7 @@ public abstract class MixinMinecraftClient
 		{
 			var sid = new Identifier(TCDCommons.getModID(), "hud_test");
 			TCDCommonsClientRegistry.InGameHud_Screens.put(sid, new TestTScreenHud());
-		}*/
+		}*
 	}
 	// --------------------------------------------------
 	@Inject(method = "setScreen", at = @At("RETURN"))
@@ -63,7 +58,7 @@ public abstract class MixinMinecraftClient
 				//throw new CrashException(new CrashReport(msg, e));
 			}
 		}
-	}
+	}*/
 	// --------------------------------------------------
 	@Inject(method = "resizeDisplay", at = @At("RETURN"))
 	public void onResolutionChanged(CallbackInfo callback)
