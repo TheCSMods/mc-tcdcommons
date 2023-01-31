@@ -23,6 +23,13 @@ public abstract class TClickableElement extends TElement
 	protected boolean enabled;
 	
 	/**
+	 * When set to true, {@link #drawButton(MatrixStack, int, int, float, float, float, float, int)}
+	 * will draw buttons using the Vanilla style and textures.<br/><br/>
+	 * <b>Note:</b> Vanilla buttons do not support button heights that are not 20px.
+	 */
+	protected boolean drawsVanillaButton;
+	
+	/**
 	 * The text associated with this {@link TClickableElement}.
 	 * For example, in case of buttons, this text is rendered
 	 * on the button, and so on...
@@ -35,6 +42,7 @@ public abstract class TClickableElement extends TElement
 	{
 		super(x, y, width, height);
 		this.enabled = true;
+		this.drawsVanillaButton = false;
 		this.message = message;
 	}
 	public @Override TClickableElementEvents getEvents() { return this.__events; }
@@ -48,6 +56,18 @@ public abstract class TClickableElement extends TElement
 	 */
 	public void setEnabled(boolean enabled) { this.enabled = enabled; }
 	
+	/**
+	 * Returns {@link #drawsVanillaButton}.
+	 * @see #setDrawsVanillaButton(boolean)
+	 */
+	public boolean getDrawsVanillaButton() { return this.drawsVanillaButton; }
+	
+	/**
+	 * Sets {@link #drawsVanillaButton}.
+	 * @param drawsVanillaBtn Whether or not to make this widget use the vanilla way of drawing buttons.
+	 */
+	public void setDrawsVanillaButton(boolean drawsVanillaBtn) { this.drawsVanillaButton = drawsVanillaBtn; }
+	// --------------------------------------------------
 	/**
 	 * Called by {@link #mousePressed(int, int, int)} and
 	 * {@link #keyPressed(int, int, int)} whenever this
@@ -152,12 +172,14 @@ public abstract class TClickableElement extends TElement
 		RenderSystem.enableDepthTest();
 		
 		//draw the background image
+		if(this.drawsVanillaButton)
 		{
 			//old Vanilla's way of drawing buttons
-			/*RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
+			RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
 			drawTexture(matrices, this.x, this.y, 0, 46 + yImage * 20, this.width / 2, this.height);
-			drawTexture(matrices, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + yImage * 20, this.width / 2, this.height);*/
+			drawTexture(matrices, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + yImage * 20, this.width / 2, this.height);
 		}
+		else
 		{
 			//my new way of drawing buttons. it supports
 			//scalability and texture tiling as well
