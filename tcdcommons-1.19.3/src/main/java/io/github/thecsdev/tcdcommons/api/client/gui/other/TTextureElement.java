@@ -93,7 +93,7 @@ public class TTextureElement extends TElement
 	public void setTextureUVs(int u, int v, int uWidth, int vHeight)
 	{
 		this.uv_coords.x = u;
-		this.uv_coords.y = u;
+		this.uv_coords.y = v;
 		this.uv_coords.width = uWidth;
 		this.uv_coords.height = vHeight;
 	}
