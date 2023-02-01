@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.test.client.gui.screen;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
@@ -42,6 +43,8 @@ public final class TestTScreen extends TScreenPlus
 			p.addTChild(new TEntityRendererElement(0, 0, 60, 60, EntityType.EXPERIENCE_BOTTLE));
 			addTChild(p);
 		}
+		//test texture element
+		addTChild(new TTextureElement(10, 90, 60, 60));
 		
 		init_menu();
 		
