@@ -163,10 +163,14 @@ public class TEntityRendererElement extends TElement
 			return;
 		}
 		//if the entity is set
-		InventoryScreen.drawEntity(
-				this.cX, this.cY, this.cache_mobSize,
-				-rInt(mouseX, this.cX), -rInt(mouseY, this.cY),
-				this.livingEntity);
+		try
+		{
+			InventoryScreen.drawEntity(
+					this.cX, this.cY, this.cache_mobSize,
+					-rInt(mouseX, this.cX), -rInt(mouseY, this.cY),
+					this.livingEntity);
+		}
+		catch(RuntimeException e) { this.livingEntity = null; }
 	}
 	private static int rInt(int input, int relativeTo) { return input - relativeTo; }
 	// ==================================================
