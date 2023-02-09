@@ -1,6 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.util;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -10,15 +12,31 @@ import java.util.Properties;
 public class GenericProperties
 {
 	// ==================================================
-	protected final HashMap<String, Object> properties;
+	protected final Map<String, Object> properties;
+	protected final Map<String, Object> propertiesReadOnly;
 	// ==================================================
-	public GenericProperties() { this.properties = new HashMap<>(); }
+	public GenericProperties() { this(new HashMap<>()); }
+	public GenericProperties(Map<String, Object> properties)
+	{
+		//null check
+		if(properties == null)
+			properties = new HashMap<>();
+		this.properties = properties;
+		//assign
+		this.propertiesReadOnly = Collections.unmodifiableMap(this.properties);
+	}
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link HashMap} where all the
 	 * keys and values are stored.
 	 */
-	public final HashMap<String, Object> getProperties() { return this.properties; }
+	public final Map<String, Object> getProperties() { return this.properties; }
+	
+	/**
+	 * Similar to {@link #getProperties()}, but the
+	 * returned {@link Map} is read-only and can not be modified.
+	 */
+	public final Map<String, Object> getImmutableProperties() { return this.propertiesReadOnly; }
 	// ==================================================
 	/**
 	 * Associates a specific value with a specific key.
