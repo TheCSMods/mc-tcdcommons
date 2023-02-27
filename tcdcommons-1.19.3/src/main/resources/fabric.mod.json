@@ -24,12 +24,14 @@
 	},
 	"mixins": ["${project.mod_mixins_client}"],
 
+	"jars": [ { "file":"${project.mod_jar_architectury}" } ],
 	"depends":
 	{
 		"fabricloader": ">=${project.loader_version}",
 		"minecraft": "${project.mod_depends_minecraft}",
 		"java": "${project.mod_depends_java}"
 	},
+	"recommends": { "architectury": "*" },
 	
 	"custom":
 	{
