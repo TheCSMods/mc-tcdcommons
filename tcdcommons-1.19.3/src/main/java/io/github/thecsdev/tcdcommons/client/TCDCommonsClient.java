@@ -1,7 +1,8 @@
 package io.github.thecsdev.tcdcommons.client;
 
-import dev.architectury.event.CompoundEventResult;
 import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.api.client.events.TClientEvent;
+import io.github.thecsdev.tcdcommons.api.client.events.TClientGuiEvent;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistry;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
@@ -26,7 +27,7 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 	 * be subject to changes.
 	 */
 	private final java.lang.reflect.Method TSCREEN_METHOD_ONOPENED;
-	
+	// --------------------------------------------------
 	/** The main instance of {@link MinecraftClient}. */
 	private MinecraftClient client;
 	// ==================================================
@@ -54,10 +55,10 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 		TCDCommonsClientRegistry.init();
 		
 		//MixinMinecraftClient - Reflection handling for TScreen
-		dev.architectury.event.events.client.ClientGuiEvent.SET_SCREEN.register(newScreen ->
+		TClientGuiEvent.POST_SET_SCREEN.register(newScreen ->
 		{
 			//if a TScreen is about to be set...
-			if(newScreen instanceof TScreen/* && this.client.currentScreen == newScreen*/)
+			if(newScreen instanceof TScreen)
 			{
 				//...invoke onOpened()
 				try { TSCREEN_METHOD_ONOPENED.invoke(((TScreen)newScreen)); }
@@ -67,8 +68,13 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 					throw new CrashException(new CrashReport(msg, e));
 				}
 			}
-			//return
-			return CompoundEventResult.pass();
+		});
+		
+		//MixinMinecraftClient - Handling hud screen resizing
+		TClientEvent.RESOLUTION_CHANGED.register(() ->
+		{
+			//basically update the sizes of hud screens
+			TCDCommonsClientRegistry.reInitHudScreens();
 		});
 		
 		//MixinTitleScreen - Testing button for the testing screen
@@ -89,41 +95,6 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 			//return
 			return;
 		});
-		
-		//MixinInGameHud - Handling hud rendering
-		/*float tcdcommons_tickDeltaTime = 0;
-		dev.architectury.event.events.client.ClientGuiEvent.RENDER_HUD.register((matrices, tickDelta) ->
-		{
-			//check if the current screen is a TScreen
-			if(this.client == null || !(this.client.currentScreen instanceof TScreen))
-				return;
-			
-			//ask the currently opened TScreen if this hud should be rendered
-			if(!((TScreen)this.client.currentScreen).shouldRenderInGameHud())
-				return;
-			
-			//keep track of tick delta time
-			tcdcommons_tickDeltaTime += tickDelta;
-			
-			//get mouse XY
-			//int mX = scaledWidth / 2, mY = scaledHeight / 2;
-			int mX = (int)(this.client.mouse.getX() * scaledWidth / this.client.getWindow().getWidth());
-		    int mY = (int)(this.client.mouse.getY() * scaledHeight / this.client.getWindow().getHeight());
-		    
-			//iterate and render all hud screens
-		    boolean tick = tcdcommons_tickDeltaTime > 1;
-			for(var hScreen : TCDCommonsClientRegistry.InGameHud_Screens.entrySet())
-			{
-				//do not handle current screen
-				if(client.currentScreen == hScreen.getValue()) continue;
-				//render and tick if needed
-				hScreen.getValue().render(matrices, mX, mY, tickDelta);
-				if(tick) hScreen.getValue().tick();
-			}
-			
-			//clear delta time if ticked
-			if(tick) tcdcommons_tickDeltaTime = 0;
-		});*/
 	}
 	// ==================================================
 }

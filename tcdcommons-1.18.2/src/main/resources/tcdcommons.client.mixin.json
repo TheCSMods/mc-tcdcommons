@@ -3,6 +3,6 @@
 	"minVersion": "0.8",
 	"package": "io.github.thecsdev.tcdcommons.client.mixin",
 	"compatibilityLevel": "JAVA_17",
-	"client": ["MixinMinecraftClient", "MixinInGameHud"],
+	"client": ["MixinInGameHud"],
 	"injectors": { "defaultRequire": 1 }
 }
