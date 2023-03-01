@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.client;
 
 import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.client.events.TClientEvent;
 import io.github.thecsdev.tcdcommons.api.client.events.TClientGuiEvent;
@@ -53,7 +54,7 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 	public void onInitializeClient()
 	{
 		this.client = MinecraftClient.getInstance();
-		this.clientWindow = this.client.getWindow();
+		ClientLifecycleEvent.CLIENT_STARTED.register(client -> this.clientWindow = client.getWindow());
 		
 		//init the client registry API
 		TCDCommonsClientRegistry.init();
