@@ -29,7 +29,7 @@ public abstract class MixinMinecraftClient
 	{
 		//invoke the screen change event
 		if(this.currentScreen == screen)
-			TClientGuiEvent.POST_SET_SCREEN.invoker().postSetScreen(screen);
+			TClientGuiEvent.SET_SCREEN_POST.invoker().setScreenPost(screen);
 	}
 	// ==================================================
 }
