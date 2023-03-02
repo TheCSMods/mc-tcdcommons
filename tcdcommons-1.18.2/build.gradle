@@ -39,7 +39,7 @@ dependencies
 	
 	// Architectury API
 	// modApi(files("src/main/resources/${project.mod_jar_architectury}")) - NOPE! IT IS COMPILED AND OBFUSCATED, ONLY EMBED IT
-	modApi "dev.architectury:architectury-fabric:4.11.89"
+	modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
 	
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
