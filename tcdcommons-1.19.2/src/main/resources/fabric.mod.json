@@ -22,7 +22,7 @@
 		"client": ["${project.mod_entrypoint_client}"],
 		"server": ["${project.mod_entrypoint_server}"]
 	},
-	"mixins": ["tcdcommons.client.mixin.json", "tcdcommons.client.mixin.events.json", "tcdcommons.client.mixin.events.json"],
+	"mixins": ["tcdcommons.client.mixin.json", "tcdcommons.client.mixin.events.json", "tcdcommons.client.mixin.hooks.json"],
 
 	"jars": [ { "file":"${project.mod_jar_architectury}" } ],
 	"depends":
