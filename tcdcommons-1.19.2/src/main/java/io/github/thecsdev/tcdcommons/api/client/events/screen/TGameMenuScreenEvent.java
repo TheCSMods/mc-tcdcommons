@@ -16,7 +16,7 @@ public interface TGameMenuScreenEvent
 	/**
 	 * See {@link InitWidgetsPost#initWidgetsPost(GameMenuScreen)}
 	 */
-	Event<InitWidgetsPre> INIT_WIDGETS_POST = EventFactory.createLoop();
+	Event<InitWidgetsPost> INIT_WIDGETS_POST = EventFactory.createLoop();
 	// ==================================================
 	interface InitWidgetsPre
 	{

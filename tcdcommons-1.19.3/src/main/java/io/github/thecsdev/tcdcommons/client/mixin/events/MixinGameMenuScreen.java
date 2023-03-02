@@ -27,6 +27,6 @@ public abstract class MixinGameMenuScreen
 	public void onInitWidgetsPost(CallbackInfo callback)
 	{
 		//invoke the post-init event
-		TGameMenuScreenEvent.INIT_WIDGETS_POST.invoker().initWidgetsPre((GameMenuScreen)(Object)this);
+		TGameMenuScreenEvent.INIT_WIDGETS_POST.invoker().initWidgetsPost((GameMenuScreen)(Object)this);
 	}
 }
