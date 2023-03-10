@@ -29,7 +29,7 @@
 		"tcdcommons.client.mixin.hooks.json"
 	],
 
-	"jars": [ { "file":"${project.mod_jar_architectury}" } ],
+	"jars": [ { "file":"${project.mod_jar_architectury}" }, { "file":"${project.mod_jar_fabricapi}" } ],
 	"depends":
 	{
 		"fabricloader": ">=${project.loader_version}",
