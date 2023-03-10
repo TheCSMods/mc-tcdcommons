@@ -24,7 +24,7 @@
 	},
 	"mixins":
 	[
-		"tcdcommons.mixin.json",
+		"tcdcommons.mixin.events.json",
 		"tcdcommons.client.mixin.events.json",
 		"tcdcommons.client.mixin.hooks.json"
 	],
