@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.mixin;
+package io.github.thecsdev.tcdcommons.mixin.events;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
