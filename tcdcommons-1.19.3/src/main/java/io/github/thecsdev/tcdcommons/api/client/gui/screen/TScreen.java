@@ -92,6 +92,7 @@ public abstract class TScreen extends Screen implements TParentElement
 		super(title);
 		this.tchildren = new TElementList(this);
 		this.cursorPosition = new Point();
+		updateRenderingBoundingBox(); //must be here
 	}
 	
 	/**
@@ -150,7 +151,13 @@ public abstract class TScreen extends Screen implements TParentElement
 	 */
 	protected final Rectangle RENDER_RECT = new Rectangle(0,0,0,0);
 	public @Override @Nullable Rectangle getRenderingBoundingBox() { return RENDER_RECT; }
-	public @Override void updateRenderingBoundingBox() { RENDER_RECT.setSize(getTpeWidth(), getTpeHeight()); }
+	public @Override void updateRenderingBoundingBox()
+	{
+		//RENDER_RECT.setSize(getTpeWidth(), getTpeHeight());
+		int w = MinecraftClient.getInstance().getWindow().getScaledWidth();
+		int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
+		this.RENDER_RECT.setBounds(0, 0, w, h);
+	}
 	// ==================================================
 	/**
 	 * Returns the {@link MinecraftClient} from {@link Screen#client},
