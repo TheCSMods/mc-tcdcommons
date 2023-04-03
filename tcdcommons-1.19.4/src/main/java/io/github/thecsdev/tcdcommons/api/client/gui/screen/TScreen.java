@@ -102,12 +102,8 @@ public abstract class TScreen extends Screen implements TParentElement
 	 * <b>Must not return null.</b>
 	 */
 	@SubjectToChange("This way of doing it is too messy.")
-	protected TTooltipElement __createTooltip()
-	{
-		//changed from getTpeWidth() to this.RENDER_RECT.width
-		//to account for the new updateRenderingBoundingBox handling system
-		return new TTooltipElement(this.RENDER_RECT.width / 2);
-	}
+	protected TTooltipElement __createTooltip() { return new TTooltipElement(getTpeWidth() / 2); }
+	public final TTooltipElement __tempMethodForDefiningTooltipElementPleaseDoNotCall() { return (this.tooltipElement = __createTooltip()); }
 	// --------------------------------------------------
 	@SuppressWarnings("resource")
 	public @Override void close()
@@ -162,7 +158,6 @@ public abstract class TScreen extends Screen implements TParentElement
 		int w = MinecraftClient.getInstance().getWindow().getScaledWidth();
 		int h = MinecraftClient.getInstance().getWindow().getScaledHeight();
 		this.RENDER_RECT.setBounds(0, 0, w, h);
-		this.tooltipElement = __createTooltip();
 	}
 	// ==================================================
 	/**
@@ -639,7 +634,7 @@ public abstract class TScreen extends Screen implements TParentElement
 		//when initializing and resizing the window
 		this.clearTChildren();
 		//update tooltip and the bounding box
-		//this.tooltipElement = __createTooltip(); -- no need to be here anymore
+		__tempMethodForDefiningTooltipElementPleaseDoNotCall();
 		updateRenderingBoundingBox();
 	}
 	

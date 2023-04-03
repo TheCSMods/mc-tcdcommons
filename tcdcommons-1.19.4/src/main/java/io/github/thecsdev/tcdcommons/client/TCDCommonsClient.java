@@ -122,20 +122,22 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 		//MixinTitleScreen - Testing button for the testing screen
 		dev.architectury.event.events.client.ClientGuiEvent.INIT_POST.register((newScreen, nsAccess) ->
 		{
-			//check screen type
-			if(!(newScreen instanceof TitleScreen)) return;
+			//TODO - handle TScreen tooltips
+			if(newScreen instanceof TScreen)
+				((TScreen)newScreen).__tempMethodForDefiningTooltipElementPleaseDoNotCall();
 			
-			//this will only be available in development
-			if(!FabricLoader.getInstance().isDevelopmentEnvironment()) return; //TODO - ELEMINATE FABRIC APIs
-			
-			//add a testing button
-			MutableText msg = TextUtils.fLiteral("§e" + TCDCommons.getModName());
-			PressAction onPress = arg0 -> { client.setScreen(new TestTScreen(newScreen)); };
-			ButtonWidget btn = ButtonWidget.builder(msg, onPress).dimensions(10, newScreen.height - 50, 125, 20).build();
-			dev.architectury.hooks.client.screen.ScreenHooks.addRenderableWidget(newScreen, btn);
-			
-			//return
-			return;
+			//handle title screen testing environment button
+			else if(newScreen instanceof TitleScreen)
+			{
+				//this will only be available in development
+				if(!FabricLoader.getInstance().isDevelopmentEnvironment()) return; //TODO - ELEMINATE FABRIC APIs
+				
+				//add a testing button
+				MutableText msg = TextUtils.fLiteral("§e" + TCDCommons.getModName());
+				PressAction onPress = arg0 -> { client.setScreen(new TestTScreen(newScreen)); };
+				ButtonWidget btn = ButtonWidget.builder(msg, onPress).dimensions(10, newScreen.height - 50, 125, 20).build();
+				dev.architectury.hooks.client.screen.ScreenHooks.addRenderableWidget(newScreen, btn);
+			}
 		});
 	}
 	// ==================================================
