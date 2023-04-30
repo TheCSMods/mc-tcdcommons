@@ -36,7 +36,7 @@
 		"minecraft": "${project.mod_depends_minecraft}",
 		"java": "${project.mod_depends_java}"
 	},
-	"recommends": { "architectury": "*" },
+	"recommends": { "fabric-api": "*", "architectury": "*" },
 	
 	"custom":
 	{
