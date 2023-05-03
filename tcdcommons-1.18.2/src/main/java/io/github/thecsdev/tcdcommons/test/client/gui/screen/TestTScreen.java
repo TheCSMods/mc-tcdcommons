@@ -39,7 +39,7 @@ public final class TestTScreen extends TScreenPlus
 	{
 		//test entity renderer
 		{
-			TPanelElement p = new TPanelElement(10, 20, 60, 60);
+			var p = new TPanelElement(10, 20, 60, 60);
 			p.addTChild(new TEntityRendererElement(0, 0, 60, 60, EntityType.EXPERIENCE_BOTTLE));
 			addTChild(p);
 		}

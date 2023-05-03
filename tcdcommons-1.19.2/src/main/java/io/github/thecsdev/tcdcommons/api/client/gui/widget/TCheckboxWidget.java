@@ -9,7 +9,6 @@ import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -29,12 +28,12 @@ public class TCheckboxWidget extends TClickableElement
 	//XY positions for the checkbox box and the checkbox text
 	protected int cX, cY, tX, tY;
 	// ==================================================
-	public TCheckboxWidget(int x, int y, int width, int height, MutableText message, boolean checked)
+	public TCheckboxWidget(int x, int y, int width, int height, Text message, boolean checked)
 	{
 		this(x, y, width, height, message, checked, true);
 	}
 	
-	public TCheckboxWidget(int x, int y, int width, int height, MutableText message, boolean checked, boolean showMessage)
+	public TCheckboxWidget(int x, int y, int width, int height, Text message, boolean checked, boolean showMessage)
 	{
 		super(x, y, width, height, message);
 		this.checked = checked;

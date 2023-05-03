@@ -30,7 +30,7 @@ public class TEntityRendererElement extends TElement
 	 * rendering based on various {@link EntityType}s.
 	 */
 	private static final ConcurrentMap<EntityType<?>, Entity> ENTITY_CACHE = new MapMaker().weakKeys().weakValues().makeMap();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	protected static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	// --------------------------------------------------
 	public static @Nullable Entity getCachedEntityFromType(EntityType<?> entityType)
 	{
@@ -172,7 +172,7 @@ public class TEntityRendererElement extends TElement
 		}
 		catch(RuntimeException e) { this.livingEntity = null; }
 	}
-	private static int rInt(int input, int relativeTo) { return input - relativeTo; }
+	public static int rInt(int input, int relativeTo) { return input - relativeTo; }
 	// ==================================================
 	public int getLivingEntityGUISize(LivingEntity e, int viewportSize)
 	{
