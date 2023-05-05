@@ -12,13 +12,11 @@ public interface TNetworkEvent
 	/**
 	 * See {@link SendPacketPre#sendPacketPre(Packet, NetworkSide)}
 	 */
-	@Deprecated
 	Event<SendPacketPre> SEND_PACKET_PRE = EventFactory.createEventResult();
 	
 	/**
 	 * See {@link ReceivePacketPre#receivePacketPre(Packet, NetworkSide)}
 	 */
-	@Deprecated
 	Event<ReceivePacketPre> RECEIVE_PACKET_PRE = EventFactory.createEventResult();
 	// ==================================================
 	interface SendPacketPre

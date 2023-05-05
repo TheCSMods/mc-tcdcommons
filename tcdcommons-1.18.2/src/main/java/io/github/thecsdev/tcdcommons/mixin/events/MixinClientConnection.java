@@ -22,7 +22,6 @@ public abstract class MixinClientConnection
 	protected @Shadow NetworkSide side;
 	protected abstract @Shadow boolean isOpen();
 	// ==================================================
-	@SuppressWarnings("deprecation")
 	@Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
 	public void onPreSendImmediately(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci)
 	{
@@ -37,7 +36,6 @@ public abstract class MixinClientConnection
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Inject(method = "handlePacket", at = @At(value = "HEAD"), cancellable = true)
 	private static void onPreHandlePacket(Packet<?> packet, PacketListener listener, CallbackInfo callback)
 	{
