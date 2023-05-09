@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import io.github.thecsdev.tcdcommons.api.events.TNetworkEvent;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
@@ -47,6 +48,15 @@ public abstract class MixinClientConnection
 			callback.cancel();
 			return;
 		}
+	}
+	
+	@Inject(method = "channelRead0", at = @At("RETURN"))
+	private void onPostHandlePacket(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo callback)
+	{
+		//check if the connection is open
+		if(!isOpen()) return;
+		//invoke the event
+		TNetworkEvent.RECEIVE_PACKET_POST.invoker().receivePacketPost(packet, side);
 	}
 	// ==================================================
 }

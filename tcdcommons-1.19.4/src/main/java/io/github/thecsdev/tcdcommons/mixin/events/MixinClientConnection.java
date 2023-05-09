@@ -54,5 +54,14 @@ public abstract class MixinClientConnection
 			return;
 		}
 	}
+	
+	@Inject(method = "channelRead0", at = @At("RETURN"))
+	private void onPostHandlePacket(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo callback)
+	{
+		//check if the connection is open
+		if(!isOpen()) return;
+		//invoke the event
+		TNetworkEvent.RECEIVE_PACKET_POST.invoker().receivePacketPost(packet, side);
+	}
 	// ==================================================
 }

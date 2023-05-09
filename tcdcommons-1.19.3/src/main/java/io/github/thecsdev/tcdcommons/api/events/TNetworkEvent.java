@@ -18,6 +18,11 @@ public interface TNetworkEvent
 	 * See {@link ReceivePacketPre#receivePacketPre(Packet, NetworkSide)}
 	 */
 	Event<ReceivePacketPre> RECEIVE_PACKET_PRE = EventFactory.createEventResult();
+	
+	/**
+	 * See {@link ReceivePacketPost#receivePacketPost(Packet, NetworkSide)}
+	 */
+	Event<ReceivePacketPost> RECEIVE_PACKET_POST = EventFactory.createLoop();
 	// ==================================================
 	interface SendPacketPre
 	{
@@ -49,6 +54,18 @@ public interface TNetworkEvent
 		 * @param networkSide The current network side. It is important to read the note above.
 		 */
 		EventResult receivePacketPre(Packet<?> packet, NetworkSide networkSide);
+	}
+	
+	interface ReceivePacketPost
+	{
+		/**
+		 * Same as {@link ReceivePacketPre#receivePacketPre(Packet, NetworkSide)},
+		 * but called after a packet is handled.
+		 * @param packet The {@link Packet} that was received and is about to be handled by the game.
+		 * @param networkSide The current network side. It is important to read the note above.
+		 * @see ReceivePacketPre#receivePacketPre(Packet, NetworkSide)
+		 */
+		void receivePacketPost(Packet<?> packet, NetworkSide networkSide);
 	}
 	// ==================================================
 }
