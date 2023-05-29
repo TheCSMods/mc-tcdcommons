@@ -159,7 +159,11 @@ public class TElementList extends WrappedList<TElement>
 			
 			//(6) invoke the TElement event
 			if(getParent() instanceof TElement)
-				((TElement)getParent()).getEvents().CHILD_AR.p_invoke(handler -> handler.accept(child, true, reposition));
+			{
+				var teParent = (TElement)getParent();
+				teParent.eChildAdded.invoker().invoke(teParent, child, reposition);
+				//teParent.getEvents().CHILD_AR.p_invoke(handler -> handler.accept(child, true, reposition));
+			}
 			
 			//return
 			return true;
@@ -203,7 +207,11 @@ public class TElementList extends WrappedList<TElement>
 			
 			//(5) invoke the TElement event
 			if(!c && getParent() instanceof TElement)
-				((TElement)getParent()).getEvents().CHILD_AR.p_invoke(handler -> handler.accept(child, false, reposition));
+			{
+				var teParent = (TElement)getParent();
+				teParent.eChildRemoved.invoker().invoke(teParent, child, reposition);
+				//teParent.getEvents().CHILD_AR.p_invoke(handler -> handler.accept(child, false, reposition));
+			}
 			
 			//return
 			return true;

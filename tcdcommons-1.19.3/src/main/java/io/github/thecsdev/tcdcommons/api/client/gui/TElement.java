@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.events.TElementEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
@@ -86,6 +88,10 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	protected @Nullable Text tooltip;
 	// ==================================================
 	private final TElementEvents __events = new TElementEvents(this);
+	public final Event<TElementEvent_Moved> eMoved = EventFactory.createLoop();
+	public final Event<TElementEvent_ChildAR> eChildAdded = EventFactory.createLoop();
+	public final Event<TElementEvent_ChildAR> eChildRemoved = EventFactory.createLoop();
+	public final Event<TElementEvent_ContextMenu> eContextMenu = EventFactory.createLoop();
 	// ==================================================
 	public TElement(int x, int y, int width, int height)
 	{
@@ -370,7 +376,8 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 			this.parent.children.updateTopmostChildren();
 		
 		//invoke event
-		getEvents().MOVED.p_invoke(handler -> handler.accept(dx, dy));
+		this.eMoved.invoker().invoke(this, dx, dy);
+		//getEvents().MOVED.p_invoke(handler -> handler.accept(dx, dy));
 	}
 	
 	/**
@@ -396,7 +403,11 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		moveChildren(x, y, invokeEvent);
 		
 		//invoke event
-		if(invokeEvent) getEvents().MOVED.p_invoke(handler -> handler.accept(x, y));
+		if(invokeEvent)
+		{
+			this.eMoved.invoker().invoke(this, x, y);
+			//getEvents().MOVED.p_invoke(handler -> handler.accept(x, y));
+		}
 	}
 	
 	/**
@@ -619,7 +630,8 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		onContextMenu(contextMenu);
 		
 		//invoke the event
-		getEvents().CONTEXT_MENU.p_invoke(handler -> handler.accept(contextMenu));
+		this.eContextMenu.invoker().invoke(this, contextMenu);
+		//getEvents().CONTEXT_MENU.p_invoke(handler -> handler.accept(contextMenu));
 		
 		//return null if there are no entries added to it
 		if(contextMenu.getTChildren().size() < 1)
@@ -763,5 +775,9 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 			}
 		}
 	}
+	// ==================================================
+	public interface TElementEvent_Moved { public void invoke(TElement element, int deltaX, int deltaY); }
+	public interface TElementEvent_ChildAR { public void invoke(TElement element, TElement child, boolean repositioned); }
+	public interface TElementEvent_ContextMenu { public void invoke(TElement element, TContextMenuPanel contextMenu); }
 	// ==================================================
 }

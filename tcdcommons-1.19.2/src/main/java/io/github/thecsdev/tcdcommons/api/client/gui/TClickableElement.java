@@ -4,6 +4,9 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
+import dev.architectury.event.EventResult;
 import io.github.thecsdev.tcdcommons.api.client.gui.events.TClickableElementEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
@@ -37,6 +40,8 @@ public abstract class TClickableElement extends TElement
 	protected @Nullable Text message;
 	// --------------------------------------------------
 	private final TClickableElementEvents __events = new TClickableElementEvents(this);
+	public Event<TClickableElementEvent_Clicking> eClicking = EventFactory.createEventResult();
+	public Event<TClickableElementEvent_Clicked> eClicked = EventFactory.createLoop();
 	// ==================================================
 	public TClickableElement(int x, int y, int width, int height, @Nullable Text message)
 	{
@@ -93,9 +98,12 @@ public abstract class TClickableElement extends TElement
 	{
 		if(button == 0 && isHovered())
 		{
+			if(this.eClicking.invoker().invoke(this).isFalse())
+				return false;
 			GuiUtils.playClickSound();
 			onClick();
-			getEvents().CLICKED.p_invoke(handler -> handler.run());
+			this.eClicked.invoker().invoke(this);
+			//getEvents().CLICKED.p_invoke(handler -> handler.run());
 			return true;
 		}
 		return false;
@@ -107,9 +115,12 @@ public abstract class TClickableElement extends TElement
 		//257 - ENTER; 335 - NUMPAD ENTER; 32 - SPACE;
 		if (keyCode == 257 || keyCode == 335 || keyCode == 32)
 		{
+			if(this.eClicking.invoker().invoke(this).isFalse())
+				return false;
 			GuiUtils.playClickSound();
 			onClick();
-			getEvents().CLICKED.p_invoke(handler -> handler.run());
+			this.eClicked.invoker().invoke(this);
+			//getEvents().CLICKED.p_invoke(handler -> handler.run());
 			return true;
 		}
 		return false;
@@ -210,5 +221,8 @@ public abstract class TClickableElement extends TElement
 	{
 		drawTElementText(matrices, getMessage(), alignment, deltaTime);
 	}
+	// ==================================================
+	public interface TClickableElementEvent_Clicking { public EventResult invoke(TClickableElement element); }
+	public interface TClickableElementEvent_Clicked { public void invoke(TClickableElement element); }
 	// ==================================================
 }

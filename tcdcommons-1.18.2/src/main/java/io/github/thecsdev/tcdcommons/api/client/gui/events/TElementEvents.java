@@ -14,6 +14,7 @@ import io.github.thecsdev.tcdcommons.api.util.events.TEventManager.TEvent;
 /**
  * This container for {@link TEvent}s related to {@link TElement}s.
  */
+@Deprecated
 public class TElementEvents extends TEventManager
 {
 	// ==================================================

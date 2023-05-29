@@ -2,6 +2,7 @@ package io.github.thecsdev.tcdcommons.api.client.gui.events;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TClickableElement;
 
+@Deprecated
 public class TClickableElementEvents extends TElementEvents
 {
 	// ==================================================

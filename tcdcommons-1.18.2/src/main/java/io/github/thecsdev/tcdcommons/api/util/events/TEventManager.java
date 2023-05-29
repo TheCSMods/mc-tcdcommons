@@ -12,6 +12,7 @@ import io.github.thecsdev.tcdcommons.api.util.SubjectToChange;
 /**
  * A {@link TEventManager} is the main object that holds {@link TEvent}s.
  */
+@Deprecated
 @SubjectToChange(value = "Way too messy", when = "Likely next major release")
 public class TEventManager extends Object
 {
