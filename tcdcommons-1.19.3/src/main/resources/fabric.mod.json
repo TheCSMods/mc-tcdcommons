@@ -30,14 +30,15 @@
 		"tcdcommons.client.mixin.hooks.json"
 	],
 
-	"jars": [ { "file":"${project.mod_jar_architectury}" }, { "file":"${project.mod_jar_fabricapi}" } ],
+	"jars": [],
 	"depends":
 	{
 		"fabricloader": ">=${project.loader_version}",
 		"minecraft": "${project.mod_depends_minecraft}",
-		"java": "${project.mod_depends_java}"
+		"java": "${project.mod_depends_java}",
+		
+		"fabric-api": "*", "architectury": "*"
 	},
-	"recommends": { "fabric-api": "*", "architectury": "*" },
 	
 	"custom":
 	{

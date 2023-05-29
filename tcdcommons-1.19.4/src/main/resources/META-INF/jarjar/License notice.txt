@@ -1,5 +1,0 @@
-1. The jar files included here are not mine, and are licensed under separate licenses.
-2. To see which license applies to a given mod jar file that is included here, open the jar file as a zip file, and read the contents of the `fabric.mod.json` file for the given mod.
-3. The `fabric.mod.json` file contains the `license` tag that has the name of the license that applies to the given mod jar file.
-
-4. At the time of writing this (2023/3/25), `Fabric API` is licensed under `Apache-2.0`, while `Architectury API` is licensed under `LGPL-3`.
