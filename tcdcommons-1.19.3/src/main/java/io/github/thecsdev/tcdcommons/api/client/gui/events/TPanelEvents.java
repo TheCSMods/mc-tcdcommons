@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 
+@Deprecated
 public class TPanelEvents extends TElementEvents
 {
 	// ==================================================

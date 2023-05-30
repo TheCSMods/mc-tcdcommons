@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.events.TTextFieldWidgetEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
@@ -35,6 +37,7 @@ public class TTextFieldWidget extends TElement
 	protected MultilineText multilineText;
 	// --------------------------------------------------
 	private TTextFieldWidgetEvents __events = new TTextFieldWidgetEvents(this);
+	public final Event<TTextFieldWidgetEvent_TextChanged> eTextChanged = EventFactory.createLoop();
 	// ==================================================
 	public TTextFieldWidget(int x, int y, int width, int height)
 	{
@@ -77,7 +80,10 @@ public class TTextFieldWidget extends TElement
 		this.multilineText = MultilineText.create(getTextRenderer(), message, w);
 		//invoke event
 		if(invokeEvent)
-			getEvents().TEXT_CHANGED.p_invoke(handler -> handler.accept(txt));
+		{
+			this.eTextChanged.invoker().invoke(this, txt);
+			//getEvents().TEXT_CHANGED.p_invoke(handler -> handler.accept(txt));
+		}
 	}
 	// --------------------------------------------------
 	/**
@@ -222,5 +228,7 @@ public class TTextFieldWidget extends TElement
 		//scissors, again
 		this.screen.resetScissors();
 	}
+	// ==================================================
+	public interface TTextFieldWidgetEvent_TextChanged { public void invoke(TTextFieldWidget element, String newText); }
 	// ==================================================
 }

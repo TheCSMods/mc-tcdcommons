@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TTextFieldWidget;
 
+@Deprecated
 public class TTextFieldWidgetEvents extends TElementEvents
 {
 	// ==================================================

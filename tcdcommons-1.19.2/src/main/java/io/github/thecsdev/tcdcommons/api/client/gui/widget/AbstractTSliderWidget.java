@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TClickableElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.events.TSliderWidgetEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.Direction2D;
@@ -41,6 +43,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	protected boolean drawMessage;
 	// --------------------------------------------------
 	private TSliderWidgetEvents __events = new TSliderWidgetEvents(this);
+	public final Event<TSliderWidgetEvent_ValueChanged> eValueChanged = EventFactory.createLoop();
 	// ==================================================
 	public AbstractTSliderWidget(int x, int y, int width, int height, double value)
 	{
@@ -91,7 +94,8 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 		{
 			applyValue();
 			//handle value change events only in here:
-			getEvents().VALUE_CHANGED.p_invoke(handler -> handler.accept(this.value));
+			this.eValueChanged.invoker().invoke(this, this.value);
+			//getEvents().VALUE_CHANGED.p_invoke(handler -> handler.accept(this.value));
 		}
 		updateMessage();
 		return changed;
@@ -382,5 +386,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	    RenderSystem.setShaderColor(1, 1, 1, getAlpha());
 		draw9SliceTexture(matrices, x, y, width, height, uvU, 0, 20, 20, 256, 256, 3);
 	}
+	// ==================================================
+	public interface TSliderWidgetEvent_ValueChanged { public void invoke(AbstractTSliderWidget element, double newValue); }
 	// ==================================================
 }

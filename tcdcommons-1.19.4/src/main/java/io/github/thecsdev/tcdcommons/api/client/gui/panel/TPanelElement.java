@@ -4,8 +4,11 @@ import java.awt.Point;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.events.TPanelEvents;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement.TPanelElementEvent_Scroll;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TElementList;
@@ -66,6 +69,8 @@ public class TPanelElement extends TElement
 	protected double scrollVelocityX, scrollVelocityY;
 	// --------------------------------------------------
 	private final TPanelEvents __events = new TPanelEvents(this);
+	public final Event<TPanelElementEvent_Scroll> eScrollHorizontally = EventFactory.createLoop();
+	public final Event<TPanelElementEvent_Scroll> eScrollVertically = EventFactory.createLoop();
 	// ==================================================
 	public TPanelElement(int x, int y, int width, int height)
 	{
@@ -204,7 +209,8 @@ public class TPanelElement extends TElement
 		
 		//invoke event and return
 		final int delta = scrollAmount;
-		getEvents().SCROLL_H.p_invoke(handler -> handler.accept(delta));
+		this.eScrollHorizontally.invoker().invoke(this, delta);
+		//getEvents().SCROLL_H.p_invoke(handler -> handler.accept(delta));
 		return true;
 	}
 	
@@ -237,7 +243,8 @@ public class TPanelElement extends TElement
 		moveChildren(0, delta);
 		
 		//invoke event and return
-		getEvents().SCROLL_V.p_invoke(handler -> handler.accept(delta));
+		this.eScrollVertically.invoker().invoke(this, delta);
+		//getEvents().SCROLL_V.p_invoke(handler -> handler.accept(delta));
 		return true;
 	}
 	// --------------------------------------------------
@@ -319,7 +326,8 @@ public class TPanelElement extends TElement
 		{
 			final int delta = moveBy;
 			moveChildren(delta, 0);
-			getEvents().SCROLL_H.p_invoke(handler -> handler.accept(delta));
+			this.eScrollHorizontally.invoker().invoke(this, delta);
+			//getEvents().SCROLL_H.p_invoke(handler -> handler.accept(delta));
 		}
 	}
 	
@@ -351,7 +359,8 @@ public class TPanelElement extends TElement
 		{
 			final int delta = moveBy;
 			moveChildren(0, delta);
-			getEvents().SCROLL_V.p_invoke(handler -> handler.accept(delta));
+			this.eScrollVertically.invoker().invoke(this, delta);
+			//getEvents().SCROLL_V.p_invoke(handler -> handler.accept(delta));
 		}
 	}
 	// --------------------------------------------------
@@ -582,5 +591,7 @@ public class TPanelElement extends TElement
 		else if(keyCode == 262) b0 = b0 || inputHorizontalScroll(scrollSensitivity);
 		return b0;
 	}
+	// ==================================================
+	public interface TPanelElementEvent_Scroll { public void invoke(TPanelElement element, int scrollDelta); }
 	// ==================================================
 }
