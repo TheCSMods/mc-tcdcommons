@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import io.github.thecsdev.tcdcommons.api.client.gui.events.TElementEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
@@ -95,7 +94,7 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	 */
 	protected @Nullable Text tooltip;
 	// ==================================================
-	private final TElementEvents __events = new TElementEvents(this);
+	//private final TElementEvents __events = new TElementEvents(this);
 	public final Event<TElementEvent_Moved> eMoved = EventFactory.createLoop();
 	public final Event<TElementEvent_ChildAR> eChildAdded = EventFactory.createLoop();
 	public final Event<TElementEvent_ChildAR> eChildRemoved = EventFactory.createLoop();
@@ -126,7 +125,8 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		RENDER_RECT.setSize(this.width, this.height);
 	}
 	// --------------------------------------------------
-	public TElementEvents getEvents() { return this.__events; }
+	/*@Deprecated
+	public TElementEvents getEvents() { return this.__events; }*/
 	// ==================================================
 	@Override
 	@Nullable
@@ -385,6 +385,7 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 			this.parent.children.updateTopmostChildren();
 		
 		//invoke event
+		this.updateRenderingBoundingBox();
 		this.eMoved.invoker().invoke(this, dx, dy);
 		//getEvents().MOVED.p_invoke(handler -> handler.accept(dx, dy));
 	}
@@ -414,6 +415,7 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 		//invoke event
 		if(invokeEvent)
 		{
+			this.updateRenderingBoundingBox();
 			this.eMoved.invoker().invoke(this, x, y);
 			//getEvents().MOVED.p_invoke(handler -> handler.accept(x, y));
 		}

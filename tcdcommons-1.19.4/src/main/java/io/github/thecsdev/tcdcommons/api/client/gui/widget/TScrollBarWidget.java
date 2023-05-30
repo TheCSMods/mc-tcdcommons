@@ -1,12 +1,9 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
-import org.apache.logging.log4j.util.TriConsumer;
-
-import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement.TPanelElementEvent_Scroll;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.Direction2D;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
 import net.minecraft.util.math.MathHelper;
@@ -17,8 +14,8 @@ public class TScrollBarWidget extends AbstractTSliderWidget
 	protected final TPanelElement target;
 	// --------------------------------------------------
 	//hold references to the event handlers to prevent garbage collection
-	protected final Consumer<Integer> target_ehScrollH, target_ehScrollV;
-	protected final TriConsumer<TElement, Boolean, Boolean> target_ehChildAR;
+	//protected final @Deprecated Consumer<Integer> target_ehScrollH, target_ehScrollV;
+	//protected final @Deprecated TriConsumer<TElement, Boolean, Boolean> target_ehChildAR;
 	// ==================================================
 	public TScrollBarWidget(int x, int y, int width, int height, TPanelElement target)
 	{
@@ -44,7 +41,24 @@ public class TScrollBarWidget extends AbstractTSliderWidget
 		refreshKnobSize();
 		
 		//handle panel events
-		target_ehScrollH = target.getEvents().SCROLL_H.addWeakEventHandler((dX) ->
+		final TPanelElementEvent_Scroll onTargetScrollH = (element, scrollDelta) ->
+		{
+			if(this.getSliderDirection().isHorizontal())
+				this.refreshValue();
+		};
+		final TPanelElementEvent_Scroll onTargetScrollV = (element, scrollDelta) ->
+		{
+			if(this.getSliderDirection().isVertical())
+				this.refreshValue();
+		};
+		final TElementEvent_ChildAR onTargetChildAR = (element, child, repositioned) -> refreshKnobSize();
+		
+		this.target.eScrollHorizontally.register(onTargetScrollH);
+		this.target.eScrollVertically.register(onTargetScrollV);
+		this.target.eChildAdded.register(onTargetChildAR);
+		this.target.eChildRemoved.register(onTargetChildAR);
+		
+		/*target_ehScrollH = target.getEvents().SCROLL_H.addWeakEventHandler((dX) ->
 		{
 			if(getSliderDirection().isHorizontal())
 				refreshValue();
@@ -55,7 +69,7 @@ public class TScrollBarWidget extends AbstractTSliderWidget
 				refreshValue();
 		});
 		target_ehChildAR = target.getEvents().CHILD_AR
-				.addWeakEventHandler((child, added, repositioned) -> refreshKnobSize());
+				.addWeakEventHandler((child, added, repositioned) -> refreshKnobSize());*/
 	}
 	
 	/**

@@ -1,7 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
 import java.util.ArrayList;
-import java.util.function.BiConsumer;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -28,12 +27,13 @@ public class TSelectWidget extends TButtonWidget
 	 */
 	protected SWContextMenu contextMenu;
 	
-	/**
+	/*
 	 * The event handler that is used by {@link TSelectWidget}
 	 * to handle movement of this element. Used to update
 	 * the position and size of the dropdown if it is opened.
-	 */
-	protected BiConsumer<Integer, Integer> ehMoved_forDropdown;
+	 *
+	@Deprecated
+	protected BiConsumer<Integer, Integer> ehMoved_forDropdown;*/
 	// --------------------------------------------------
 	/**
 	 * This is where the {@link TSelectWidget} keeps track
@@ -48,7 +48,7 @@ public class TSelectWidget extends TButtonWidget
 		this.contextMenu = null;
 		setMessage(TextUtils.fTranslatable("tcdcommons.gui.tselectwidget.default_label"));
 		
-		ehMoved_forDropdown = getEvents().MOVED.addWeakEventHandler((dX, dY) ->
+		this.eMoved.register((element, dX, dY) ->
 		{
 			if(isDropdownOpen() && this.contextMenu != null)
 				this.contextMenu.updatePositionAndSize();

@@ -7,7 +7,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
-import io.github.thecsdev.tcdcommons.api.client.gui.events.TClickableElementEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import net.minecraft.client.gui.screen.Screen;
@@ -39,7 +38,7 @@ public abstract class TClickableElement extends TElement
 	 */
 	protected @Nullable Text message;
 	// --------------------------------------------------
-	private final TClickableElementEvents __events = new TClickableElementEvents(this);
+	//private final TClickableElementEvents __events = new TClickableElementEvents(this);
 	public Event<TClickableElementEvent_Clicking> eClicking = EventFactory.createEventResult();
 	public Event<TClickableElementEvent_Clicked> eClicked = EventFactory.createLoop();
 	// ==================================================
@@ -50,7 +49,7 @@ public abstract class TClickableElement extends TElement
 		this.drawsVanillaButton = false;
 		this.message = message;
 	}
-	public @Override TClickableElementEvents getEvents() { return this.__events; }
+	//public @Deprecated @Override TClickableElementEvents getEvents() { return this.__events; }
 	// --------------------------------------------------
 	@Override
 	public boolean getEnabled() { return this.enabled; }

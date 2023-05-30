@@ -7,7 +7,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TClickableElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.events.TSliderWidgetEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.Direction2D;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
@@ -42,7 +41,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	 */
 	protected boolean drawMessage;
 	// --------------------------------------------------
-	private TSliderWidgetEvents __events = new TSliderWidgetEvents(this);
+	//private TSliderWidgetEvents __events = new TSliderWidgetEvents(this);
 	public final Event<TSliderWidgetEvent_ValueChanged> eValueChanged = EventFactory.createLoop();
 	// ==================================================
 	public AbstractTSliderWidget(int x, int y, int width, int height, double value)
@@ -53,9 +52,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 		setKnobSize(4);
 		setDrawMessage(true);
 	}
-	
-	@Override
-	public TSliderWidgetEvents getEvents() { return this.__events; }
+	//public @Deprecated @Override TSliderWidgetEvents getEvents() { return this.__events; }
 	// --------------------------------------------------
 	@Override
 	public void setPosition(int x, int y, int flags)

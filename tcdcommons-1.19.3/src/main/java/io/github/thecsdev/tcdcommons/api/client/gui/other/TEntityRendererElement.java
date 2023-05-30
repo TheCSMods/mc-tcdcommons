@@ -3,7 +3,6 @@ package io.github.thecsdev.tcdcommons.api.client.gui.other;
 import static io.github.thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistry.getEntityRendererSizeOffset;
 
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.BiConsumer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +71,7 @@ public class TEntityRendererElement extends TElement
 	protected int cache_mobSize;
 	//protected final Point cache_mobOffset; -- not yet...
 	// --------------------------------------------------
-	protected final BiConsumer<Integer, Integer> MOVED_HANDLER;
+	//protected final @Deprecated BiConsumer<Integer, Integer> MOVED_HANDLER;
 	// ==================================================
 	public TEntityRendererElement(int x, int y, int width, int height) { this(x, y, width, height, null); }
 	public TEntityRendererElement(int x, int y, int width, int height, EntityType<?> entityType)
@@ -82,7 +81,8 @@ public class TEntityRendererElement extends TElement
 		setEntityType(entityType);
 		recalcCache_cXY();
 		
-		MOVED_HANDLER = getEvents().MOVED.addWeakEventHandler((dX, dY) -> recalcCache_cXY());
+		this.eMoved.register((element, dX, dY) -> recalcCache_cXY());
+		//MOVED_HANDLER = getEvents().MOVED.addWeakEventHandler((dX, dY) -> recalcCache_cXY());
 	}
 	// --------------------------------------------------
 	public @Override boolean isClickThrough() { return true; }

@@ -7,8 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.events.TPanelEvents;
-import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement.TPanelElementEvent_Scroll;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TElementList;
@@ -68,7 +66,7 @@ public class TPanelElement extends TElement
 	 */
 	protected double scrollVelocityX, scrollVelocityY;
 	// --------------------------------------------------
-	private final TPanelEvents __events = new TPanelEvents(this);
+	//private final TPanelEvents __events = new TPanelEvents(this);
 	public final Event<TPanelElementEvent_Scroll> eScrollHorizontally = EventFactory.createLoop();
 	public final Event<TPanelElementEvent_Scroll> eScrollVertically = EventFactory.createLoop();
 	// ==================================================
@@ -82,7 +80,7 @@ public class TPanelElement extends TElement
 		setSmoothScroll(false);
 		this.smoothScrollSpeed = 1;
 	}
-	public @Override TPanelEvents getEvents() { return this.__events; }
+	//public @Deprecated @Override TPanelEvents getEvents() { return this.__events; }
 	public @Override boolean canChangeFocus(FocusOrigin focusOrigin, boolean gainingFocus) { return !gainingFocus; }
 	// ==================================================
 	public @Override void setPosition(int x, int y, int flags)

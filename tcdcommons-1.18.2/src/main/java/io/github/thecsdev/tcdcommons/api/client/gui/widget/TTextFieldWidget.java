@@ -8,7 +8,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.events.TTextFieldWidgetEvents;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
@@ -36,7 +35,7 @@ public class TTextFieldWidget extends TElement
 	// --------------------------------------------------
 	protected MultilineText multilineText;
 	// --------------------------------------------------
-	private TTextFieldWidgetEvents __events = new TTextFieldWidgetEvents(this);
+	//private TTextFieldWidgetEvents __events = new TTextFieldWidgetEvents(this);
 	public final Event<TTextFieldWidgetEvent_TextChanged> eTextChanged = EventFactory.createLoop();
 	// ==================================================
 	public TTextFieldWidget(int x, int y, int width, int height)
@@ -48,7 +47,7 @@ public class TTextFieldWidget extends TElement
 		this.multiline = false;
 	}
 	// --------------------------------------------------
-	public @Override TTextFieldWidgetEvents getEvents() { return __events; }
+	//public @Deprecated @Override TTextFieldWidgetEvents getEvents() { return __events; }
 	public @Override boolean canChangeFocus(FocusOrigin focusOrigin, boolean gainingFocus) { return true; }
 	// ==================================================
 	/**
