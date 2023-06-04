@@ -58,27 +58,27 @@ public final class TestTScreen extends TScreenPlus
 		
 		panel.addTChild(new TButtonWidget(
 				x, 10, w, 20,
-				TextUtils.fLiteral("§6Test 1"),
+				TextUtils.fLiteral("Â§6Test 1"),
 				arg0 -> {}));
 		
 		panel.addTChild(new TButtonWidget(
 				x, 35, w, 20,
-				TextUtils.fLiteral("§6Test 2"),
+				TextUtils.fLiteral("Â§6Test 2"),
 				arg0 -> {}));
 		
 		panel.addTChild(new TButtonWidget(
 				x, 60, w, 20,
-				TextUtils.fLiteral("§6Test 3 §r- §dClose"),
+				TextUtils.fLiteral("Â§6Test 3 Â§r- Â§dClose"),
 				arg0 -> close()));
 		
 		panel.addTChild(new TCheckboxWidget(
 				x, 85, w, 20,
-				TextUtils.fLiteral("§6Test 4 §r- §aA text with a"),
+				TextUtils.fLiteral("Â§6Test 4 Â§r- Â§aA text with a"),
 				false));
 		
 		TCheckboxWidget cw = new TCheckboxWidget(
 				x, 110, w, 20,
-				TextUtils.fLiteral("§6Test 5 §r- §bHello reverse"),
+				TextUtils.fLiteral("Â§6Test 5 Â§r- Â§bHello reverse"),
 				false, true);
 		cw.setHorizontalAlignment(HorizontalAlignment.RIGHT, HorizontalAlignment.RIGHT);
 		cw.setTooltip(TextUtils.literal("Hello world! This is a tooltip."));

@@ -32,7 +32,7 @@ dependencies
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
 	// Fabric API. This is technically optional, but you probably want it anyway
-	// modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Mod Menu (optional mod unless you use it's APIs)
 	// modApi "com.terraformersmc:modmenu:${project.modmenu_version}"

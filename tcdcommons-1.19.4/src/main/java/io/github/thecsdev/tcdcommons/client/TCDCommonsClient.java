@@ -50,8 +50,7 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 		}
 	}
 	// --------------------------------------------------
-	@Override
-	public void onInitializeClient()
+	public @Override void onInitializeClient()
 	{
 		this.client = MinecraftClient.getInstance();
 		ClientLifecycleEvent.CLIENT_STARTED.register(client -> this.clientWindow = client.getWindow());
@@ -133,7 +132,7 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 				if(!FabricLoader.getInstance().isDevelopmentEnvironment()) return; //TODO - ELEMINATE FABRIC APIs
 				
 				//add a testing button
-				MutableText msg = TextUtils.fLiteral("§e" + TCDCommons.getModName());
+				MutableText msg = TextUtils.fLiteral("Â§e" + TCDCommons.getModName());
 				PressAction onPress = arg0 -> { client.setScreen(new TestTScreen(newScreen)); };
 				ButtonWidget btn = ButtonWidget.builder(msg, onPress).dimensions(10, newScreen.height - 50, 125, 20).build();
 				dev.architectury.hooks.client.screen.ScreenHooks.addRenderableWidget(newScreen, btn);

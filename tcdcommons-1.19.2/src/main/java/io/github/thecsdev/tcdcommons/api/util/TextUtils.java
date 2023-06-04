@@ -70,7 +70,7 @@ public final class TextUtils
 	 * The {@link Formatting#FORMATTING_CODE_PREFIX} is used to format the given text.
 	 * @param text The text to format.
 	 */
-	public static MutableText formatted(String text) //ง
+	public static MutableText formatted(String text) //ยง
 	{
 		//null check
 		if(StringUtils.isBlank(text))
@@ -81,12 +81,12 @@ public final class TextUtils
 		
 		//the text must start with the special formatting symbol.
 		//if it doesn't, prepend the reset character
-		if(!(text.charAt(0) == 'ง')) text = "r" + text;
+		if(!(text.charAt(0) == 'ยง')) text = "r" + text;
 		
 		//slice and iterate slices
-		for(String slice : text.split(Pattern.quote("ง"))/*splitStyleChars(text)*/)
+		for(String slice : text.split(Pattern.quote("ยง"))/*splitStyleChars(text)*/)
 		{
-			//if for whatever reason, there are multiple (ง)-s in a row
+			//if for whatever reason, there are multiple (ยง)-s in a row
 			if(slice.length() == 0)
 			{
 				result.append(Character.toString(FORMATTING_CODE_PREFIX));

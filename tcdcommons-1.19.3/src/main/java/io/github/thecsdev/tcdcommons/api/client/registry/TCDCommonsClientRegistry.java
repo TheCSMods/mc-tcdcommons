@@ -1,10 +1,13 @@
 package io.github.thecsdev.tcdcommons.api.client.registry;
 
+import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE_REGISTRATION;
+
 import java.util.HashMap;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
 
+import dev.architectury.event.events.client.ClientPlayerEvent;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -50,6 +53,17 @@ public final class TCDCommonsClientRegistry extends TCDCommonsRegistry
 		
 		//the default settings
 		TEntityRenderer_SizeOffsets.put(EnderDragonEntity.class, () -> 4d);
+		
+		// ---------- client-side player badge registration process
+		//registering before the local player joins a(n) (internal-)server...
+		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(localPlayer ->
+		{
+			//clear it first in case any were left over, and then register new badges
+			PlayerSessionBadges.clear();
+			PLAYER_BADGE_REGISTRATION.invoker().badgeRegistrationCallback(PlayerSessionBadges);
+		});
+		//...and clearing after the local player leaves a(n) (internal-)server
+		ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(localPlayer -> PlayerSessionBadges.clear());
 	}
 	// ==================================================
 	/**
