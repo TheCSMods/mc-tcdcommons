@@ -1,6 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.server.registry;
 
-import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE_REGISTRATION;
+import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE;
 
 import dev.architectury.event.events.common.LifecycleEvent;
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
@@ -27,7 +27,7 @@ public final class TCDCommonsServerRegistry extends TCDCommonsRegistry
 		{
 			//clear it first in case any were left over, and then register new badges
 			PlayerSessionBadges.clear();
-			PLAYER_BADGE_REGISTRATION.invoker().badgeRegistrationCallback(PlayerSessionBadges);
+			PLAYER_BADGE.invoker().badgeRegistrationCallback(PlayerSessionBadges);
 		});
 		//...and clearing after the server stops
 		LifecycleEvent.SERVER_STOPPED.register(server -> PlayerSessionBadges.clear());

@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.api.features.player;
+package io.github.thecsdev.tcdcommons.api.features.player.badges;
 
 import org.jetbrains.annotations.Nullable;
 

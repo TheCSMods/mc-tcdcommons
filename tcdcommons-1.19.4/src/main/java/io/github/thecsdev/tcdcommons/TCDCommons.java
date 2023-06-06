@@ -1,6 +1,5 @@
 package io.github.thecsdev.tcdcommons;
 
-import java.lang.ref.Cleaner;
 import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +13,6 @@ public class TCDCommons extends Object
 {
 	// ==================================================
 	public static final Logger LOGGER = LoggerFactory.getLogger(getModID());
-	public static final Cleaner CLEANER = Cleaner.create();
 	// --------------------------------------------------
 	private static final String ModID = "tcdcommons";
 	private static TCDCommons Instance;

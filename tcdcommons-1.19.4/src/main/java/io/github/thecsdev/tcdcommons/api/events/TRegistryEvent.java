@@ -4,7 +4,7 @@ import com.google.common.collect.BiMap;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import io.github.thecsdev.tcdcommons.api.features.player.PlayerBadge;
+import io.github.thecsdev.tcdcommons.api.features.player.badges.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
 import net.minecraft.util.Identifier;
 
@@ -17,7 +17,7 @@ public interface TRegistryEvent
 	/**
 	 * See {@link BadgeRegistrationCallback#badgeRegistrationCallback(BiMap)}
 	 */
-	Event<BadgeRegistrationCallback> PLAYER_BADGE_REGISTRATION = EventFactory.createLoop();
+	Event<BadgeRegistrationCallback> PLAYER_BADGE = EventFactory.createLoop();
 	// ==================================================
 	interface BadgeRegistrationCallback
 	{

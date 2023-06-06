@@ -1,6 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.client.registry;
 
-import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE_REGISTRATION;
+import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -61,7 +61,7 @@ public final class TCDCommonsClientRegistry extends TCDCommonsRegistry
 		{
 			//clear it first in case any were left over, and then register new badges
 			PlayerSessionBadges.clear();
-			PLAYER_BADGE_REGISTRATION.invoker().badgeRegistrationCallback(PlayerSessionBadges);
+			PLAYER_BADGE.invoker().badgeRegistrationCallback(PlayerSessionBadges);
 		});
 		//...and clearing after the local player leaves a(n) (internal-)server
 		ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(localPlayer -> PlayerSessionBadges.clear());

@@ -3,7 +3,7 @@ package io.github.thecsdev.tcdcommons.api.registry;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import io.github.thecsdev.tcdcommons.api.features.player.PlayerBadge;
+import io.github.thecsdev.tcdcommons.api.features.player.badges.PlayerBadge;
 import net.minecraft.util.Identifier;
 
 public class TCDCommonsRegistry
