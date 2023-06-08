@@ -5,21 +5,12 @@ import java.util.HashMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.common.collect.Maps;
 
-import io.github.thecsdev.tcdcommons.TCDCommons;
-import io.github.thecsdev.tcdcommons.api.events.TEntityEvent;
 import io.github.thecsdev.tcdcommons.mixin.addons.MixinEntity_AddOn;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 
 @Mixin(Entity.class)
@@ -31,6 +22,7 @@ public abstract class MixinEntity implements MixinEntity_AddOn
 	// ==================================================
 	protected abstract @Shadow void populateCrashReport(CrashReportSection section);
 	// ==================================================
+	/*@Deprecated(forRemoval = true) //performance concern - casting and instanceof too expensive
 	@Inject(method = "readNbt", at = @At("RETURN"))
 	public void onReadNbt(NbtCompound nbt, CallbackInfo callback)
 	{
@@ -45,6 +37,7 @@ public abstract class MixinEntity implements MixinEntity_AddOn
 		}
 	}
 	
+	@Deprecated(forRemoval = true) //performance concern - casting and instanceof too expensive
 	@Inject(method = "writeNbt", at = @At("RETURN"))
 	public void onWriteNbt(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> callback)
 	{
@@ -57,6 +50,6 @@ public abstract class MixinEntity implements MixinEntity_AddOn
 			populateCrashReport(crashReportSection);
 			throw new CrashException(crashReport);
 		}
-	}
+	}*/
 	// ==================================================
 }
