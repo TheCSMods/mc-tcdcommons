@@ -29,8 +29,8 @@ public final class TCDCommonsServerRegistry extends TCDCommonsRegistry
 			PlayerSessionBadges.clear();
 			PLAYER_BADGE.invoker().badgeRegistrationCallback(PlayerSessionBadges);
 		});
-		//...and clearing after the server stops
-		LifecycleEvent.SERVER_STOPPED.register(server -> PlayerSessionBadges.clear());
+		//...and clearing after the server stops (not really needed)
+		//LifecycleEvent.SERVER_STOPPED.register(server -> PlayerSessionBadges.clear()); --not needed
 	}
 	// ==================================================
 }

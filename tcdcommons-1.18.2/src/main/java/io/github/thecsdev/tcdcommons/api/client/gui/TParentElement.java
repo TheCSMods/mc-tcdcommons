@@ -184,8 +184,9 @@ public interface TParentElement
 	 * Updates to the rendering bounding box should be handled
 	 * in here, and not in {@link #getRenderingBoundingBox()}.
 	 * This is for performance reasons. To make the box null,
-	 * set it's width or height to 0.
-	 * @param box This is where the data about the bounding box is stored.
+	 * set it's width or height to 0.<br/>
+	 * <br/>
+	 * <b>Note:</b> Updates should be done to {@link TElement#RENDER_RECT}.
 	 */
 	public void updateRenderingBoundingBox();
 	// ==================================================

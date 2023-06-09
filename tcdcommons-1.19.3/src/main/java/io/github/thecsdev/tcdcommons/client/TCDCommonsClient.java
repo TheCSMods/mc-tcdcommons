@@ -8,6 +8,7 @@ import io.github.thecsdev.tcdcommons.api.client.events.TClientGuiEvent;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.registry.TCDCommonsClientRegistry;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
+import io.github.thecsdev.tcdcommons.client.network.TCDCommonsClientNetworkHandler;
 import io.github.thecsdev.tcdcommons.test.client.gui.screen.TestTScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -55,8 +56,9 @@ public final class TCDCommonsClient extends TCDCommons implements ClientModIniti
 		this.client = MinecraftClient.getInstance();
 		ClientLifecycleEvent.CLIENT_STARTED.register(client -> this.clientWindow = client.getWindow());
 		
-		//init the client registry API
+		//init stuff
 		TCDCommonsClientRegistry.init();
+		TCDCommonsClientNetworkHandler.init();
 		
 		//MixinMinecraftClient - Reflection handling for TScreen
 		TClientGuiEvent.SET_SCREEN_POST.register(newScreen ->

@@ -62,8 +62,10 @@ public class TLabelElement extends TElement
 	
 	/**
 	 * Sets the {@link #getColor()}.
-	 * @param whenEnabled The new color for when this label is enabled. See {@link Color#getRGB()}.
-	 * @param whenDisabled The new color for when this label is disabled. See {@link Color#getRGB()}.
+	 * @param whenEnabled The new text color for when this element is enabled.
+	 * @param whenDisabled The new text color for when this element is disabled.
+	 * @see Color#getRGB()
+	 * @see #getEnabled()
 	 */
 	@SubjectToChange
 	public void setColor(int whenEnabled, int whenDisabled)

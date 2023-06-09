@@ -394,7 +394,7 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	 * relative to the current position.
 	 * @param x The number of X of pixels to move by.
 	 * @param y The number of Y of pixels to move by.
-	 * @param invokeEvent When set to true, the {@link TElementEvents#MOVED} event will be invoked.
+	 * @param invokeEvent When set to true, the {@link #eMoved} event will be invoked.
 	 */
 	public final void move(int x, int y, boolean invokeEvent)
 	{
@@ -423,7 +423,7 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	 * Calls {@link #move(int, int)} on all of the {@link #children}.
 	 * @param x The number of X of pixels to move by.
 	 * @param y The number of Y of pixels to move by.
-	 * @param invokeEvent When set to true, the {@link TElementEvents#MOVED} event
+	 * @param invokeEvent When set to true, the {@link #eMoved} event
 	 * will be invoked for each child {@link TElement}.
 	 */
 	public final void moveChildren(int x, int y, boolean invokeEvent)
@@ -619,7 +619,7 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	 * creating the {@link TContextMenuPanel} for this {@link TElement}.<br/>
 	 * <br/>
 	 * Don't forget to call {@link #onContextMenu(TContextMenuPanel)} and
-	 * {@link TElementEvents#CONTEXT_MENU} when overriding this.
+	 * {@link #eContextMenu} when overriding this.
 	 * @param x The X coordinate for the context menu.
 	 * @param y The Y coordinate for the context menu.
 	 * @return The created context menu.

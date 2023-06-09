@@ -23,6 +23,7 @@ public class TPanelElement extends TElement
 	// ==================================================
 	public static final int COLOR_OUTLINE = 1358954495;
 	public static final int COLOR_OUTLINE_FOCUSED = -5570561;
+	public static final int COLOR_BACKGROUND = 1342177280;
 	
 	/**
 	 * A scroll flag used to define the scrolling behavior
@@ -48,6 +49,9 @@ public class TPanelElement extends TElement
 	protected int scrollPadding;
 	protected boolean smoothScroll;
 	protected float smoothScrollSpeed;
+	
+	protected int backgroundColor;
+	protected int outlineColor;
 	// --------------------------------------------------
 	/**
 	 * A shortcut for the topmost elements of this {@link TPanelElement}.<br/>
@@ -79,6 +83,9 @@ public class TPanelElement extends TElement
 		setScrollPadding(10);
 		setSmoothScroll(false);
 		this.smoothScrollSpeed = 1;
+		
+		this.backgroundColor = COLOR_BACKGROUND;
+		this.outlineColor = COLOR_OUTLINE;
 	}
 	//public @Deprecated @Override TPanelEvents getEvents() { return this.__events; }
 	public @Override boolean canChangeFocus(FocusOrigin focusOrigin, boolean gainingFocus) { return !gainingFocus; }
@@ -97,6 +104,11 @@ public class TPanelElement extends TElement
 			mouseDragged(screen.getMouseX(), screen.getMouseY(), -dx, -dy, 0);
 	}
 	// ==================================================
+	public void setBackgroundColor(int color) { this.backgroundColor = color; }
+	public int getBackgroundColor(int color) { return this.backgroundColor; }
+	public void setOutlineColor(int color) { this.outlineColor = color; }
+	public int getOutlineColor(int color) { return this.outlineColor; }
+	// --------------------------------------------------
 	/**
 	 * Defines the scroll behavior for this {@link TPanelElement}.<br/>
 	 * See {@link #scrollFlags}.
@@ -486,7 +498,8 @@ public class TPanelElement extends TElement
 	 */
 	protected void renderBackground(MatrixStack matrices, int mouseX, int mouseY, float deltaTime)
 	{
-		fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, GuiUtils.applyAlpha(1342177280, getAlpha()));
+		fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height,
+				GuiUtils.applyAlpha(this.backgroundColor, getAlpha()));
 	}
 	
 	/**
@@ -530,7 +543,7 @@ public class TPanelElement extends TElement
 	
 	public @Override void postRender(MatrixStack matrices, int mouseX, int mouseY, float deltaTime)
 	{
-		drawOutline(matrices, GuiUtils.applyAlpha(isFocused() ? COLOR_OUTLINE_FOCUSED : COLOR_OUTLINE, getAlpha()));
+		drawOutline(matrices, GuiUtils.applyAlpha(isFocused() ? COLOR_OUTLINE_FOCUSED : this.outlineColor, getAlpha()));
 	}
 	// ==================================================
 	@Override

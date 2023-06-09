@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -40,6 +41,9 @@ public class TCDCommons extends Object
 		//log stuff
 		LOGGER.info("Initializing '" + getModName() + "' " + modInfo.getMetadata().getVersion() +
 				" as '" + getClass().getSimpleName() + "'.");
+		
+		//init stuff
+		TCDCommonsNetworkHandler.init();
 	}
 	// --------------------------------------------------
 	/** Returns the Fabric {@link ModContainer} the containing information about this mod. */

@@ -13,8 +13,8 @@ public class TCDCommonsRegistry
 	 * Maintains a record of all {@link PlayerBadge}s that have been registered during the current session.<br/>
 	 * The term "session" has different meanings in different contexts:<br/>
 	 * <ul>
-	 * <li>In a client context, a "session" refers to the period when the client is actively
-	 * connected to a server or an internal server.</li>
+	 * <li>In a client context, a "session" refers to a single runtime of the client, beginning
+	 * from when the client starts and ending when it stops.</li>
 	 * <li>In a server context, a "session" refers to a single runtime of the server, beginning
 	 * from when the server starts and ending when it stops.</li>
 	 * </ul>

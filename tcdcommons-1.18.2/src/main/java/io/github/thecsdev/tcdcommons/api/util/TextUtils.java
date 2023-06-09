@@ -49,7 +49,7 @@ public final class TextUtils
 	public static MutableText fLiteral(String text) { return formatted(text); }
 	
 	/**
-	 * Same as {@link #translatable(String)}, except it
+	 * Same as {@link #translatable(String, Object...)}, except it
 	 * is also formatted using {@link #formatted(Text)}.
 	 * @param translationKey The translation key.
 	 * @param params The translatable text formatting parameters.

@@ -58,7 +58,7 @@ tasks.withType(JavaCompile).configureEach
 	it.options.release = 17
 }
 
-javadoc { options.encoding = 'ISO-8859-1' }
+javadoc { options.encoding = 'UTF-8' }
 java
 {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task

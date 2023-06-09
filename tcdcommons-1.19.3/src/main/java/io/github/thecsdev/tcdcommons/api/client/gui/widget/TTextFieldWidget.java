@@ -69,7 +69,7 @@ public class TTextFieldWidget extends TElement
 	/**
 	 * Refreshes the {@link #multilineText} used for
 	 * rendering this {@link TTextFieldWidget}'s text.
-	 * @param invokeEvent Invoke the {@link TTextFieldWidgetEvents#TEXT_CHANGED} event?
+	 * @param invokeEvent Do you also want to invoke the {@link #eTextChanged} event?
 	 */
 	protected final void refreshTextRender(boolean invokeEvent)
 	{
@@ -99,7 +99,7 @@ public class TTextFieldWidget extends TElement
 	/**
 	 * Sets this {@link TTextFieldWidget}'s input text.
 	 * @param text The new input text.
-	 * @param invokeEvent Invoke the {@link TTextFieldWidgetEvents#TEXT_CHANGED} event?
+	 * @param invokeEvent Do you also want to invoke the {@link #eTextChanged} event?
 	 */
 	public void setText(String text, boolean invokeEvent)
 	{
