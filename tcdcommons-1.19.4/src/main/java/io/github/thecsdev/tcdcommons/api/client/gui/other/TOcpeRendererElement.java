@@ -1,5 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.other;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ public class TOcpeRendererElement extends TEntityRendererElement
 	/**
 	 * The {@link OtherClientPlayerEntity} that will be rendered on the screen.
 	 */
-	protected OtherClientPlayerEntity otherPlayer;
+	protected @Nullable OtherClientPlayerEntity otherPlayer;
 	// ==================================================
 	public TOcpeRendererElement(int x, int y, int width, int height) { super(x, y, width, height, EntityType.PLAYER); }
 	// ==================================================
@@ -70,8 +71,16 @@ public class TOcpeRendererElement extends TEntityRendererElement
 		var world = CLIENT.world;
 		if(world != null)
 		{
-			this.otherPlayer = new OtherClientPlayerEntity(world, profile);
-			this.livingEntity = otherPlayer;
+			if(Objects.equals(CLIENT.player.getGameProfile(), profile))
+			{
+				this.otherPlayer = null;
+				this.livingEntity = CLIENT.player;
+			}
+			else
+			{
+				this.otherPlayer = new OtherClientPlayerEntity(world, profile);
+				this.livingEntity = otherPlayer;
+			}
 		}
 		else this.livingEntity = null;
 	}
