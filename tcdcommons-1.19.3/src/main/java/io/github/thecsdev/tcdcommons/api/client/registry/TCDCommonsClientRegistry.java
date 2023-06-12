@@ -1,13 +1,10 @@
 package io.github.thecsdev.tcdcommons.api.client.registry;
 
-import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE;
-
 import java.util.HashMap;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
 
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
@@ -57,12 +54,12 @@ public final class TCDCommonsClientRegistry extends TCDCommonsRegistry
 		
 		// ---------- client-side player badge registration process
 		//registering when the client starts and initializes
-		ClientLifecycleEvent.CLIENT_STARTED.register(client ->
+		/*ClientLifecycleEvent.CLIENT_STARTED.register(client ->
 		{
 			//clear it first in case any were left over, and then register new badges
 			PlayerSessionBadges.clear();
 			PLAYER_BADGE.invoker().badgeRegistrationCallback(PlayerSessionBadges);
-		});
+		}); -- or.. a mod can just register directly, like with any other registry...*/
 		//...and clearing as the client stops (not really needed)
 		//ClientLifecycleEvent.CLIENT_STOPPING.register(client -> PlayerSessionBadges.clear()); -- no need
 	}

@@ -1,9 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.features.player.badges;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
-import static io.github.thecsdev.tcdcommons.api.hooks.TEntityHooks.getCustomDataEntryG;
-import static io.github.thecsdev.tcdcommons.api.hooks.TEntityHooks.setCustomDataEntryG;
-import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.PlayerSessionBadges;
 
 import java.util.HashSet;
 
@@ -43,7 +40,7 @@ public class PlayerBadgeHandler
 	 * Returns the {@link #badges} {@link HashSet}.<br/>
 	 * <b>Important:</b> Do not store null values in there. It could cause errors.
 	 */
-	public final HashSet<Identifier> getBages() { this.badges.remove(null); return this.badges; }
+	public final HashSet<Identifier> getBadges() { this.badges.remove(null); return this.badges; }
 	// --------------------------------------------------
 	/**
 	 * Checks if the player has a specific badge.
@@ -78,25 +75,5 @@ public class PlayerBadgeHandler
 	 * Clears all badges from the player.
 	 */
 	public final void clearBadges()  { this.badges.clear(); }
-	// ==================================================
-	/**
-	 * Retrieves the {@link PlayerBadgeHandler} for a given {@link ServerPlayerEntity}.<br/>
-	 * If one doesn't exist, a new one is created, assigned, and then returned.
-	 * @param player The {@link ServerPlayerEntity} in question.
-	 * @throws NullPointerException When an argument is null.
-	 */
-	public static ServerPlayerBadgeHandler getSessionBadgeHandler(ServerPlayerEntity player)
-	{
-		//obtain
-		ServerPlayerBadgeHandler pbh = getCustomDataEntryG(player, PBH_CUSTOM_DATA_ID);
-		//create if null
-		if(pbh == null)
-			pbh = setCustomDataEntryG(
-					player,
-					PBH_CUSTOM_DATA_ID,
-					new ServerPlayerBadgeHandler(PlayerSessionBadges, player));
-		//return
-		return pbh;
-	}
 	// ==================================================
 }

@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.network;
 
+import com.google.common.collect.BiMap;
+
 import io.github.thecsdev.tcdcommons.api.features.player.badges.PlayerBadge;
 import io.github.thecsdev.tcdcommons.client.network.TCDCommonsClientNetworkHandler;
 import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
@@ -27,6 +29,6 @@ public interface PlayerBadgeNetworkListener
 	 * @see PlayerBadge#getBadgeId()
 	 * @see PlayerBadge#getBadgeId(com.google.common.collect.BiMap)
 	 */
-	public void onPlayerBadgesReady(Identifier[] badgeIDs);
+	public void onPlayerBadgesReady(BiMap<Identifier, PlayerBadge> badges);
 	// ==================================================
 }

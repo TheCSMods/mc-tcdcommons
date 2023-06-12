@@ -23,9 +23,9 @@ public interface TRegistryEvent
 	{
 		/**
 		 * An event that is invoked when {@link PlayerBadge}s need to be registered somewhere.<br/>
-		 * Typically used for {@link TCDCommonsRegistry#PlayerSessionBadges} registrations.
+		 * Typically used for {@link TCDCommonsRegistry#PlayerBadges} registrations.
 		 * @param badgeRegistry The registry where {@link PlayerBadge}s are kept track of.
-		 * @see TCDCommonsRegistry#PlayerSessionBadges
+		 * @see TCDCommonsRegistry#PlayerBadges
 		 */
 		void badgeRegistrationCallback(BiMap<Identifier, PlayerBadge> badgeRegistry);
 	}

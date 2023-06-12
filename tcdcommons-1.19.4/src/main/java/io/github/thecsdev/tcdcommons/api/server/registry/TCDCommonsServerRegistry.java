@@ -1,8 +1,5 @@
 package io.github.thecsdev.tcdcommons.api.server.registry;
 
-import static io.github.thecsdev.tcdcommons.api.events.TRegistryEvent.PLAYER_BADGE;
-
-import dev.architectury.event.events.common.LifecycleEvent;
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
 
 /**
@@ -23,12 +20,12 @@ public final class TCDCommonsServerRegistry extends TCDCommonsRegistry
 	{
 		// ---------- server-side player badge registration process
 		//registering before the server starts...
-		LifecycleEvent.SERVER_BEFORE_START.register(server ->
+		/*LifecycleEvent.SERVER_BEFORE_START.register(server ->
 		{
 			//clear it first in case any were left over, and then register new badges
 			PlayerSessionBadges.clear();
 			PLAYER_BADGE.invoker().badgeRegistrationCallback(PlayerSessionBadges);
-		});
+		}); -- or.. a mod can just register directly, like with any other registry...*/
 		//...and clearing after the server stops (not really needed)
 		//LifecycleEvent.SERVER_STOPPED.register(server -> PlayerSessionBadges.clear()); --not needed
 	}

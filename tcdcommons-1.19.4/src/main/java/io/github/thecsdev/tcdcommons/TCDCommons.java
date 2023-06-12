@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dev.architectury.event.events.common.CommandRegistrationEvent;
+import io.github.thecsdev.tcdcommons.command.PlayerBadgeCommand;
 import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -44,6 +46,12 @@ public class TCDCommons extends Object
 		
 		//init stuff
 		TCDCommonsNetworkHandler.init();
+		
+		//register commands
+		CommandRegistrationEvent.EVENT.register((dispatcher, regAcc, regEnv) ->
+		{
+			PlayerBadgeCommand.register(dispatcher);
+		});
 	}
 	// --------------------------------------------------
 	/** Returns the Fabric {@link ModContainer} the containing information about this mod. */

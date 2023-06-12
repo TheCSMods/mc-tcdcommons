@@ -1,9 +1,12 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.other;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.features.player.badges.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 /**
  * A {@link TElement} that renders {@link PlayerBadge}s on the {@link TScreen}.
  */
-public class TPlayerBadgeElement extends TBlankElement
+public class TPlayerBadgeElement extends TElement
 {
 	// ==================================================
 	protected PlayerBadge badge;
@@ -21,6 +24,7 @@ public class TPlayerBadgeElement extends TBlankElement
 		super(x, y, width, height);
 		setBadge(badge);
 	}
+	public @Override boolean canChangeFocus(FocusOrigin focusOrigin, boolean gainingFocus) { return !gainingFocus; }
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link PlayerBadge} associated with
@@ -36,11 +40,18 @@ public class TPlayerBadgeElement extends TBlankElement
 	{
 		this.badge = badge;
 		if(badge != null)
+		{
+			String txt_id = Objects.toString(badge.getBadgeId(), "minecraft:null");
+			String txt_desc = "-";
+			var text_desc = badge.getDescription();
+			if(text_desc != null) txt_desc = text_desc.getString();
+			
 			setTooltip(
-					TextUtils.fLiteral("§6" + badge.getName().getString())
-					.append(TextUtils.fLiteral("\n§7" + badge.getBadgeId().toString()))
-					.append(TextUtils.fLiteral("\n\n§r" + badge.getDescription().getString()))
-					);
+					TextUtils.fLiteral("§e" + badge.getName().getString())
+					.append(TextUtils.fLiteral("\n§7" + txt_id))
+					.append(TextUtils.fLiteral("\n\n§r" + txt_desc))
+				);
+		}
 		else setTooltip(null);
 	}
 	// ==================================================

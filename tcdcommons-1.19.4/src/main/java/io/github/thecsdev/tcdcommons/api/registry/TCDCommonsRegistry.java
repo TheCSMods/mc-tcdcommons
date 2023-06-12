@@ -19,7 +19,7 @@ public class TCDCommonsRegistry
 	 * from when the server starts and ending when it stops.</li>
 	 * </ul>
 	 */
-	public static final BiMap<Identifier, PlayerBadge> PlayerSessionBadges;
+	public static final BiMap<Identifier, PlayerBadge> PlayerBadges;
 	// --------------------------------------------------
 	/**
 	 * Calls the static constructor for this class if it hasn't been called yet.
@@ -28,7 +28,7 @@ public class TCDCommonsRegistry
 	static
 	{
 		//define the registries
-		PlayerSessionBadges = HashBiMap.create();
+		PlayerBadges = HashBiMap.create();
 	}
 	// ==================================================
 	protected TCDCommonsRegistry() {}

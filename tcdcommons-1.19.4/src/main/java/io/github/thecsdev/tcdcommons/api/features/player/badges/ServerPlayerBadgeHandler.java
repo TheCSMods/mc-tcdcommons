@@ -1,9 +1,13 @@
 package io.github.thecsdev.tcdcommons.api.features.player.badges;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
-import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.PlayerSessionBadges;
+import static io.github.thecsdev.tcdcommons.api.hooks.TEntityHooks.getCustomDataEntryG;
+import static io.github.thecsdev.tcdcommons.api.hooks.TEntityHooks.setCustomDataEntryG;
+import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.PlayerBadges;
 
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.BiMap;
 
@@ -30,7 +34,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	protected final ServerPlayerEntity player;
 	// ==================================================
 	/** @throws NullPointerException When an argument is null. */
-	public ServerPlayerBadgeHandler(ServerPlayerEntity player) { this(PlayerSessionBadges, player); }
+	public ServerPlayerBadgeHandler(ServerPlayerEntity player) { this(PlayerBadges, player); }
 	
 	/** @throws NullPointerException When an argument is null. */
 	public ServerPlayerBadgeHandler(BiMap<Identifier, PlayerBadge> badgeRegistry, ServerPlayerEntity player)
@@ -60,8 +64,10 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 		if(!nbt_modId.contains("player_badges", NbtElement.STRING_TYPE)) return;
 		
 		//read player badges
-		final var badges = getBages();
-		final var badgeList = nbt_modId.getString("player_badges").trim().split("\\R");
+		final var badges = getBadges();
+		final var badgeListStr = nbt_modId.getString("player_badges").trim();
+		if(StringUtils.isBlank(badgeListStr)) return; //do not read blank
+		final var badgeList = badgeListStr.split("\\R");
 		for(String badgeItem : badgeList)
 		{
 			try { badges.add(new Identifier(badgeItem)); }
@@ -79,7 +85,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	public NbtCompound writeNbt(NbtCompound nbt)
 	{
 		//check if there are any badges
-		final var badges = getBages();
+		final var badges = getBadges();
 		if(badges.isEmpty()) return nbt;
 		
 		//get or create compound
@@ -110,6 +116,26 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 		
 		//return the passed nbt
 		return nbt;
+	}
+	// ==================================================
+	/**
+	 * Retrieves the {@link PlayerBadgeHandler} for a given {@link ServerPlayerEntity}.<br/>
+	 * If one doesn't exist, a new one is created, assigned, and then returned.
+	 * @param player The {@link ServerPlayerEntity} in question.
+	 * @throws NullPointerException When an argument is null.
+	 */
+	public static ServerPlayerBadgeHandler getBadgeHandler(ServerPlayerEntity player)
+	{
+		//obtain
+		ServerPlayerBadgeHandler pbh = getCustomDataEntryG(player, PlayerBadgeHandler.PBH_CUSTOM_DATA_ID);
+		//create if null
+		if(pbh == null)
+			pbh = setCustomDataEntryG(
+					player,
+					PlayerBadgeHandler.PBH_CUSTOM_DATA_ID,
+					new ServerPlayerBadgeHandler(PlayerBadges, player));
+		//return
+		return pbh;
 	}
 	// ==================================================
 }

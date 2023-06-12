@@ -1,8 +1,14 @@
 package io.github.thecsdev.tcdcommons.client.network;
 
+import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.PlayerBadges;
+
+import com.google.common.collect.HashBiMap;
+
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.NetworkManager.Side;
+import io.github.thecsdev.tcdcommons.api.client.features.player.badges.ClientPlayerBadge;
 import io.github.thecsdev.tcdcommons.api.client.network.PlayerBadgeNetworkListener;
+import io.github.thecsdev.tcdcommons.api.features.player.badges.PlayerBadge;
 import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -25,19 +31,28 @@ public class TCDCommonsClientNetworkHandler
 				return;
 			final var listener = (PlayerBadgeNetworkListener)client.currentScreen;
 			
-			//read how many badges are in the payload
+			//prepare a list
+			final HashBiMap<Identifier, PlayerBadge> pBadges = HashBiMap.create();
+			
+			//read how many badges are in the payload,
+			//and then read and add the badges to the array
 			var badgeCount = payload.readInt();
-			//create an Identifier array for storing all the read badges
-			var badges = new Identifier[badgeCount];
-			//read and add the badges to the array
 			for(int index = 0; index < badgeCount; index++)
 			{
-				if(payload.isReadable()) //vulnerability fix
-					badges[index] = payload.readIdentifier();
-				else break;
+				//DoS attack prevention
+				if(!payload.isReadable()) break;
+				
+				//read badge
+				var badgeId = payload.readIdentifier();
+				var badge = PlayerBadges.get(badgeId);
+				if(badge == null || badge instanceof ClientPlayerBadge)
+					continue;
+				
+				//add badge
+				pBadges.put(badgeId, badge);
 			}
 			//invoke event
-			listener.onPlayerBadgesReady(badges);
+			listener.onPlayerBadgesReady(pBadges);
 		});
 	}
 	// ==================================================

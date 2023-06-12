@@ -1,8 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.features.player.badges;
 
-import org.jetbrains.annotations.Nullable;
+import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.PlayerBadges;
 
-import com.google.common.collect.BiMap;
+import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,20 +26,11 @@ public abstract class PlayerBadge
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link Identifier} of this {@link PlayerBadge}
-	 * using the {@link TCDCommonsRegistry#PlayerSessionBadges} registry.
+	 * using the {@link TCDCommonsRegistry#PlayerBadges} registry.
 	 * @return Null if the registry does not have this {@link PlayerBadge}
 	 * instance registered, and an {@link Identifier} otherwise.
 	 */
-	public final @Nullable Identifier getBadgeId() { return getBadgeId(TCDCommonsRegistry.PlayerSessionBadges); }
-	
-	/**
-	 * Returns the {@link Identifier} of this {@link PlayerBadge}
-	 * using the {@link TCDCommonsRegistry#PlayerSessionBadges} registry.
-	 * @param badgeRegistry The target registry holding the list of registed {@link PlayerBadge}s.
-	 * @return Null if the registry does not have this {@link PlayerBadge}
-	 * instance registered, and an {@link Identifier} otherwise.
-	 */
-	public final @Nullable Identifier getBadgeId(BiMap<Identifier, PlayerBadge> badgeRegistry) { return badgeRegistry.inverse().get(this); }
+	public final @Nullable Identifier getBadgeId() { return PlayerBadges.inverse().get(this); }
 	// ==================================================
 	/** 
 	 * Returns the display name of the badge.<br/>

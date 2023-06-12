@@ -35,7 +35,7 @@ public class TCDCommonsNetworkHandler
 	public static boolean s2c_sendPlayerBadges(ServerPlayerEntity player)
 	{
 		//obtain player badges
-		final var badges = ServerPlayerBadgeHandler.getSessionBadgeHandler(player).getBages().toArray(new Identifier[0]);
+		final var badges = ServerPlayerBadgeHandler.getBadgeHandler(player).getBadges().toArray(new Identifier[0]);
 		if(badges.length == 0) return false; //network optimization - BEWARE
 		
 		//write player badges to a buffer
