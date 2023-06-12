@@ -1,13 +1,20 @@
 package io.github.thecsdev.tcdcommons.api.registry;
 
+import java.util.function.Supplier;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.brigadier.arguments.ArgumentType;
 
 import io.github.thecsdev.tcdcommons.api.features.player.badges.PlayerBadge;
+import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.util.Identifier;
 
 public class TCDCommonsRegistry
 {
+	// ==================================================
+	protected TCDCommonsRegistry() {}
 	// ==================================================
 	/**
 	 * Maintains a record of all {@link PlayerBadge}s that have been registered during the current session.<br/>
@@ -31,6 +38,17 @@ public class TCDCommonsRegistry
 		PlayerBadges = HashBiMap.create();
 	}
 	// ==================================================
-	protected TCDCommonsRegistry() {}
+	/**
+	 * A helper method for registering command {@link ArgumentType}s.
+	 * @param catId The unique {@link Identifier} for the {@link ArgumentType}.
+	 * @param clazz The {@link ArgumentType} generic type reference.
+	 * @param catSupplier A {@link Supplier} that will supply instances of the {@link ArgumentType}.
+	 */
+	public static <T extends ArgumentType<?>> void registerCommandArgumentType(
+			Identifier catId, Class<T> clazz, Supplier<T> catSupplier)
+	{
+		final var catSerializer = new ConstantArgumentSerializer<>(catSupplier);
+		ArgumentTypes.register(catId.toString(), clazz, catSerializer);
+	}
 	// ==================================================
 }

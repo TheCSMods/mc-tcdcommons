@@ -12,9 +12,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import io.github.thecsdev.tcdcommons.api.features.player.badges.ServerPlayerBadgeHandler;
+import io.github.thecsdev.tcdcommons.command.argument.PlayerBadgeIdentifierArgumentType;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 
@@ -36,15 +36,18 @@ public final class PlayerBadgeCommand
 		dispatcher.register(literal("badge").requires(scs -> scs.hasPermissionLevel(3))
 				.then(literal("grant")
 						.then(argument("targets", EntityArgumentType.players())
-								.then(argument("badge_id", IdentifierArgumentType.identifier())
+								.then(argument("badge_id", PlayerBadgeIdentifierArgumentType.pbId())
 										.executes(context -> execute_grantOrRevoke(context, true)))))
 				.then(literal("revoke")
 						.then(argument("targets", EntityArgumentType.players())
-								.then(argument("badge_id", IdentifierArgumentType.identifier())
+								.then(argument("badge_id", PlayerBadgeIdentifierArgumentType.pbId())
 										.executes(context -> execute_grantOrRevoke(context, false)))))
 				.then(literal("list")
 						.then(argument("target", EntityArgumentType.player())
 								.executes(context -> execute_list(context))))
+				.then(literal("clear")
+						.then(argument("targets", EntityArgumentType.players())
+								.executes(context -> execute_clear(context))))
 		);
 	}
 	// ==================================================
@@ -54,7 +57,7 @@ public final class PlayerBadgeCommand
 		{
 			//get parameter values
 			final var targets = EntityArgumentType.getPlayers(context, "targets");
-			final var badgeId = IdentifierArgumentType.getIdentifier(context, "badge_id");
+			final var badgeId = context.getArgument("badge_id", Identifier.class);
 			//execute
 			for(var target : targets)
 			{
@@ -93,6 +96,29 @@ public final class PlayerBadgeCommand
 					target.getDisplayName().getString(),
 					badges);
 			context.getSource().sendFeedback(feedback, false);
+		}
+		catch(CommandException | CommandSyntaxException e) { handleError(context, e); }
+		return 1;
+	}
+	// --------------------------------------------------
+	private static int execute_clear(CommandContext<ServerCommandSource> context)
+	{
+		try
+		{
+			//get parameter values
+			final var targets = EntityArgumentType.getPlayers(context, "targets");
+			//execute
+			for(var target : targets)
+			{
+				//null check
+				if(target == null) continue;
+				//clear
+				ServerPlayerBadgeHandler.getBadgeHandler(target).clearBadges();
+				//send feedback
+				final var feedback = translatable("commands.badge.clear.of_many",
+						Objects.toString(targets.size()));
+				context.getSource().sendFeedback(feedback, false);
+			}
 		}
 		catch(CommandException | CommandSyntaxException e) { handleError(context, e); }
 		return 1;

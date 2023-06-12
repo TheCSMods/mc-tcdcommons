@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons;
 
+import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.registerCommandArgumentType;
+
 import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.Nullable;
@@ -8,9 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import io.github.thecsdev.tcdcommons.command.PlayerBadgeCommand;
+import io.github.thecsdev.tcdcommons.command.argument.PlayerBadgeIdentifierArgumentType;
 import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.util.Identifier;
 
 public class TCDCommons extends Object
 {
@@ -48,6 +52,10 @@ public class TCDCommons extends Object
 		TCDCommonsNetworkHandler.init();
 		
 		//register commands
+		registerCommandArgumentType(
+				new Identifier(getModID(), "player_badge_identifier"),
+				PlayerBadgeIdentifierArgumentType.class,
+				PlayerBadgeIdentifierArgumentType::pbId);
 		CommandRegistrationEvent.EVENT.register((dispatcher, regEnv) ->
 		{
 			PlayerBadgeCommand.register(dispatcher);

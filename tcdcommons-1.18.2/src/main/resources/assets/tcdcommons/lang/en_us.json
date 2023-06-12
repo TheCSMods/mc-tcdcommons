@@ -4,5 +4,6 @@
 	
 	"commands.badge.grant.one.to_many.success": "Granted the badge '%s' to %s player(s).",
 	"commands.badge.revoke.one.to_many.success": "Revoked the badge '%s' from %s player(s).",
-	"commands.badge.list.of_one": "%s has the following badges: \"%s\"."
+	"commands.badge.list.of_one": "%s has the following badges: \"%s\".",
+	"commands.badge.clear.of_many": "Revoked all badges from %s player(s)."
 }
