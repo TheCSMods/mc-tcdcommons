@@ -3,6 +3,7 @@ package io.github.thecsdev.tcdcommons.api.features.player.badges;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import com.google.common.collect.Sets;
 
@@ -40,7 +41,7 @@ public class PlayerBadgeHandler
 	 * Returns the {@link #badges} {@link HashSet}.<br/>
 	 * <b>Important:</b> Do not store null values in there. It could cause errors.
 	 */
-	public final HashSet<Identifier> getBadges() { this.badges.remove(null); return this.badges; }
+	public final Set<Identifier> getBadges() { this.badges.remove(null); return this.badges; }
 	// --------------------------------------------------
 	/**
 	 * Checks if the player has a specific badge.
