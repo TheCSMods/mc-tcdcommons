@@ -195,6 +195,17 @@ public class AutoConfig implements ACJsonHandler<JsonObject>
 		try { saveToFile(log); }
 		catch(Exception exc) { TUtils.crashGame("Failed to save config file \"" + this.fileName + "\".", exc); }
 	}
+	
+	/**
+	 * Same as {@link #saveToFile(boolean)}, but returns false if an {@link IOException} is raised.
+	 * @param log Would you like to log this operation to the console?
+	 * @see #saveToFile(boolean)
+	 */
+	public boolean trySaveToFile(boolean log)
+	{
+		try { saveToFile(log); } catch(IOException exc) { return false; }
+		return true;
+	}
 	// --------------------------------------------------
 	/**
 	 * Loads this {@link AutoConfig} from it's file.
@@ -231,6 +242,17 @@ public class AutoConfig implements ACJsonHandler<JsonObject>
 	{
 	    try { loadFromFile(log); } catch (IOException exc)
 	    { TUtils.crashGame("Failed to load config file \"" + this.fileName + "\".", exc); }
+	}
+	
+	/**
+	 * Same as {@link #loadFromFile(boolean)}, but returns false if an {@link IOException} is raised.
+	 * @param log Would you like to log this operation to the console?
+	 * @see #loadFromFile(boolean)
+	 */
+	public boolean tryLoadFromFile(boolean log)
+	{
+	    try { loadFromFile(log); } catch (IOException exc) { return false; }
+	    return true;
 	}
 	// ==================================================
 }

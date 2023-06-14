@@ -61,6 +61,7 @@ public class TEntityRendererElement extends TElement
 	protected double scale;
 	protected LivingEntity livingEntity;
 	protected MultilineText entityTypeName;
+	protected boolean followCursor;
 	// --------------------------------------------------
 	/**
 	 * The center XY coordinates for rendering the
@@ -80,6 +81,7 @@ public class TEntityRendererElement extends TElement
 		setScale(0.9);
 		setEntityType(entityType);
 		recalcCache_cXY();
+		setFollowCursor(true);
 		
 		this.eMoved.register((element, dX, dY) -> recalcCache_cXY());
 		//MOVED_HANDLER = getEvents().MOVED.addWeakEventHandler((dX, dY) -> recalcCache_cXY());
@@ -152,6 +154,18 @@ public class TEntityRendererElement extends TElement
 		recalcCache_mobSize();
 		recalcCache_cXY();
 	}
+	// --------------------------------------------------
+	/**
+	 * Returns true if this {@link TEntityRendererElement} is rendered
+	 * in a way where the GUI entity follows the cursor.
+	 */
+	public boolean getFollowCursor() { return this.followCursor; }
+	
+	/**
+	 * Sets {@link #getFollowCursor()}.
+	 * @param followCursor The new value.
+	 */
+	public void setFollowCursor(boolean followCursor) { this.followCursor = followCursor; }
 	// ==================================================
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float deltaTime)
@@ -165,6 +179,11 @@ public class TEntityRendererElement extends TElement
 		//if the entity is set
 		try
 		{
+			if(!this.followCursor)
+			{
+				mouseX = this.x + this.width + 150;
+				mouseY = this.y + this.height + 55;
+			}
 			InventoryScreen.drawEntity(
 					matrices, this.cX, this.cY, this.cache_mobSize,
 					-rInt(mouseX, this.cX), -rInt(mouseY, this.cY),
@@ -174,7 +193,7 @@ public class TEntityRendererElement extends TElement
 	}
 	private static int rInt(int input, int relativeTo) { return input - relativeTo; }
 	// ==================================================
-	public int getLivingEntityGUISize(LivingEntity e, int viewportSize)
+	public static int getLivingEntityGUISize(LivingEntity e, int viewportSize)
 	{
 		//null check
 		final int maxVal = (int) (50 * ((float)viewportSize / 80));
