@@ -33,7 +33,7 @@ public class TPlayerBadgePanel extends TPanelElement
 	 * based on the given {@link PlayerBadge} {@link Iterable}.
 	 * @param badges The {@link PlayerBadge} {@link Iterable}.
 	 */
-	public void init(Iterable<PlayerBadge> badges) { init(badges, 15); }
+	public void init(Iterable<PlayerBadge> badges) { init(badges, 20); }
 	
 	/**
 	 * Clears all elements and re-adds new {@link TPlayerBadgeElement}s

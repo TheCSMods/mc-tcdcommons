@@ -11,6 +11,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.features.player.badges.ServerPlayerBadgeHandler;
 import io.github.thecsdev.tcdcommons.command.argument.PlayerBadgeIdentifierArgumentType;
 import net.minecraft.command.CommandException;
@@ -33,7 +34,8 @@ public final class PlayerBadgeCommand
 		//Level 4 - Owner aka operator
 		
 		//register command with permission level 3
-		dispatcher.register(literal("badge").requires(scs -> scs.hasPermissionLevel(3))
+		final var config = TCDCommons.getInstance().getConfig();
+		dispatcher.register(literal("badge").requires(scs -> config.enablePlayerBadges && scs.hasPermissionLevel(3))
 				.then(literal("grant")
 						.then(argument("targets", EntityArgumentType.players())
 								.then(argument("badge_id", PlayerBadgeIdentifierArgumentType.pbId())

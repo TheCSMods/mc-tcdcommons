@@ -34,6 +34,10 @@ public class TCDCommonsNetworkHandler
 	 */
 	public static boolean s2c_sendPlayerBadges(ServerPlayerEntity player)
 	{
+		//check if badges are enabled - don't send packed if disabled
+		if(!TCDCommons.getInstance().getConfig().enablePlayerBadges)
+			return false;
+		
 		//obtain player badges
 		final var badges = ServerPlayerBadgeHandler.getBadgeHandler(player).getBadges().toArray(new Identifier[0]);
 		if(badges.length == 0) return false; //network optimization - BEWARE

@@ -25,6 +25,7 @@ public class TCDCommons extends Object
 	private static TCDCommons Instance;
 	// --------------------------------------------------
 	private final ModContainer modInfo;
+	private final TCDCommonsConfig config;
 	// ==================================================
 	/**
 	 * Initializes this mod. This action may only be performed by the {@link FabricLoader}.
@@ -48,10 +49,14 @@ public class TCDCommons extends Object
 		LOGGER.info("Initializing '" + getModName() + "' " + modInfo.getMetadata().getVersion() +
 				" as '" + getClass().getSimpleName() + "'.");
 		
+		//load config
+		this.config = new TCDCommonsConfig(getModID());
+		this.config.loadFromFileOrCrash(true);
+		
 		//init stuff
 		TCDCommonsNetworkHandler.init();
 		
-		//register commands
+		//register commands (must load config first)
 		registerCommandArgumentType(
 				new Identifier(getModID(), "player_badge_identifier"),
 				PlayerBadgeIdentifierArgumentType.class,
@@ -66,8 +71,8 @@ public class TCDCommons extends Object
 	public ModContainer getModInfo() { return modInfo; }
 	// ==================================================
 	/** Returns the instance of this mod. */
-	@Nullable
-	public static TCDCommons getInstance() { return Instance; }
+	public static @Nullable TCDCommons getInstance() { return Instance; }
+	public TCDCommonsConfig getConfig() { return this.config; }
 	// --------------------------------------------------
 	public static String getModName() { return getInstance().getModInfo().getMetadata().getName(); }
 	public static String getModID() { return ModID; }

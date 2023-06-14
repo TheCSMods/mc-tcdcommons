@@ -24,6 +24,7 @@ import com.google.gson.JsonSyntaxException;
 
 import io.github.thecsdev.tcdcommons.api.config.annotation.NonSerialized;
 import io.github.thecsdev.tcdcommons.api.config.annotation.SerializedAs;
+import io.github.thecsdev.tcdcommons.api.util.TUtils;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class AutoConfig implements ACJsonHandler<JsonObject>
@@ -161,8 +162,9 @@ public class AutoConfig implements ACJsonHandler<JsonObject>
 	{
 		for(Field property : getPropertyFields())
 		{
-			if(json.has(property.getName()))
-				deserializeProperty(property, json.get(getPropertyName(property)));
+			final var propertyName = getPropertyName(property);
+			if(json.has(propertyName))
+				deserializeProperty(property, json.get(propertyName));
 		}
 		return true;
 	}
@@ -181,6 +183,17 @@ public class AutoConfig implements ACJsonHandler<JsonObject>
 				StandardOpenOption.CREATE_NEW,
 				StandardOpenOption.TRUNCATE_EXISTING);
 		if(log) LOGGER.info("Saved '" + getClass().getSimpleName() + "' config to '" + fileName + "'.");
+	}
+	
+	/**
+	 * Same as {@link #saveToFile(boolean)}, but any raised {@link IOException}s will not be handled.
+	 * @param log Would you like to log this operation to the console?
+	 * @see #saveToFile(boolean)
+	 */
+	public void saveToFileOrCrash(boolean log)
+	{
+		try { saveToFile(log); }
+		catch(Exception exc) { TUtils.crashGame("Failed to save config file \"" + this.fileName + "\"", exc); }
 	}
 	// --------------------------------------------------
 	/**
@@ -207,6 +220,17 @@ public class AutoConfig implements ACJsonHandler<JsonObject>
 		}
 		
 		if(json != null) loadFromJson(json);
+	}
+	
+	/**
+	 * Same as {@link #loadFromFile(boolean)}, but any raised {@link IOException}s will not be handled.
+	 * @param log Would you like to log this operation to the console?
+	 * @see #loadFromFile(boolean)
+	 */
+	public void loadFromFileOrCrash(boolean log)
+	{
+	    try { loadFromFile(log); } catch (IOException exc)
+	    { TUtils.crashGame("Failed to load config file \"" + this.fileName + "\".", exc); }
 	}
 	// ==================================================
 }
