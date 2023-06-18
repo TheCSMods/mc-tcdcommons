@@ -4,11 +4,11 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TClickableElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -105,7 +105,7 @@ public class TCheckboxWidget extends TClickableElement
 	protected void onClick() { this.checked = !this.checked; }
 	// --------------------------------------------------
 	@Override
-	public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		//calc. alpha
 		float alpha = getAlpha();

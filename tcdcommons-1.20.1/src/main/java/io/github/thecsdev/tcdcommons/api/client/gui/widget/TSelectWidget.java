@@ -3,15 +3,12 @@ package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -128,7 +125,7 @@ public class TSelectWidget extends TButtonWidget
 	 * Draws the dropdown arrow for this {@link TSelectWidget}.<br/>
 	 * This arrow serves as an indicator that this is a dropdown menu.
 	 */
-	public void drawDropdownArrow(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void drawDropdownArrow(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		if(getTpeHeight() < 10) return;
 		
@@ -143,10 +140,10 @@ public class TSelectWidget extends TButtonWidget
 		pencil.drawTexture(T_WIDGETS_TEXTURE, getTpeX() + x, getTpeY() + y4, y2, y2, uvX, 40, 20, 20, 255, 255);
 	}
 	// --------------------------------------------------
-	public @Override void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public @Override void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		drawButton(pencil, mouseX, mouseY, deltaTime);
-		drawMessage(pencil, HorizontalAlignment.LEFT, deltaTime);
+		pencil.drawTText(getMessage(), HorizontalAlignment.LEFT);
 		drawDropdownArrow(pencil, mouseX, mouseY, deltaTime);
 	}
 	// ==================================================

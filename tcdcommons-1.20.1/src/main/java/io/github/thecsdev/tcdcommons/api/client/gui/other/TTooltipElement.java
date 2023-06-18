@@ -7,13 +7,13 @@ import java.awt.Rectangle;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.util.SubjectToChange;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -137,16 +137,16 @@ public class TTooltipElement extends TElement
 	public void setMaxWidth(int maxWidth) { this.maxWidth = Math.max(maxWidth, 60); }
 	// ==================================================
 	@Override
-	public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		//draw background
 	    pencil.setShaderColor(1, 1, 1, getAlpha());
-		draw9SliceTexture(pencil, T_WIDGETS_TEXTURE, 40, 20, 20, 20, 3);
+		pencil.drawTNineSlicedTexture(T_WIDGETS_TEXTURE, 40, 20, 20, 20, 3);
 		//draw message
 		drawMessage(pencil, mouseX, mouseY, deltaTime);
 	}
 	
-	public void drawMessage(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void drawMessage(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		//----- pretty much copy-pasted from text area code
 		//null check

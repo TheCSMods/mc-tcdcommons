@@ -3,10 +3,10 @@ package io.github.thecsdev.tcdcommons.api.client.gui.other;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 /**
@@ -95,7 +95,7 @@ public class TTextureElement extends TElement
 		this.uv_coords.height = vHeight;
 	}
 	// ==================================================
-	public @Override void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public @Override void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		pencil.setShaderColor(this.color[0], this.color[1], this.color[2], getAlpha() * this.color[3]);
 		pencil.drawTexture(

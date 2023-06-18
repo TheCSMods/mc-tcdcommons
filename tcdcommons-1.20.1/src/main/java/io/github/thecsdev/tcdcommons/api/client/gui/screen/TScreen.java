@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.Lists;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TTooltipElement;
@@ -109,8 +110,8 @@ public abstract class TScreen extends Screen implements TParentElement
 	@SuppressWarnings("resource")
 	public @Override void close()
 	{
-		//planning to implement something like this in `tcdcommons` later.
-		//TODO - Maybe hard-coding this isn't the best approach, use a different method?
+		//close any context menus first
+		//(Maybe hard-coding this isn't the best approach, use a different method?)
 		if(getTChildren().removeIf(child -> (child instanceof TContextMenuPanel)))
 			return;
 		//on closed
@@ -269,8 +270,7 @@ public abstract class TScreen extends Screen implements TParentElement
 	/**
 	 * Automatically called by Minecraft when ticking {@link Screen}s.
 	 */
-	@Override
-	public void tick()
+	public @Override void tick()
 	{
 		super.tick();
 		//who knew performance would be an issue...
@@ -289,15 +289,27 @@ public abstract class TScreen extends Screen implements TParentElement
 	{
 		//prepare to render (reset hovered child)
 		this.hoveredTChild = null;
+		final var tPencil = new TDrawContext(pencil);
 		
 		//render background
 		this.renderBackground(pencil);
 		
 		//render children
 		forEachChild(
-				child -> { renderChildTElement(pencil, mouseX, mouseY, delta, child, true); return false; },
-				child -> { renderChildTElement(pencil, mouseX, mouseY, delta, child, false); return false; },
+				child ->
+				{
+					tPencil.currentTElement = child;
+					renderChildTElement(tPencil, mouseX, mouseY, delta, child, true);
+					return false;
+				},
+				child ->
+				{
+					tPencil.currentTElement = child;
+					renderChildTElement(tPencil, mouseX, mouseY, delta, child, false);
+					return false;
+				},
 				true);
+		tPencil.currentTElement = null;
 		
 		//render tooltip - TODO - Improve this system
 		@SubjectToChange("Too messy.")
@@ -317,7 +329,10 @@ public abstract class TScreen extends Screen implements TParentElement
 			final var matrices = pencil.getMatrices();
 			matrices.push();
 			matrices.translate(0, 0, this.tooltipElement.getZIndex());
-			this.tooltipElement.render(pencil, mouseX, mouseY, delta);
+			
+			tPencil.currentTElement = this.tooltipElement;
+			this.tooltipElement.render(tPencil, mouseX, mouseY, delta);
+			
 			matrices.pop();
 		}
 	}
@@ -325,7 +340,7 @@ public abstract class TScreen extends Screen implements TParentElement
 	/**
 	 * Renders a {@link TElement} child individually.
 	 * Called by {@link #render(DrawContext, int, int, float)}.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the {@link Screen}.
 	 * @param mouseY The Y mouse cursor position on the {@link Screen}.
 	 * @param delta The time elapsed since the last render.
@@ -333,7 +348,7 @@ public abstract class TScreen extends Screen implements TParentElement
 	 * @param isPreRender If this is post render, set it to false, and to true otherwise.
 	 * Setting this to false will call {@link TElement#postRender} instead.
 	 */
-	protected void renderChildTElement(DrawContext pencil, int mouseX, int mouseY, float delta,
+	protected void renderChildTElement(TDrawContext pencil, int mouseX, int mouseY, float delta,
 			TElement child, boolean isPreRender)
 	{
 		//check if the element is visible

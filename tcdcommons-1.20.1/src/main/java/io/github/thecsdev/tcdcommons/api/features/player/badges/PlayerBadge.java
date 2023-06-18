@@ -4,8 +4,8 @@ import static io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry.Play
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.registry.TCDCommonsRegistry;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -66,7 +66,7 @@ public abstract class PlayerBadge
 	 * which can cause the game to crash.<br/>
 	 * <br/>
 	 * Renders this {@link PlayerBadge} on the client-side screen.
-	 * @param pencil The rendering {@link DrawContext}.
+	 * @param pencil The rendering {@link TDrawContext}.
 	 * @param x The starting on-screen X position where to start drawing the badge.
 	 * @param y The starting on-screen Y position where to start drawing the badge.
 	 * @param width The width of the {@link PlayerBadge} on the screen.
@@ -74,6 +74,6 @@ public abstract class PlayerBadge
 	 * @param deltaTime The time elapsed since the last frame was rendered.
 	 * @throws Error If this method is invoked anywhere but on the client-side or not from the render-thread.
 	 */
-	public abstract void renderOnClientScreen(DrawContext pencil, int x, int y, int width, int height, float deltaTime);
+	public abstract void renderOnClientScreen(TDrawContext pencil, int x, int y, int width, int height, float deltaTime);
 	// ==================================================
 }

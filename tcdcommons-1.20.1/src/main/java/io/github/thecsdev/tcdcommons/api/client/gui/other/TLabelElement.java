@@ -2,11 +2,11 @@ package io.github.thecsdev.tcdcommons.api.client.gui.other;
 
 import java.awt.Color;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.SubjectToChange;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 public class TLabelElement extends TElement
@@ -75,17 +75,17 @@ public class TLabelElement extends TElement
 	}
 	// ==================================================
 	@Override
-	public void render(DrawContext matrices, int mouseX, int mouseY, float deltaTime)
+	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
-		drawTElementText(matrices, getText(), getHorizontalAlignment(), getColor(), 0, deltaTime);
+		pencil.drawTText(getText(), getHorizontalAlignment(), getColor(), 0);
 	}
 	
 	@Override
-	public void postRender(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void postRender(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		//this adds a visual focus indicator just in
 		//case this element supports focus
-		if(isFocused()) drawOutline(pencil, -5570561);
+		if(isFocused()) pencil.drawTBorder(-5570561);
 	}
 	// ==================================================
 }

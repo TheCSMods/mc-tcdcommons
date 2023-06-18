@@ -7,10 +7,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import io.github.thecsdev.tcdcommons.api.client.gui.TClickableElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.Direction2D;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
-import net.minecraft.client.gui.DrawContext;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
@@ -256,24 +257,23 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 		return true;
 	}
 	// ==================================================
-	@Override
-	public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public @Override void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		drawButton(pencil, mouseX, mouseY, deltaTime, BUTTON_Y_DISABLED);
 		drawSliderProgressBar(pencil, mouseX, mouseY, deltaTime);
 		drawSliderKnob(pencil, mouseX, mouseY, deltaTime);
-		if(getDrawMessage()) drawMessage(pencil, deltaTime);
+		if(getDrawMessage()) pencil.drawTText(getMessage(), HorizontalAlignment.CENTER);
 	}
 	// --------------------------------------------------
 	/**
 	 * Draws a progress bar that is used as the visual slider value indicator.
 	 * Another primary use for this is this being the {@link #getSliderDirection()} indicator.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the TScreen.
 	 * @param mouseY The Y mouse cursor position on the TScreen.
 	 * @param deltaTime The time elapsed since the last render.
 	 */
-	protected void drawSliderProgressBar(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	protected void drawSliderProgressBar(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		if(this.screen != null && this.value > 0)
 		{
@@ -298,20 +298,20 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 				default: break;
 			}
 			//render the progress button
-		    RenderSystem.setShaderColor(0.6f, 0.6f, 0.6f, getAlpha());
-		    draw9SliceTexture(pencil, T_WIDGETS_TEXTURE, sX, sY, sW, sH, 20, 0, 20, 20, 256, 256, 3);
+		    pencil.setShaderColor(0.6f, 0.6f, 0.6f, getAlpha());
+		    pencil.drawTNineSlicedTexture(T_WIDGETS_TEXTURE, sX, sY, sW, sH, 20, 0, 20, 20, 256, 256, 3);
 		}
 	}
 	// --------------------------------------------------
 	/**
 	 * Draws the dragabble little knob that is used as
 	 * the visual slider value indicator.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the TScreen.
 	 * @param mouseY The Y mouse cursor position on the TScreen.
 	 * @param deltaTime The time elapsed since the last render.
 	 */
-	protected final void drawSliderKnob(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	protected final void drawSliderKnob(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		/* OLD VANILLA SYSTEM:
 		RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
@@ -362,7 +362,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	/**
 	 * Draws the dragabble little knob that is used as
 	 * the visual slider value indicator.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the TScreen.
 	 * @param mouseY The Y mouse cursor position on the TScreen.
 	 * @param deltaTime The time elapsed since the last render.
@@ -371,7 +371,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	 * @param width The knob size width.
 	 * @param height The knob size height.
 	 */
-	protected void drawSliderKnob(DrawContext pencil,
+	protected void drawSliderKnob(TDrawContext pencil,
 			int mouseX, int mouseY, float deltaTime,
 			int x, int y, int width, int height)
 	{
@@ -380,7 +380,7 @@ public abstract class AbstractTSliderWidget extends TClickableElement
 	    
 	    //draw the 9slice
 	    RenderSystem.setShaderColor(1, 1, 1, getAlpha());
-		draw9SliceTexture(pencil, T_WIDGETS_TEXTURE, x, y, width, height, uvU, 0, 20, 20, 256, 256, 3);
+	    pencil.drawTNineSlicedTexture(T_WIDGETS_TEXTURE, x, y, width, height, uvU, 0, 20, 20, 256, 256, 3);
 	}
 	// ==================================================
 	public interface TSliderWidgetEvent_ValueChanged { public void invoke(AbstractTSliderWidget element, double newValue); }

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
@@ -14,7 +15,6 @@ import io.github.thecsdev.tcdcommons.api.client.gui.widget.TScrollBarWidget;
 import io.github.thecsdev.tcdcommons.api.util.math.Tuple2;
 import io.github.thecsdev.tcdcommons.api.util.math.Tuple4;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -492,12 +492,12 @@ public class TPanelElement extends TElement
 	 * Renders the background for this {@link TPanelElement}.
 	 * By default, it fills a rectangle, but you may override it and make it do something else.<br/>
 	 * Needs to be called manually from {@link #render(MatrixStack, int, int, float)}.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the {@link Screen}.
 	 * @param mouseY The Y mouse cursor position on the {@link Screen}.
 	 * @param deltaTime The time elapsed since the last render.
 	 */
-	protected void renderBackground(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	protected void renderBackground(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		pencil.fill(this.x, this.y, this.x + this.width, this.y + this.height,
 				GuiUtils.applyAlpha(this.backgroundColor, getAlpha()));
@@ -536,15 +536,15 @@ public class TPanelElement extends TElement
 		applyScrollDrag();
 	}
 	
-	public @Override void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public @Override void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		renderBackground(pencil, mouseX, mouseY, deltaTime);
 		renderSmoothScroll(deltaTime);
 	}
 	
-	public @Override void postRender(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public @Override void postRender(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
-		drawOutline(pencil, GuiUtils.applyAlpha(isFocused() ? COLOR_OUTLINE_FOCUSED : this.outlineColor, getAlpha()));
+		pencil.drawTBorder(GuiUtils.applyAlpha(isFocused() ? COLOR_OUTLINE_FOCUSED : this.outlineColor, getAlpha()));
 	}
 	// ==================================================
 	@Override

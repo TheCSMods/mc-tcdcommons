@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TClickableElement;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import net.minecraft.text.Text;
 
 public class TButtonWidget extends TClickableElement
@@ -41,10 +41,10 @@ public class TButtonWidget extends TClickableElement
 	}
 	// ==================================================
 	@Override
-	public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		drawButton(pencil, mouseX, mouseY, deltaTime);
-		drawMessage(pencil, deltaTime);
+		pencil.drawTText(getMessage(), HorizontalAlignment.CENTER);
 	}
 	// ==================================================
 }

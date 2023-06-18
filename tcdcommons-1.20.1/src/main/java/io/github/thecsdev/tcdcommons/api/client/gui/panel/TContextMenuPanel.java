@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
@@ -12,7 +13,6 @@ import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.text.Text;
 
@@ -55,10 +55,10 @@ public class TContextMenuPanel extends TPanelElement
 	protected final @Nullable @Override TContextMenuPanel createContextMenu(int x, int y) { return null; }
 	// ==================================================
 	@Override
-	protected void renderBackground(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	protected void renderBackground(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		pencil.fill(this.x, this.y, this.x + this.width, this.y + this.height, GuiUtils.applyAlpha(-16777216, getAlpha()));
-		drawOutline(pencil, BORDER_COLOR);
+		pencil.drawTBorder(BORDER_COLOR);
 	}
 	// ==================================================
 	/**
@@ -145,10 +145,10 @@ public class TContextMenuPanel extends TPanelElement
 			if(parent != null) parent.removeTChild(TContextMenuPanel.this);
 		}
 		@Override
-		public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+		public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 		{
-			drawMessage(pencil, HorizontalAlignment.LEFT, deltaTime);
-			if(isFocusedOrHovered()) drawOutline(pencil, -1);
+			pencil.drawTText(getMessage(), HorizontalAlignment.LEFT);
+			if(isFocusedOrHovered()) pencil.drawTBorder(-1);
 		}
 	}
 	// --------------------------------------------------
@@ -161,7 +161,7 @@ public class TContextMenuPanel extends TPanelElement
 		@Override public float getAlpha() { return TContextMenuPanel.this.getAlpha(); }
 		@Override public boolean canChangeFocus(FocusOrigin focusOrigin, boolean gainingFocus) { return !gainingFocus; }
 		@Override
-		public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+		public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 		{
 			int w8 = getTpeWidth() / 8;
 			/*fill(matrices,

@@ -2,16 +2,11 @@ package io.github.thecsdev.tcdcommons.api.client.gui;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
-import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -26,7 +21,7 @@ public abstract class TClickableElement extends TElement
 	protected boolean enabled;
 
 	/**
-	 * When set to true, {@link #drawButton(MatrixStack, int, int, float, float, float, float, int)}
+	 * When set to true, {@link #drawButton(TDrawContext, int, int, float, int)}
 	 * will draw buttons using the Vanilla style and textures.<br/><br/>
 	 * <b>Note:</b> Vanilla buttons do not support button heights that are not 20px.
 	 */
@@ -39,7 +34,6 @@ public abstract class TClickableElement extends TElement
 	 */
 	protected @Nullable Text message;
 	// --------------------------------------------------
-	//private final TClickableElementEvents __events = new TClickableElementEvents(this);
 	public Event<TClickableElementEvent_Clicking> eClicking = EventFactory.createEventResult();
 	public Event<TClickableElementEvent_Clicked> eClicked = EventFactory.createLoop();
 	// ==================================================
@@ -50,7 +44,6 @@ public abstract class TClickableElement extends TElement
 		this.drawsVanillaButton = false;
 		this.message = message;
 	}
-	//public @Deprecated @Override TClickableElementEvents getEvents() { return this.__events; }
 	// --------------------------------------------------
 	@Override
 	public boolean getEnabled() { return this.enabled; }
@@ -132,12 +125,12 @@ public abstract class TClickableElement extends TElement
 	 * <br/>
 	 * Primarily called by {@link #drawButton(MatrixStack, int, int, float, int)}
 	 * so as to let you define a custom button background.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the {@link Screen}.
 	 * @param mouseY The Y mouse cursor position on the {@link Screen}.
 	 * @param deltaTime The time elapsed since the last render.
 	 */
-	protected void renderBackground(DrawContext pencil, int mouseX, int mouseY, float deltaTime) {}
+	protected void renderBackground(TDrawContext pencil, int mouseX, int mouseY, float deltaTime) {}
 	// --------------------------------------------------
 	/**
 	 * See {@link #getButtonYImage(boolean, boolean)}.<br/>
@@ -159,31 +152,15 @@ public abstract class TClickableElement extends TElement
 		else return 1;
 	  }
 	// ==================================================
-	@Deprecated
-	protected void drawButton(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	protected void drawButton(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		drawButton(pencil, mouseX, mouseY, deltaTime, getButtonYImage());
 	}
 	
-	@Deprecated
-	protected void drawButton(DrawContext pencil, int mouseX, int mouseY, float deltaTime, int yImage)
-	{
-		drawButton(pencil, mouseX, mouseY, deltaTime, 1, 1, 1, yImage);
-	}
-	
-	@Deprecated
-	protected void drawButton(DrawContext pencil, int mouseX, int mouseY, float deltaTime, float r, float g, float b, int yImage)
+	protected void drawButton(TDrawContext pencil, int mouseX, int mouseY, float deltaTime, int yImage)
 	{
 		//apply shader stuff
-		float alpha = getAlpha();
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		//RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
-		RenderSystem.setShaderColor(r, g, b, alpha);
-		
-		//*whatever this is*
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.enableDepthTest();
+		pencil.setShaderColor(1, 1, 1, getAlpha());
 		
 		//draw the background image
 		if(this.drawsVanillaButton)
@@ -192,37 +169,12 @@ public abstract class TClickableElement extends TElement
 			pencil.drawTexture(WIDGETS_TEXTURE, this.x, this.y, 0, 46 + yImage * 20, this.width / 2, this.height);
 			pencil.drawTexture(WIDGETS_TEXTURE, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + yImage * 20, this.width / 2, this.height);
 		}
-		else
-		{
-			//my new way of drawing buttons. it supports
-			//scalability and texture tiling as well
-			draw9SliceTexture(pencil, T_WIDGETS_TEXTURE, yImage * 20, 0, 20, 20, 3);
-		}
+		//my new way of drawing buttons. it supports
+		//scalability and texture tiling as well
+		else pencil.drawTNineSlicedTexture(T_WIDGETS_TEXTURE, yImage * 20, 0, 20, 20, 3);
+		
+		//render button background
 		renderBackground(pencil, mouseX, mouseY, deltaTime);
-	}
-	
-	/**
-	 * Draws {@link #getMessage()} with the default {@link HorizontalAlignment} (center).<br/>
-	 * See {@link #drawMessage(MatrixStack, HorizontalAlignment, float)}.
-	 * @param pencil The {@link DrawContext}.
-	 * @param deltaTime The time elapsed since the last frame.
-	 */
-	@Deprecated
-	protected final void drawMessage(DrawContext pencil, float deltaTime)
-	{
-		drawMessage(pencil, HorizontalAlignment.CENTER, deltaTime);
-	}
-	
-	/**
-	 * Draws {@link #getMessage()}.
-	 * @param matrices The {@link DrawContext}.
-	 * @param alignment The message text alignment.
-	 * @param deltaTime The time elapsed since the last render.
-	 */
-	@Deprecated
-	protected void drawMessage(DrawContext matrices, HorizontalAlignment alignment, float deltaTime)
-	{
-		drawTElementText(matrices, getMessage(), alignment, deltaTime);
 	}
 	// ==================================================
 	public interface TClickableElementEvent_Clicking { public EventResult invoke(TClickableElement element); }

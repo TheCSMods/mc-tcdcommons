@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.MapMaker;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -168,7 +168,7 @@ public class TEntityRendererElement extends TElement
 	public void setFollowCursor(boolean followCursor) { this.followCursor = followCursor; }
 	// ==================================================
 	@Override
-	public void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		//if the entity isn't a living one or if it isn't set
 		if(this.livingEntity == null)

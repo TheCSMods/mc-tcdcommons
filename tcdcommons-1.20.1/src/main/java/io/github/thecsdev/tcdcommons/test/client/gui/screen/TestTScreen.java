@@ -13,7 +13,6 @@ import io.github.thecsdev.tcdcommons.api.client.gui.widget.TScrollBarWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectEnumWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TTextFieldWidget;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.EntityType;
 
@@ -144,34 +143,5 @@ public final class TestTScreen extends TScreenPlus
 		}
 		addTChild(menu);
 	}
-	// --------------------------------------------------
-	protected boolean moveRight = true;
-	protected boolean moveDown = true;
-	protected float moveDelta = 0;
-	@Override
-	public void render(DrawContext pencil, int mouseX, int mouseY, float delta)
-	{
-		//render super
-		super.render(pencil, mouseX, mouseY, delta);
-		
-		//test movement
-		/*moveDelta += delta;
-		if(moveDelta > 0.5f)
-		{
-			//move
-			panel.move((moveRight ? 1 : -1), (moveDown ? 1 : -1));
-			moveDelta = 0;
-			
-			//x check
-			if(panel.getTpeX() < 0) moveRight = true;
-			else if(panel.getTpeX() + panel.getTpeWidth() > this.width) moveRight = false;
-			
-			//y check
-			if(panel.getTpeY() < 0) moveDown = true;
-			else if(panel.getTpeY() + panel.getTpeHeight() > this.height) moveDown = false;
-		}*/
-	}
-	// --------------------------------------------------
-	// public @Override void close() { MinecraftClient.getInstance().setScreen(parent); }
 	// ==================================================
 }

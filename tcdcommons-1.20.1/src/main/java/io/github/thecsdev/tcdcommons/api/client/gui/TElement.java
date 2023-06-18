@@ -9,22 +9,31 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
-import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
-import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TElementList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class TElement extends TDrawableHelper implements TParentElement
+public abstract class TElement implements TParentElement
 {
+	// ==================================================
+	/**
+	 * The {@link Identifier} for the GUI widgets texture used by <b>Minecraft</b>.
+	 */
+	public static final Identifier WIDGETS_TEXTURE = ClickableWidget.WIDGETS_TEXTURE;
+	
+	/**
+	 * The {@link Identifier} for the GUI widgets texture used by {@link TCDCommons}.
+	 */
+	public static final Identifier T_WIDGETS_TEXTURE = new Identifier(TCDCommons.getModID(), "textures/gui/widgets.png");
 	// ==================================================
 	/** Makes {@link #setPosition(int, int, int)} set the position relative to {@link #parent}. */
 	public static final int SP_RELATIVE       = 0b1;
@@ -184,8 +193,8 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	public @Override int getTpeY() { return this.y; }
 	public @Override int getTpeWidth() { return this.width; }
 	public @Override int getTpeHeight() { return this.height; }
-	public @Override final int getTpeEndX() { return super.getTpeEndX(); }
-	public @Override final int getTpeEndY() { return super.getTpeEndY(); }
+	public @Override final int getTpeEndX() { return TParentElement.super.getTpeEndX(); }
+	public @Override final int getTpeEndY() { return TParentElement.super.getTpeEndY(); }
 	public final @Override <T extends TElement> boolean addTChild(T child) { return addTChild(child, true); }
 	public final @Override <T extends TElement> boolean removeTChild(T child) { return removeTChild(child, true); }
 	// ==================================================
@@ -458,25 +467,25 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	/**
 	 * Called by {@link TScreen} when rendering this {@link TElement}.<br/>
 	 * Renders this {@link TElement} on the {@link TScreen}.
-	 * @param pencil The {@link DrawContext}.
+	 * @param pencil The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the {@link TScreen}.
 	 * @param mouseY The Y mouse cursor position on the {@link TScreen}.
 	 * @param deltaTime The time elapsed since the last frame.
 	 */
-	public abstract void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime);
+	public abstract void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime);
 	
 	/**
 	 * Called by {@link TScreen} after rendering this {@link TElement}
 	 * and all of it's children.<br/>
 	 * Renders this {@link TElement} on the {@link TScreen}.<br/>
 	 * <br/>
-	 * See {@link #render(DrawContext, int, int, float)}.
-	 * @param matrices The {@link DrawContext}.
+	 * See {@link #render(TDrawContext, int, int, float)}.
+	 * @param matrices The {@link TDrawContext}.
 	 * @param mouseX The X mouse cursor position on the {@link TScreen}.
 	 * @param mouseY The Y mouse cursor position on the {@link TScreen}.
 	 * @param deltaTime The time elapsed since the last frame.
 	 */
-	public void postRender(DrawContext matrices, int mouseX, int mouseY, float deltaTime) {}
+	public void postRender(TDrawContext matrices, int mouseX, int mouseY, float deltaTime) {}
 	// ==================================================
 	/**
 	 * Invoked by the {@link #parent} {@link TScreen} when the user presses
@@ -724,70 +733,6 @@ public abstract class TElement extends TDrawableHelper implements TParentElement
 	 * <b>Do not call this outside of a {@link TElementList}!</b>
 	 */
 	public void onParentChanged() {}
-	// ==================================================
-	/**
-	 * Draws a {@link MutableText} using the dimensions of this {@link TElement}.
-	 * @param pencil The {@link DrawContext}.
-	 * @param text The text to draw.
-	 * @param alignment The horizontal text alignment. The vertical one is always center.
-	 * @param deltaTime The time elapsed since the last frame.
-	 */
-	public void drawTElementText(DrawContext pencil, Text text, HorizontalAlignment alignment, float deltaTime)
-	{
-		int color = GuiUtils.applyAlpha(getEnabled() ? 16777215 : 10526880, getAlpha());
-		drawTElementText(pencil, text, alignment, color, deltaTime);
-	}
-	
-	/**
-	 * Draws a {@link MutableText} using the dimensions of this {@link TElement}.
-	 * @param pencil The {@link DrawContext}.
-	 * @param text The text to draw.
-	 * @param alignment The horizontal text alignment. The vertical one is always center.
-	 * @param color The color of the text.
-	 * @param deltaTime The time elapsed since the last frame.
-	 */
-	public void drawTElementText(DrawContext pencil, Text text, HorizontalAlignment alignment, int color, float deltaTime)
-	{
-		drawTElementText(pencil, text, alignment, color, 5, deltaTime);
-	}
-	
-	/**
-	 * Draws a {@link MutableText} using the dimensions of this {@link TElement}.
-	 * @param pencil The {@link DrawContext}.
-	 * @param text The text to draw.
-	 * @param alignment The horizontal text alignment. The vertical one is always center.
-	 * @param color The color of the text.
-	 * @param padding The text padding.
-	 * @param deltaTime The time elapsed since the last frame.
-	 */
-	public void drawTElementText(DrawContext pencil, Text text, HorizontalAlignment alignment, int color, int padding, float deltaTime)
-	{
-		//obtain the text renderer
-		if(this.screen == null) return;
-		
-		//draw the message
-		if(text != null)
-		{
-			TextRenderer txtR = getTextRenderer();
-			int x = getTpeX();
-			int y = getTpeY() + (getTpeHeight() - 8) / 2;
-			int width = getTpeWidth();
-			
-			switch(alignment)
-			{
-				case CENTER:
-					pencil.drawCenteredTextWithShadow(txtR, text, x + width / 2, y, color);
-					break;
-				case LEFT:
-					pencil.drawTextWithShadow(txtR, text, x + padding, y, color);
-					break;
-				case RIGHT:
-					pencil.drawTextWithShadow(txtR, text, x + width - padding - txtR.getWidth(text.getString()), y, color);
-					break;
-				default: return;
-			}
-		}
-	}
 	// ==================================================
 	public interface TElementEvent_Moved { public void invoke(TElement element, int deltaX, int deltaY); }
 	public interface TElementEvent_ChildAR { public void invoke(TElement element, TElement child, boolean repositioned); }

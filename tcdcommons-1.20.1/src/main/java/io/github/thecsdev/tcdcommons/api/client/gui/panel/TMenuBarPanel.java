@@ -1,8 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.panel;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 public class TMenuBarPanel extends TPanelElement
@@ -65,15 +65,15 @@ public class TMenuBarPanel extends TPanelElement
 			RENDER_RECT.setSize(getTpeWidth(), getTpeHeight());
 		}
 		
-		public @Override void render(DrawContext matrices, int mouseX, int mouseY, float deltaTime)
+		public @Override void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 		{
-			drawMessage(matrices, HorizontalAlignment.LEFT, deltaTime);
+			pencil.drawTText(getMessage(), HorizontalAlignment.LEFT);
 		}
 		// ----------------------------------------------
-		public @Override void postRender(DrawContext matrices, int mouseX, int mouseY, float deltaTime)
+		public @Override void postRender(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 		{
-			if(isDropdownOpen()) drawOutline(matrices, TPanelElement.COLOR_OUTLINE_FOCUSED);
-			else if(isFocusedOrHovered()) drawOutline(matrices, TPanelElement.COLOR_OUTLINE);
+			if(isDropdownOpen()) pencil.drawTBorder(TPanelElement.COLOR_OUTLINE_FOCUSED);
+			else if(isFocusedOrHovered()) pencil.drawTBorder(TPanelElement.COLOR_OUTLINE);
 		}
 		// ----------------------------------------------
 	}

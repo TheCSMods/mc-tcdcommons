@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import io.github.thecsdev.tcdcommons.api.client.gui.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.FocusOrigin;
@@ -13,7 +14,6 @@ import io.github.thecsdev.tcdcommons.api.util.SubjectToChange;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -197,19 +197,20 @@ public class TTextFieldWidget extends TElement
 		return true;
 	}
 	// ==================================================
-	public @Override void render(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	@Override
+	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		renderBackground(pencil, mouseX, mouseY, deltaTime);
 		drawText(pencil, deltaTime);
 	}
 	
-	protected void renderBackground(DrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	protected void renderBackground(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 	    pencil.setShaderColor(1, 1, 1, getAlpha());
-		draw9SliceTexture(pencil, T_WIDGETS_TEXTURE, isFocused() ? 20 : 0, 20, 20, 20, 3);
+	    pencil.drawTNineSlicedTexture(T_WIDGETS_TEXTURE, isFocused() ? 20 : 0, 20, 20, 20, 3);
 	}
 	// --------------------------------------------------
-	protected void drawText(DrawContext pencil, float deltaTime)
+	protected void drawText(TDrawContext pencil, float deltaTime)
 	{
 		//null check
 		if(this.multilineText == null || this.screen == null)

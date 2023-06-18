@@ -57,19 +57,6 @@ public class TScrollBarWidget extends AbstractTSliderWidget
 		this.target.eScrollVertically.register(onTargetScrollV);
 		this.target.eChildAdded.register(onTargetChildAR);
 		this.target.eChildRemoved.register(onTargetChildAR);
-		
-		/*target_ehScrollH = target.getEvents().SCROLL_H.addWeakEventHandler((dX) ->
-		{
-			if(getSliderDirection().isHorizontal())
-				refreshValue();
-		});
-		target_ehScrollV = target.getEvents().SCROLL_V.addWeakEventHandler((dY) ->
-		{
-			if(getSliderDirection().isVertical())
-				refreshValue();
-		});
-		target_ehChildAR = target.getEvents().CHILD_AR
-				.addWeakEventHandler((child, added, repositioned) -> refreshKnobSize());*/
 	}
 	
 	/**
