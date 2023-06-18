@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.mixin.hooks;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.MinecraftClient;
@@ -11,12 +12,12 @@ import net.minecraft.client.util.math.MatrixStack;
 @Mixin(DrawContext.class)
 public interface MixinDrawContext
 {
-	@Accessor("client")
-	public MinecraftClient getClient();
+	public @Accessor("client") MinecraftClient getClient();
+	public @Mutable @Accessor("client") void setClient(MinecraftClient client);
 	
-	@Accessor("matrices")
-	public MatrixStack getMatrices();
+	public @Accessor("matrices") MatrixStack getMatrices();
+	public @Mutable @Accessor("matrices") void setMatrices(MatrixStack matrices);
 	
-	@Accessor("vertexConsumers")
-	public VertexConsumerProvider.Immediate getVertexConsumers();
+	public @Accessor("vertexConsumers") VertexConsumerProvider.Immediate getVertexConsumers();
+	public @Mutable @Accessor("vertexConsumers") void setVertexConsumers(VertexConsumerProvider.Immediate vertexConsumers);
 }

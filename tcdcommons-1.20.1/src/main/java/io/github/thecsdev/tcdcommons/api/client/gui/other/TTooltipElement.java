@@ -140,13 +140,13 @@ public class TTooltipElement extends TElement
 	public void render(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
 	{
 		//draw background
-	    pencil.setShaderColor(1, 1, 1, getAlpha());
+	    pencil.setShaderColor(1, 1, 1, 1);
 		pencil.drawTNineSlicedTexture(T_WIDGETS_TEXTURE, 40, 20, 20, 20, 3);
 		//draw message
-		drawMessage(pencil, mouseX, mouseY, deltaTime);
+		drawMessage(pencil, deltaTime);
 	}
 	
-	public void drawMessage(TDrawContext pencil, int mouseX, int mouseY, float deltaTime)
+	public void drawMessage(TDrawContext pencil, float deltaTime)
 	{
 		//----- pretty much copy-pasted from text area code
 		//null check

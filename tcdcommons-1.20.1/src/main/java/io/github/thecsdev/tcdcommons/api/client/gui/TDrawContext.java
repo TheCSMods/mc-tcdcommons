@@ -5,10 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
-import net.minecraft.client.MinecraftClient;
+import io.github.thecsdev.tcdcommons.mixin.hooks.MixinDrawContext;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -24,10 +23,17 @@ public class TDrawContext extends DrawContext
 	 */
 	public @Nullable TElement currentTElement;
 	// ==================================================
-	public TDrawContext(DrawContext drawContext) { this(MinecraftClient.getInstance(), drawContext.getVertexConsumers()); }
-	public TDrawContext(MinecraftClient client, Immediate vertexConsumers)
+	public TDrawContext(DrawContext drawContext)
 	{
-		super(client, vertexConsumers);
+		//copy variables from given draw context into this draw context
+		super(null, null);
+		final var mixin_this = ((MixinDrawContext)this);
+		final var mixin_that = ((MixinDrawContext)drawContext);
+		mixin_this.setClient(mixin_that.getClient());
+		mixin_this.setMatrices(mixin_that.getMatrices());
+		mixin_this.setVertexConsumers(mixin_that.getVertexConsumers());
+		
+		//initialize variables
 		this.currentTElement = null;
 	}
 	// ==================================================

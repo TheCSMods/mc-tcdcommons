@@ -311,12 +311,16 @@ public abstract class TScreen extends Screen implements TParentElement
 				true);
 		tPencil.currentTElement = null;
 		
-		//render tooltip - TODO - Improve this system
-		@SubjectToChange("Too messy.")
+		// ---------- render tooltip
+		@SubjectToChange("CHANGE THIS ALREADY") //TODO - Implement a better tooltip system already
 		TElement target = this.focusedTChild != null && this.focusedTChild.getTooltip() != null ?
 				this.focusedTChild : this.hoveredTChild;
 		
-		if(target != null && this.tooltipElement != null && target.getTooltip() != null && target.getShownContextMenu() == null)
+		//check if can render tooltip
+		if(target == null || target.getShownContextMenu() != null)
+			return;
+		
+		if(this.tooltipElement != null && target.getTooltip() != null)
 		{
 			//assign tooltip (careful: setTooltip triggers a performance costly update)
 			if(this.tooltipElement.getTooltip() != target.getTooltip())
@@ -365,11 +369,7 @@ public abstract class TScreen extends Screen implements TParentElement
 		if(isPreRender && !child.isClickThrough() && child.isEnabledAndVisible() &&
 				(this.hoveredTChild == null || child.getZIndex() >= this.hoveredTChild.getZIndex()))
 		{
-			if(childBox != null && childBox.contains(this.cursorPosition)
-					/*mouseX >= childBox.x &&
-					mouseY >= childBox.y &&
-					mouseX <= childBox.x + childBox.width &&
-					mouseY <= childBox.y + childBox.height*/)
+			if(childBox != null && childBox.contains(this.cursorPosition))
 				hoveredTChild = child;
 		}
 		
