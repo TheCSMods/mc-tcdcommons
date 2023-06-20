@@ -70,7 +70,7 @@ public class TTooltipElement extends TElement
 		else this.width = this.maxWidth;
 		//assign multiline text
 		if(text != null)
-			this.multilineText = MultilineText.create(getTextRenderer(), text, getTpeWidth());
+			this.multilineText = MultilineText.create(getTextRenderer(), text, getTpeWidth() - (TEXT_PADDING * 2));
 		else this.multilineText = null;
 		//height scalability
 		this.height = (TEXT_PADDING * 2) + getTextHeight();
