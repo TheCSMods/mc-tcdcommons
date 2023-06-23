@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.HorizontalAlignment;
-import io.github.thecsdev.tcdcommons.mixin.hooks.MixinDrawContext;
+import io.github.thecsdev.tcdcommons.client.mixin.hooks.MixinDrawContext;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;

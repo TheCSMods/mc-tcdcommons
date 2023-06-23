@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.mixin.hooks;
+package io.github.thecsdev.tcdcommons.client.mixin.hooks;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
