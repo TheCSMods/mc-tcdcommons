@@ -1,3 +1,0 @@
-======== AVAILABLE RANGE: 0 - 100 ========
-TContextMenuPanel           - getItemRenderer().zOffset + 110
-TTooltipElement             - getItemRenderer().zOffset + 120
