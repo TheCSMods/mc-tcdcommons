@@ -10,7 +10,7 @@ import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetworkReceiver;
 import net.minecraft.util.Identifier;
 
 @Mixin(value = CustomPayloadNetwork.class, remap = false)
-public interface MixinCustomPayloadNetwork
+public interface AccessorCustomPayloadNetwork
 {
 	static @Accessor("C2S") Map<Identifier, CustomPayloadNetworkReceiver> getC2S() { throw new AssertionError(); }
 	static @Accessor("S2C") Map<Identifier, CustomPayloadNetworkReceiver> getS2C() { throw new AssertionError(); }

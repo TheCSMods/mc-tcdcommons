@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.client.mixin.events;
 
+import static io.github.thecsdev.tcdcommons.client.mixin.CMInternal.CURRENT_T_SCREEN;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,13 +24,14 @@ public abstract class MixinInGameHud
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	public void onPreRender(DrawContext pencil, float tickDelta, CallbackInfo callback)
 	{
-		//invoke the pre render event
-		if(InGameHudEvent.RENDER_PRE.invoker().invoke(pencil, tickDelta).isEventCancelled())
-		{
+		//check if a TScreen is open, and if it allows the in-game-hud to render
+		if(CURRENT_T_SCREEN != null && !CURRENT_T_SCREEN.shouldRenderInGameHud())
+			callback.cancel();
+		
+		//invoke the pre-render event
+		else if(InGameHudEvent.RENDER_PRE.invoker().invoke(pencil, tickDelta).isEventCancelled())
 			//if the event got cancelled, then also cancel the rendering of the game hud
 			callback.cancel();
-			return;
-		}
 	}
 	// --------------------------------------------------
 	@Inject(method = "render", at = @At("TAIL"))

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetworkReceiver.PacketContext;
-import io.github.thecsdev.tcdcommons.mixin.hooks.MixinCustomPayloadNetwork;
+import io.github.thecsdev.tcdcommons.mixin.hooks.AccessorCustomPayloadNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
@@ -31,7 +31,7 @@ public abstract class MixinCustomPayloadC2SPacket
 	{
 		//# IMPORTANT NOTE - we are currently on the network thread
 		//obtain receiver and null-check it
-		final var receiverC2S = MixinCustomPayloadNetwork.getC2S().getOrDefault(getChannel(), null);
+		final var receiverC2S = AccessorCustomPayloadNetwork.getC2S().getOrDefault(getChannel(), null);
 		if(receiverC2S == null) return;
 		
 		//obtain the server play network handler if it exists

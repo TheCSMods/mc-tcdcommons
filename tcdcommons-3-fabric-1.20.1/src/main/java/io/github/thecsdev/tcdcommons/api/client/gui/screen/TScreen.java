@@ -54,12 +54,16 @@ public abstract class TScreen implements TParentElement
 	public final ItemRenderer getItemRenderer() { return this.client.getItemRenderer(); }
 	//
 	public final Text getTitle() { return this.title; }
+	public final @Override boolean getEnabled() { return true; }
+	public @Virtual void close() { this.wrapper.Screen_super_close(); }
+	protected @Virtual void onOpened() {}
+	protected @Virtual void onClosed() {}
+	//
 	public @Virtual boolean shouldPause() { return true; }
 	public @Virtual boolean shouldCloseOnEsc() { return true; }
-	public @Virtual void close() { this.wrapper.Screen_super_close(); }
-	public final @Override boolean getEnabled() { return true; }
+	public @Virtual boolean shouldRenderInGameHud() { return true; }
 	//
-	public final Point getMousePosition() { return this.__mousePosition; }
+	public final Point getMousePosition() { return this.__mousePosition.getLocation(); }
 	@Internal final void setMousePosition(int x, int y) { this.__mousePosition.x = x; this.__mousePosition.y = y; }
 	// --------------------------------------------------
 	public final @Nullable @Override TParentElement getParent() { return null; }
@@ -89,7 +93,7 @@ public abstract class TScreen implements TParentElement
 	 * Initializes this {@link TScreen}.<br/>
 	 * Add {@link TElement}s to this {@link TScreen} here.
 	 */
-	public abstract void init();
+	protected abstract void init();
 	
 	/**
 	 * Invoked whenever this {@link TScreen} ticks.<p>
@@ -98,7 +102,7 @@ public abstract class TScreen implements TParentElement
 	 * @apiNote Do not tick children yourself, {@link TScreenWrapper}
 	 * already does that automatically.
 	 */
-	public @Virtual void tick() {}
+	protected @Virtual void tick() {}
 	// --------------------------------------------------
 	/**
 	 * There's no need for a z-index for {@link TScreen}s, so here it returns 0.
@@ -182,11 +186,11 @@ public abstract class TScreen implements TParentElement
 		return true;
 	}
 	
-	//TODO - this is a workaround; find other ways to do this instead of hard-coding
 	/**
 	 * Temporary workaround code for assisting the {@link TParentElement} and {@link TContextMenuPanel}
 	 * element's behaviors. Call this after the user performs any form of GUI tab navigation.
 	 */
+	//TODO - this method is a workaround; find other ways to do this instead of hard-coding
 	@UnstableApi
 	protected @Internal final void __postTabNavigation()
 	{

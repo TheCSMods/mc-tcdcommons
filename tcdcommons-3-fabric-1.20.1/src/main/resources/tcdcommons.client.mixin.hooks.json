@@ -9,7 +9,8 @@
 		"AccessorScreen",
 		"AccessorEntityRenderDispatcher",
 		"AccessorButtonWidget",
-		"AccessorGridWidget"
+		"AccessorGridWidget",
+		"AccessorTScreen"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

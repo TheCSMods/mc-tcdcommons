@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.world.biome.source.BiomeAccess;
 
 @Mixin(BiomeAccess.class)
-public interface MixinBiomeAccess
+public interface AccessorBiomeAccess
 {
 	@Accessor("seed")
 	public abstract long getSeed();

@@ -114,7 +114,7 @@ public @Virtual class TScreenWrapper extends Screen
 	    
 	    //tick target TScreen and its children
 	    this.target.tick();
-	    //this.target.forEachChild(c -> c.tick(), true); -- deprecated for performance
+	    this.target.forEachChild(c -> c.tick(), true);
 	}
 	// --------------------------------------------------
 	public final @Override void render(DrawContext drawContext, int mouseX, int mouseY, float deltaTime)

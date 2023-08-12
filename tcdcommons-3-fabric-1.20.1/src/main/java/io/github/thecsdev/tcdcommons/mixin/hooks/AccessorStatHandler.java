@@ -8,7 +8,7 @@ import net.minecraft.stat.Stat;
 import net.minecraft.stat.StatHandler;
 
 @Mixin(StatHandler.class)
-public interface MixinStatHandler
+public interface AccessorStatHandler
 {
 	@Accessor("statMap")
 	public abstract Object2IntMap<Stat<?>> getStatMap();

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
+import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenWrapper;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
@@ -215,7 +216,12 @@ public abstract class TElement implements TParentElement
 	public final boolean isFocused() { return (this.__parentScreen != null && this.__parentScreen.getFocusedElement() == this); }
 	public final boolean isDragging() { return (this.__parentScreen != null && this.__parentScreen.getDraggingElement() == this); }
 	// --------------------------------------------------
-	//public @Deprecated @Virtual void tick() {}
+	/**
+	 * Used for periodic updates for this {@link TElement}.
+	 * @apiNote Called automatically by {@link TScreenWrapper}. Do not call it yourself.
+	 * @apiNote For performance reasons, do not perform any expensive operations in here.
+	 */
+	public @Virtual void tick() {}
 	public abstract @Override void render(TDrawContext pencil);
 	public @Virtual void postRender(TDrawContext pencil) {}
 	// --------------------------------------------------
