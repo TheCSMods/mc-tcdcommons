@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.util.exceptions.IllegalParentException;
 import io.github.thecsdev.tcdcommons.api.util.collections.IdealList;
 import io.github.thecsdev.tcdcommons.api.util.math.Tuple4;
 
@@ -49,8 +50,10 @@ public final class TElementList implements Iterable<TElement>
 	 * Returns true if a given {@link TElement} is able to be
 	 * added as a child to this {@link #parent} element.
 	 * @param futureChild The {@link TElement} in question.
+	 * @param throwForIllegalParent If true, {@code throw} {@link IllegalParentException}
+	 * if the {@link TElement} does not support being added here.
 	 */
-	public final boolean canAdd(TElement futureChild)
+	private final @Internal boolean canAdd(TElement futureChild, boolean throwForIllegalParent) throws IllegalParentException
 	{
 		//null check, and
 		//check if the child is this element, and
@@ -67,7 +70,10 @@ public final class TElementList implements Iterable<TElement>
 		}
 		
 		//true if all checks pass
-		return futureChild.canBeAddedTo(this.parent);
+		final var canAdd = futureChild.canBeAddedTo(this.parent);
+		if(!canAdd && throwForIllegalParent)
+			throw new IllegalParentException(this.parent, futureChild);
+		return canAdd;
 	}
 	// --------------------------------------------------
 	/**
@@ -81,7 +87,7 @@ public final class TElementList implements Iterable<TElement>
 	public final boolean add(int index, TElement child, boolean reposition) throws IndexOutOfBoundsException
 	{
 		//null-s and existing members are not allowed
-		if(!canAdd(child)) return false;
+		if(!canAdd(child, true)) return false;
 		
 		//(1) add
 		this.__children.add(index, child); //throws IndexOutOfBoundsException

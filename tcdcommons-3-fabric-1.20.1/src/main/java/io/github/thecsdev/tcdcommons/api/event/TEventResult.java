@@ -11,10 +11,7 @@ public enum TEventResult
 	public boolean isPropagationCancelled() { return (this == CANCEL_PROPAGATION || this == CANCEL_ALL); }
 	public TEventResult combine(TEventResult other)
 	{
-		//null check
-		if(other == null) other = CANCEL_NONE;
-		//combine
-		if(other == CANCEL_NONE) return this;
+		if(other == null || other == CANCEL_NONE) return this;
 		else if(this == CANCEL_NONE) return other;
 		else if(this == other) return this;
 		else return CANCEL_ALL;

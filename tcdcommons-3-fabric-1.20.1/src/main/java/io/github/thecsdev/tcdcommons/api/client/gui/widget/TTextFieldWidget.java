@@ -2,8 +2,9 @@ package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
@@ -37,19 +38,53 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 	 * To see the user input text, use {@link #getInput()}.
 	 * @see #getInput()
 	 */
-	public final @Internal @Override Text getText() { return this.__displayText; }
-	public final @Internal @Override void setText(Text text) { setInput((text != null) ? text.getString() : ""); }
+	public final @Deprecated @Override Text getText() { return this.__displayText; }
+	public final @Deprecated @Override void setText(Text text) { setInput((text != null) ? text.getString() : ""); }
 	//
 	public final String getInput() { return this.__text; }
 	public final void setInput(String text) { setInput(text, true); }
 	public final void setInput(String text, boolean invokeEvent)
 	{
-		if(text == null) text = "";
+		//sanitize the input, and do nothing if it ends up being the same as the current text
+		text = sanitizeInput(text);
+		if(Objects.equals(text, this.__text))
+			return;
+		//assign new text and update internal variables
 		this.__text = text;
 		this.__displayText = literal(text);
 		this.__displayTextWidth = TCDCommonsClient.MC_CLIENT.textRenderer.getWidth(this.__displayText);
-		if(invokeEvent) this.eTextChanged.invoker().invoke(this, this.__text);
+		//invoke any events that need invoking
+		if(invokeEvent)
+			this.eTextChanged.invoker().invoke(this, this.__text);
 	}
+	// --------------------------------------------------
+	/**
+	 * Sanitizes an input {@link String} that is being set as the
+	 * input text for this {@link TTextFieldWidget}.
+	 */
+	protected @Virtual String sanitizeInput(final String input)
+	{
+		//null check
+		if(input == null) return "";
+		//create a string builder and append allowed characters
+		final StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < input.length(); i++)
+		{
+			char c = input.charAt(i);
+			if(isCharacterAllowed(c)) sb.append(c);
+		}
+		//return the final result
+		return sb.toString();
+	}
+	
+	/**
+	 * Returns true if a given {@link Character} is allowed to be
+	 * typed into this {@link TTextFieldWidget} by the user.
+	 * @param c The {@link Character} being checked.
+	 * @apiNote Only used in {@link #inputChar(char)} to prevent inputting illegal characters.
+	 * See {@link #sanitizeInput(String)} for more control over the {@link Character} filtering.
+	 */
+	public @Virtual boolean isCharacterAllowed(char c) { return true; }
 	// ==================================================
 	public @Virtual @Override boolean input(TInputContext inputContext)
 	{
@@ -74,7 +109,7 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 				//if nothing handles the key-press, return false
 				else return false;
 				return true; //if the click was handled, return true
-			case MOUSE_CLICK:
+			case MOUSE_PRESS:
 				//break if the user pressed any button other than LMB
 				if(inputContext.getMouseButton() != 0) break;
 				//click and return
@@ -91,7 +126,12 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 	 * Writes a single {@link Character} to the {@link #getInput()} text.
 	 * @param character The {@link Character} to write.
 	 */
-	public final boolean inputChar(char character) { return inputText(Character.toString(character)); }
+	public final boolean inputChar(char character)
+	{
+		if(!isCharacterAllowed(character))
+			return false;
+		return inputText(Character.toString(character));
+	}
 	
 	/**
 	 * Writes a {@link String} of text to the {@link #getInput()} text.

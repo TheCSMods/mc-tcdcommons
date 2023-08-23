@@ -37,7 +37,7 @@ public class TCDCommons extends Object
 		
 		//load config
 		this.config = new TCDCommonsConfig(getModID());
-		this.config.loadFromFileOrCrash(true); //important to crash on fail
+		this.config.loadFromFileOrCrash(true); //important to crash on fail, as there are important config variables
 		
 		//init stuff
 		TCDCommonsNetworkHandler.init();

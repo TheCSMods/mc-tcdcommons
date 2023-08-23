@@ -8,6 +8,8 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 public @Virtual class TMenuBarPanel extends TMenuPanel
 {
 	// ==================================================
+	public static final int DEFAULT_MENU_HEIGHT = 15;
+	// ==================================================
 	public TMenuBarPanel(TParentElement target)
 	{
 		this(0, 0,
@@ -18,7 +20,7 @@ public @Virtual class TMenuBarPanel extends TMenuPanel
 	}
 	public TMenuBarPanel(int x, int y, int width)
 	{
-		super(x, y, width, 15);
+		super(x, y, width, DEFAULT_MENU_HEIGHT);
 		this.scrollFlags = SCROLL_HORIZONTAL;
 	}
 	// ==================================================

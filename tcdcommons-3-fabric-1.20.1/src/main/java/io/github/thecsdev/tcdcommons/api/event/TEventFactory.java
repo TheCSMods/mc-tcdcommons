@@ -1,5 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.event;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import io.github.thecsdev.tcdcommons.api.util.collections.IdealList;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
@@ -50,10 +52,15 @@ public final class TEventFactory
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
-					//iterate over all listeners
-			        for (T listener : listeners)
-			        	method.invoke(listener, args);
-			        return null;
+					try
+					{
+						//iterate over all listeners
+				        for (T listener : listeners)
+				        	method.invoke(listener, args);
+				        return null;
+					}
+					catch(Exception listenerException)
+					{ throw new RuntimeException("Failed to invoke event hanlder.", listenerException); }
 			    }
 			);
         
@@ -81,29 +88,146 @@ public final class TEventFactory
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
-					//prepare to execute; start of with canceling none
-					TEventResult result = TEventResult.CANCEL_NONE;
-					
-					//iterate over all listeners
-			        for (T listener : listeners)
-			        {
-			        	//invoke and combine the results
-			        	final Object listenerResult = method.invoke(listener, args);
-			        	try { result = result.combine((TEventResult)listenerResult); }
-			        	catch(ClassCastException cce) { __handleEventResultCCE(cce, method, listenerResult); }
-			        	
-			        	//check if evaluating further
-			        	if(result.isPropagationCancelled())
-			        		break;
-			        }
-			        
-			        //return the result
-			        return result;
+					try
+					{
+						//prepare to execute; start of with canceling none
+						TEventResult result = TEventResult.CANCEL_NONE;
+						
+						//iterate over all listeners
+				        for (T listener : listeners)
+				        {
+				        	//invoke and combine the results
+				        	final Object listenerResult = method.invoke(listener, args);
+				        	try { result = result.combine((TEventResult)listenerResult); }
+				        	catch(ClassCastException cce) { __handleEventResultCCE(cce, method, listenerResult); }
+				        	
+				        	//check if evaluating further
+				        	if(result.isPropagationCancelled())
+				        		break;
+				        }
+				        
+				        //return the result
+				        return result;
+					}
+					catch(Exception listenerException)
+					{ throw new RuntimeException("Failed to invoke event hanlder.", listenerException); }
 			    }
 			);
         
         //create and return event implementation
         return new TEventImpl<>(listeners, invoker);
+	}
+	// ==================================================
+	/**
+	 * Similar to {@link #createLoop(Object...)}, but the listeners
+	 * are stored in a {@link List} of {@link WeakReference}s.
+	 * @param <T> The event listener interface type.
+	 * @param eventTypeClassGetter Generic type getter. Leave this empty. Do not pass any arguments.
+	 */
+	public static @SafeVarargs <T> TEvent<T> createWeakLoop(T... eventTypeClassGetter)
+	{
+		Objects.requireNonNull(eventTypeClassGetter);
+		
+		//create list of listeners
+		final IdealList<WeakReference<T>> listeners = new IdealList<>();
+		
+		//create the invoker for event listeners
+        @SuppressWarnings("unchecked")
+		final T invoker = (T)Proxy.newProxyInstance(
+				EventFactory.class.getClassLoader(),
+				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
+				(proxy, method, args) ->
+				{
+					try
+					{
+						//iterate over all listeners
+						final var iter = listeners.listIterator();
+						while(iter.hasNext())
+						{
+							//obtain the listener reference, and the listener from the reference
+							final var listenerRef = iter.next();
+							final var listener = listenerRef.get();
+							//check if the listener was garbage-collected...
+							if(method == null)
+							{
+								//...and if it was, remove the reference and continue
+								iter.remove();
+								continue;
+							}
+							//invoke the listener
+							method.invoke(listener, args);
+						}
+				        return null;
+					}
+					catch(Exception listenerException)
+					{ throw new RuntimeException("Failed to invoke event hanlder.", listenerException); }
+			    }
+			);
+        
+        //create and return event implementation
+        return new TWeakEventImpl<>(listeners, invoker);
+	}
+	
+	/**
+	 * Same as {@link #createEventResult(Object...)}, but the listeners
+	 * are stored in a {@link List} of {@link WeakReference}s.
+	 * @param <T> The event listener interface type.
+	 * @param eventTypeClassGetter Generic type getter. Leave this empty. Do not pass any arguments.
+	 * @apiNote Listeners of this {@link TEvent} type must return {@link TEventResult}.
+	 */
+	public static @SafeVarargs <T> TEvent<T> createWeakEventResult(T... eventTypeClassGetter)
+	{
+		Objects.requireNonNull(eventTypeClassGetter);
+		
+		//create list of listeners
+		final IdealList<WeakReference<T>> listeners = new IdealList<>();
+		
+		//create the invoker for event listeners
+        @SuppressWarnings("unchecked")
+		final T invoker = (T)Proxy.newProxyInstance(
+				EventFactory.class.getClassLoader(),
+				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
+				(proxy, method, args) ->
+				{
+					try
+					{
+						//prepare to execute; start of with canceling none
+						TEventResult result = TEventResult.CANCEL_NONE;
+						
+						//iterate over all listeners
+						final var iter = listeners.listIterator();
+						while(iter.hasNext())
+						{
+							//obtain the listener reference, and the listener from the reference
+							final var listenerRef = iter.next();
+							final var listener = listenerRef.get();
+							//check if the listener was garbage-collected...
+							if(method == null)
+							{
+								//...and if it was, remove the reference and continue
+								iter.remove();
+								continue;
+							}
+				        	//invoke and combine the results
+				        	final Object listenerResult = method.invoke(listener, args);
+				        	try { result = result.combine((TEventResult)listenerResult); }
+				        	catch(ClassCastException cce) { __handleEventResultCCE(cce, method, listenerResult); }
+				        	
+				        	//check if evaluating further
+				        	if(result.isPropagationCancelled())
+				        		break;
+						}
+				        
+				        //return the result
+				        return result;
+					}
+					catch(Exception listenerException)
+					{ throw new RuntimeException("Failed to invoke event hanlder.", listenerException); }
+			    }
+			);
+        
+        //create and return event implementation
+        return new TWeakEventImpl<>(listeners, invoker);
 	}
 	// ==================================================
 	/**
@@ -129,10 +253,15 @@ public final class TEventFactory
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
-					//iterate over all listeners
-			        for (T listener : listeners.values())
-			        	method.invoke(listener, args);
-			        return null;
+					try
+					{
+						//iterate over all listeners
+				        for (T listener : listeners.values())
+				        	method.invoke(listener, args);
+				        return null;
+					}
+					catch(Exception listenerException)
+					{ throw new RuntimeException("Failed to invoke event hanlder.", listenerException); }
 			    }
 			);
         
@@ -160,24 +289,29 @@ public final class TEventFactory
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
-					//prepare to execute; start of with canceling none
-					TEventResult result = TEventResult.CANCEL_NONE;
-					
-					//iterate over all listeners
-			        for (T listener : listeners.values())
-			        {
-			        	//invoke and combine the results
-			        	final Object listenerResult = method.invoke(listener, args);
-			        	try { result = result.combine((TEventResult)listenerResult); }
-			        	catch(ClassCastException cce) { __handleEventResultCCE(cce, method, listenerResult); }
-			        	
-			        	//check if evaluating further
-			        	if(result.isPropagationCancelled())
-			        		break;
-			        }
-			        
-			        //return the result
-			        return result;
+					try
+					{
+						//prepare to execute; start of with canceling none
+						TEventResult result = TEventResult.CANCEL_NONE;
+						
+						//iterate over all listeners
+				        for (T listener : listeners.values())
+				        {
+				        	//invoke and combine the results
+				        	final Object listenerResult = method.invoke(listener, args);
+				        	try { result = result.combine((TEventResult)listenerResult); }
+				        	catch(ClassCastException cce) { __handleEventResultCCE(cce, method, listenerResult); }
+				        	
+				        	//check if evaluating further
+				        	if(result.isPropagationCancelled())
+				        		break;
+				        }
+				        
+				        //return the result
+				        return result;
+					}
+					catch(Exception listenerException)
+					{ throw new RuntimeException("Failed to invoke event hanlder.", listenerException); }
 			    }
 			);
         

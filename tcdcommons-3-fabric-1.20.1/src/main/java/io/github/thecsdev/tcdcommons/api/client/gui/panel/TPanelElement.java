@@ -11,6 +11,8 @@ import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElementList;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.InputDiscoveryPhase;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.InputType;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TScrollBarWidget;
 import io.github.thecsdev.tcdcommons.api.event.TEvent;
 import io.github.thecsdev.tcdcommons.api.event.TEventFactory;
@@ -432,6 +434,21 @@ public @Virtual class TPanelElement extends TElement
 		return h || v;
 	}
 	// ==================================================
+	public @Virtual @Override boolean input(TInputContext inputContext, InputDiscoveryPhase inputPhase)
+	{
+		//essentials
+		if(inputPhase == InputDiscoveryPhase.BROADCAST &&
+			inputContext.getInputType() == InputType.MOUSE_RELEASE &&
+			inputContext.getMouseButton() == 0)
+		{
+			//clear drag flags when the mouse releases (do not return from here)
+			this.scrollDragX = 0;
+			this.scrollDragY = 0;
+		}
+		//return super
+		return super.input(inputContext, inputPhase);
+	}
+	// --------------------------------------------------
 	public @Virtual @Override boolean input(TInputContext inputContext)
 	{
 		//respect super
@@ -440,19 +457,6 @@ public @Virtual class TPanelElement extends TElement
 		//and make sure the parent screen is in place
 		if(getParentTScreen() == null)
 			return false;
-		
-		//essentials
-		switch(inputContext.getInputType())
-		{
-			//clear drag flags when the mouse releases (do not return from here)
-			case MOUSE_RELEASE:
-				//make sure it's LMB
-				if(inputContext.getMouseButton() != 0) break;
-				//clear flags
-				this.scrollDragX = 0;
-				this.scrollDragY = 0;
-			default: break;
-		}
 		
 		//mouse input forwarding
 		//- this will forward mouse related inputs to children first,
@@ -491,7 +495,7 @@ public @Virtual class TPanelElement extends TElement
 				final var amt = ((int)(double)inputContext.getScrollAmount()) * this.scrollSensitivity;
 				if(this.smoothScroll) return inputSmoothScroll(amt);
 				else return inputScroll(amt);
-			case MOUSE_CLICK:
+			case MOUSE_PRESS:
 				//make sure it's LMB
 				if(inputContext.getMouseButton() != 0) break;
 				//return true to allow mouse dragging

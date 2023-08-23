@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui;
 
+import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -12,15 +14,18 @@ import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenWrapper;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
+import io.github.thecsdev.tcdcommons.api.client.util.interfaces.ITooltipProvider;
 import io.github.thecsdev.tcdcommons.api.event.TEvent;
 import io.github.thecsdev.tcdcommons.api.event.TEventFactory;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.text.Text;
 
-public abstract class TElement implements TParentElement
+public abstract class TElement implements TParentElement, ITooltipProvider
 {
 	// ==================================================
 	/** Makes {@link #setPosition} set the position relative to parent. */
@@ -62,10 +67,10 @@ public abstract class TElement implements TParentElement
 	// ==================================================
 	public TElement(int x, int y, int width, int height)
 	{
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.x = Math.abs(x);
+		this.y = Math.abs(y);
+		this.width = Math.abs(width);
+		this.height = Math.abs(height);
 		this.alpha = 1;
 		this.zOffset = 0;
 		this.tooltip = null;
@@ -198,6 +203,19 @@ public abstract class TElement implements TParentElement
 	public final boolean isVisible() { return this.alpha > 0; }
 	public final boolean isEnabledAndVisible() { return isVisible() && getEnabled(); }
 	//
+	public final TextRenderer getTextRenderer()
+	{
+		if(this.__parentScreen != null)
+			return this.__parentScreen.getTextRenderer();
+		else return MC_CLIENT.textRenderer;
+	}
+	public final ItemRenderer getItemRenderer()
+	{
+		if(this.__parentScreen != null)
+			return this.__parentScreen.getItemRenderer();
+		else return MC_CLIENT.getItemRenderer();
+	}
+	//
 	/**
 	 * Returns the sum of {@link #getZOffset()} for this {@link TElement},
 	 * while also taking into account any {@link TParentElement}s.<p>
@@ -215,6 +233,18 @@ public abstract class TElement implements TParentElement
 	public final boolean isHovered() { return (this.__parentScreen != null && this.__parentScreen.getHoveredElement() == this); }
 	public final boolean isFocused() { return (this.__parentScreen != null && this.__parentScreen.getFocusedElement() == this); }
 	public final boolean isDragging() { return (this.__parentScreen != null && this.__parentScreen.getDraggingElement() == this); }
+	public final boolean isFocusedOrHovered() { return isFocused() || isHovered(); }
+	// --------------------------------------------------
+	/**
+	 * A utility method that creates and returns a new {@link TContextMenuPanel}
+	 * instance for this {@link TElement}. Use this to create your own
+	 * custom context menus for this {@link TElement}.
+	 * @return A {@link TContextMenuPanel} for this {@link TElement}, or
+	 * {@code null} if this {@link TElement} does not support context menus.
+	 * @apiNote Do not do anything other than create and return a {@link TContextMenuPanel}
+	 * instance from here. Any events such as {@link #eContextMenu} will be invoked automatically.
+	 */
+	public @Virtual @Nullable TContextMenuPanel createContextMenu() { return null; }
 	// --------------------------------------------------
 	/**
 	 * Used for periodic updates for this {@link TElement}.

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * store {@link Entry} objects, each representing an RGBA color.
  * @see Stack
  */
-public final class ColorStack extends Stack<io.github.thecsdev.tcdcommons.api.client.gui.util.ColorStack.Entry>
+public final class ColorStack extends Stack<ColorStack.Entry>
 {
 	// ==================================================
 	private static final long serialVersionUID = 2434143149100104895L;
@@ -22,7 +22,7 @@ public final class ColorStack extends Stack<io.github.thecsdev.tcdcommons.api.cl
 	//
 	//clear last calculated entry when pushing and popping, as it no longer applies
 	public final @Override Entry push(Entry item) { this.lastCalculation = null; return super.push(item); }
-	public final @Override Entry pop() { this.lastCalculation = null; return super.pop(); }
+	public final synchronized @Override Entry pop() { this.lastCalculation = null; return super.pop(); }
 	// --------------------------------------------------
 	public final void apply(TDrawContext pencil) { calculate().apply(pencil); }
 	public final Entry calculate()
@@ -38,7 +38,7 @@ public final class ColorStack extends Stack<io.github.thecsdev.tcdcommons.api.cl
 		for (final Entry entry : this)
 		{
 			//check the entry blend method, and blend based on that
-			switch (entry.blendMethod)
+			switch(entry.blendMethod)
 			{
 				case MULTIPLY:
 					red *= entry.r;
@@ -95,14 +95,13 @@ public final class ColorStack extends Stack<io.github.thecsdev.tcdcommons.api.cl
 		alpha = Math.max(0, Math.min(1, alpha));
 		
 		//assign cache and return
-		this.lastCalculation = new Entry(red, green, blue, alpha, null);
-		return this.lastCalculation;
+		return (this.lastCalculation = new Entry(red, green, blue, alpha, null));
 	}
 	// ==================================================
 	/**
 	 * Defines the methods for blending colors.
 	 * <p>
-	 * This enumeration is used to specify the method used to blend colors in a color stack.
+	 * This enumeration is used to specify the method used to blend colors in a {@link ColorStack}.
 	 * </p>
 	 */
 	public static enum BlendMethod { SET, ADD, SUBTRACT, MULTIPLY, /*DIVIDE,*/ SET_ALPHA }
@@ -118,29 +117,30 @@ public final class ColorStack extends Stack<io.github.thecsdev.tcdcommons.api.cl
 		/** An RGBA color channel value of this {@link Entry}. */
 		public final float r,g,b,a;
 		/** The blending method that will be used to blend the color values of this {@link Entry}. */
-		public final BlendMethod blendMethod;
+		public final @Nullable BlendMethod blendMethod;
 		/** When set to true, the Alpha channel will blend using the {@link #blendMethod}. */
-		public /*non-final*/ boolean blendAlpha;
+		public final boolean blendAlpha;
 		
 		public Entry() { this(1,1,1,1); }
 		public Entry(float r, float g, float b, float a) { this(r, g, b, a, BlendMethod.MULTIPLY); }
-		public Entry(float r, float g, float b, float a, BlendMethod blendMethod)
+		public Entry(float r, float g, float b, float a, BlendMethod blendMethod) { this(r, g, b, a, blendMethod, false); }
+		public Entry(float r, float g, float b, float a, BlendMethod blendMethod, boolean blendAlpha)
 		{
 			this.r = r;
 			this.g = g;
 			this.b = b;
 			this.a = a;
 			this.blendMethod = blendMethod;
-			this.blendAlpha = false;
+			this.blendAlpha = blendAlpha;
 		}
 		
 		public final void apply(TDrawContext pencil) { pencil.setShaderColor(r, g, b, a); }
-		public final @Override Entry clone()
+		/*public final @Override Entry clone()
 		{
 			final var newEntry = new Entry(r, g, b, a, blendMethod);
 			newEntry.blendAlpha = this.blendAlpha;
 			return newEntry;
-		}
+		}*/
 	}
 	// ==================================================
 }

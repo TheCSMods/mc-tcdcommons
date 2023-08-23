@@ -12,16 +12,19 @@ public @Virtual class TLabelElement extends TBlankElement implements ITextProvid
 {
 	// ==================================================
 	protected @Nullable Text text;
-	protected HorizontalAlignment textHorizontalAlignment;
-	protected int textColor;
+	protected HorizontalAlignment textHorizontalAlignment = HorizontalAlignment.LEFT;
+	protected int textColor = TDrawContext.DEFAULT_TEXT_COLOR;
+	protected int textSideOffset = TDrawContext.DEFAULT_TEXT_SIDE_OFFSET;
+	protected float textScale = 1;
 	// ==================================================
 	public TLabelElement(int x, int y, int width, int height) { this(x, y, width, height, null); }
 	public TLabelElement(int x, int y, int width, int height, Text text)
 	{
 		super(x, y, width, height);
 		this.text = text;
-		this.textHorizontalAlignment = HorizontalAlignment.LEFT;
-		this.textColor = TDrawContext.DEFAULT_TEXT_COLOR;
+		//this.textHorizontalAlignment = HorizontalAlignment.LEFT;
+		//this.textColor = TDrawContext.DEFAULT_TEXT_COLOR;
+		//this.textScale = 1;
 	}
 	// ==================================================
 	public final @Override Text getText() { return this.text; }
@@ -32,10 +35,21 @@ public @Virtual class TLabelElement extends TBlankElement implements ITextProvid
 	// --------------------------------------------------
 	public final int getTextColor() { return this.textColor; }
 	public @Virtual void setTextColor(int color) { this.textColor = color; }
+	//
+	public final int getTextSideOffset() { return this.textSideOffset; }
+	public @Virtual void setTextSideOffset(int textSideOffset) { this.textSideOffset = textSideOffset; }
+	//
+	public final float getTextScale() { return this.textScale; }
+	public @Virtual void setTextScale(float textScale) { this.textScale = Math.max(textScale, 0.5f); }
 	// --------------------------------------------------
 	public @Override void render(TDrawContext pencil)
 	{
-		pencil.drawTElementTextTHC(text, this.textHorizontalAlignment, this.textColor);
+		pencil.drawTElementTextTHSCS(
+				this.text,
+				this.textHorizontalAlignment,
+				this.textSideOffset,
+				this.textColor,
+				this.textScale);
 	}
 	// ==================================================
 }

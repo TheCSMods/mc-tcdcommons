@@ -22,7 +22,8 @@ final class TEventImpl<T> implements TEvent<T>
 	// ==================================================
 	public @Override boolean register(T listener)
 	{
-		if(listener == null) return false;
+		if(listener == null || isRegistered(listener))
+			return false;
 		return this.listeners.add(listener);
 	}
 	public @Override boolean unregister(T listener) { return this.listeners.remove(listener); }

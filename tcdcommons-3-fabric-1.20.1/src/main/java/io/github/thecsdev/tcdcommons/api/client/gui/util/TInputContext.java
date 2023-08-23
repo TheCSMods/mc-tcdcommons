@@ -34,7 +34,7 @@ public final class TInputContext
 	@UsedFor(InputType.CHAR_TYPE)
 	public final @Nullable Character getTypedChar() { return this.typedChar; }
 	
-	@UsedFor({InputType.MOUSE_CLICK, InputType.MOUSE_RELEASE, InputType.MOUSE_DRAG, InputType.MOUSE_DRAG_END})
+	@UsedFor({InputType.MOUSE_PRESS, InputType.MOUSE_RELEASE, InputType.MOUSE_DRAG, InputType.MOUSE_DRAG_END})
 	public final @Nullable Integer getMouseButton() { return this.mouseButton; }
 	
 	@UsedFor({InputType.MOUSE_MOVE, InputType.MOUSE_DRAG, InputType.MOUSE_SCROLL})
@@ -77,11 +77,11 @@ public final class TInputContext
 	/**
 	 * "Of mouse click/release".
 	 * @param mouseButton The mouse button that was clicked or released.
-	 * @param isDown true = {@link InputType#MOUSE_CLICK}; false = {@link InputType#MOUSE_RELEASE}
+	 * @param isDown true = {@link InputType#MOUSE_PRESS}; false = {@link InputType#MOUSE_RELEASE}
 	 */
 	public static TInputContext ofMouseCR(int mouseButton, boolean isDown)
 	{
-		final var result = new TInputContext(isDown ? InputType.MOUSE_CLICK : InputType.MOUSE_RELEASE);
+		final var result = new TInputContext(isDown ? InputType.MOUSE_PRESS : InputType.MOUSE_RELEASE);
 		result.mouseButton = mouseButton;
 		return result;
 	}
@@ -153,10 +153,11 @@ public final class TInputContext
 		
 		CHAR_TYPE,
 		
-		MOUSE_CLICK, //Minecraft uses the term "click", so I stick with it
+		MOUSE_PRESS,
 		MOUSE_RELEASE,
 		
 		MOUSE_MOVE,
+		/** @apiNote You must handle {@link #MOUSE_PRESS} to get {@link #MOUSE_DRAG}. */
 		MOUSE_DRAG,
 		MOUSE_DRAG_END,
 		MOUSE_SCROLL;
@@ -168,7 +169,7 @@ public final class TInputContext
 		public boolean isKeyboardRelated() { return this == KEY_PRESS || this == KEY_RELEASE || this == CHAR_TYPE; }
 		public boolean isMouseRelated()
 		{
-			return this == MOUSE_CLICK || this == MOUSE_RELEASE || this == MOUSE_MOVE ||
+			return this == MOUSE_PRESS || this == MOUSE_RELEASE || this == MOUSE_MOVE ||
 					this == MOUSE_DRAG || this == MOUSE_SCROLL;
 		}
 	}

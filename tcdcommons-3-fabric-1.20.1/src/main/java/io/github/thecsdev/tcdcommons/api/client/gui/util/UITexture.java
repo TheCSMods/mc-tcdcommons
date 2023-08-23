@@ -25,6 +25,7 @@ public final class UITexture extends Object
 	public UITexture(Identifier textureId, Dimension textureSize) { this(textureId, textureSize, 0, 0, 1, 1); }
 	public UITexture(Identifier textureId, Dimension textureSize, int u, int v, int uvW, int uvH) { this(textureId, textureSize, new Rectangle(u, v, uvW, uvH)); }
 	public UITexture(Identifier textureId, int textureWidth, int textureHeight, int u, int v, int uvW, int uvH) { this(textureId, new Dimension(textureWidth, textureHeight), new Rectangle(u, v, uvW, uvH)); }
+	public UITexture(Identifier textureId, Rectangle textureUVs) { this(textureId, new Dimension(256, 256), textureUVs); }
 	public UITexture(Identifier textureId, Dimension textureSize, Rectangle textureUVs)
 	{
 		this.textureId = textureId; //already immutable
@@ -157,7 +158,7 @@ public final class UITexture extends Object
 				width, height,
 				this.textureUVs.x, this.textureUVs.y,
 				this.textureUVs.width, this.textureUVs.height,
-				this.textureUVs.width, this.textureUVs.height);
+				this.textureSize.width, this.textureSize.height);
 	}
 	// ==================================================
 }

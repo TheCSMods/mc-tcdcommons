@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
  * <ul>
  *     <li>Resilient to {@link ConcurrentModificationException}</li>
  *     <li>{@link Iterator} capable of handling complex concurrent changes</li>
+ *     <li>Features {@link #find(Predicate)}</li>
  * </ul>
  * @author TheCSDev
  */
@@ -97,6 +99,21 @@ public @Virtual class IdealList<E> extends AbstractList<E> implements Iterable<E
 		forEachNode(null);
 		//create and return the iterator
 		return new IdealListIterator(index);
+	}
+	// --------------------------------------------------
+	/**
+	 * Returns the first containing element that matches a given {@link Predicate},
+	 * or {@code null} if such an element is not in this {@link IdealList}.
+	 * @param predicate The element {@link Predicate}.
+	 * @throws NullPointerException if the given predicate is {@code null}.
+	 * @see Predicate
+	 */
+	public final E find(Predicate<E> predicate)
+	{
+		for(final E element : this)
+			if(predicate.test(element))
+				return element;
+		return null;
 	}
 	// ==================================================
 	protected final int nodeCount() { return this.__nodes.size(); }

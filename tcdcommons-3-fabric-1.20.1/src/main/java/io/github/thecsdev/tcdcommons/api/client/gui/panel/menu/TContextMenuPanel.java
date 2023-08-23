@@ -113,7 +113,7 @@ public @Virtual class TContextMenuPanel extends TMenuPanel
 			return false;
 		
 		//handle based on input type
-		if(inputContext.getInputType() == InputType.MOUSE_CLICK)
+		if(inputContext.getInputType() == InputType.MOUSE_PRESS)
 		{
 			final var h = findHoveredContextMenu(getParentTScreen());
 			if(h != this) //TODO - Add nested context menu support

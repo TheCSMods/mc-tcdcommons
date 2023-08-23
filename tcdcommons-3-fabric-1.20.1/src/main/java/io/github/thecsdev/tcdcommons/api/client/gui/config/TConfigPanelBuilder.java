@@ -47,6 +47,13 @@ public @Virtual class TConfigPanelBuilder
 	protected @Nullable TElement lastElement;
 	// ==================================================
 	/**
+	 * Constructs the {@link TConfigPanelBuilder} by copying the "target panel"
+	 * and "save config" values from another {@link TConfigPanelBuilder}.
+	 * @param other The {@link TConfigPanelBuilder} to copy the values from.
+	 */
+	public TConfigPanelBuilder(TConfigPanelBuilder other) { this(other.targetPanel, other.saveConfig); }
+	
+	/**
 	 * @param targetPanel The target {@link TPanelElement} onto which the config GUI will be built.
 	 * @param saveConfig The {@link Runnable} that will run after applying config changes.
 	 * @throws NullPointerException If an argument is null. 

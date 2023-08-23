@@ -1,5 +1,10 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.screen;
 
+import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_LEFT_SUPER;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_RIGHT_SUPER;
+import static net.minecraft.client.util.InputUtil.isKeyPressed;
+
 import java.awt.Point;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -235,7 +240,7 @@ public abstract class TScreen implements TParentElement
 			
 			//push context, scissors, and alpha
 			pencil.getMatrices().push();
-			pencil.getMatrices().translate(0, 0, child.getZIndex());
+			pencil.getMatrices().translate(0, 0, child.getZOffset());
 			pencil.enableScissor(pX, pY, pXW, pYH); //constrain to parent bounds
 			pencil.pushTShaderColor(1, 1, 1, child.getAlpha());
 			
@@ -305,5 +310,8 @@ public abstract class TScreen implements TParentElement
 				cYH = cY + child.getHeight();
 		return (mX >= cX && mX <= cXW && mY >= cY && mY <= cYH);
 	}
+	// ==================================================
+	public static boolean hasKeyDown(int keyCode) { return isKeyPressed(MC_CLIENT.getWindow().getHandle(), keyCode); }
+	public static boolean hasWndDown() { return hasKeyDown(GLFW_KEY_LEFT_SUPER) || hasKeyDown(GLFW_KEY_RIGHT_SUPER); }
 	// ==================================================
 }

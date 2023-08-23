@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.google.common.annotations.Beta;
+
 import net.minecraft.util.Util;
 
 /**
@@ -12,6 +14,7 @@ import net.minecraft.util.Util;
  * 
  * @author TheCSDev
  */
+@Beta
 public final class AntivirusUtils
 {
 	// ==================================================

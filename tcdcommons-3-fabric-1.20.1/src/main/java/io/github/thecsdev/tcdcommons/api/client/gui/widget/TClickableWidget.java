@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
+import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
+
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
@@ -8,7 +10,6 @@ import io.github.thecsdev.tcdcommons.api.event.TEvent;
 import io.github.thecsdev.tcdcommons.api.event.TEventFactory;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.IEnableStateProviderSetter;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.util.Identifier;
 
 /**
@@ -27,8 +28,7 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 {
 	// ==================================================
 	public static final int BUTTON_TEXTURE_SLICE_SIZE = 3;
-	public static final Identifier WIDGETS_TEXTURE = ClickableWidget.WIDGETS_TEXTURE;
-	public static final Identifier ACCESSIBILITY_TEXTURE = ClickableWidget.ACCESSIBILITY_TEXTURE;
+	public static final Identifier T_WIDGETS_TEXTURE = new Identifier(getModID(), "textures/gui/widgets.png");
 	// --------------------------------------------------
 	protected boolean enabled;
 	// --------------------------------------------------
@@ -76,7 +76,7 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 		//check for input type
 		switch(inputContext.getInputType())
 		{
-			case MOUSE_CLICK:
+			case MOUSE_PRESS:
 				//break if the user pressed any button other than LMB
 				if(inputContext.getMouseButton() != 0) break;
 				//click

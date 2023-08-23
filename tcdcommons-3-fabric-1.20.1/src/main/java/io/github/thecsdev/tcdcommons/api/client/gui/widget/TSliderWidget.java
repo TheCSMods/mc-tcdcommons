@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
+import static net.minecraft.client.gui.widget.ClickableWidget.WIDGETS_TEXTURE;
+
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
@@ -192,7 +194,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		//handle input based on type
 		switch(inputContext.getInputType())
 		{
-			case MOUSE_CLICK:
+			case MOUSE_PRESS:
 				//break if the user pressed any button other than LMB
 				if(inputContext.getMouseButton() != 0) break;
 				//do not click yet, just return

@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.screen;
 
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_ESCAPE;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_TAB;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofCharType;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofKeyboardPR;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofMouseCR;
@@ -55,7 +57,11 @@ public @Virtual class TScreenWrapper extends Screen
 	// --------------------------------------------------
 	protected @Nullable Window clientWindow;
 	// ==================================================
-	public TScreenWrapper(TScreen target) { super(target.getTitle()); this.target = target; }
+	public TScreenWrapper(TScreen target)
+	{
+		super(target.getTitle());
+		this.target = target;
+	}
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link #target} {@link TScreen} for this {@link TScreenWrapper}.
@@ -142,7 +148,7 @@ public @Virtual class TScreenWrapper extends Screen
 			return true;
 		
 		//lastly, handle ESC key-press
-		else if(keyCode == 256 && isDown && this.target.shouldCloseOnEsc()) { close(); return true; }
+		else if(keyCode == GLFW_KEY_ESCAPE && isDown && this.target.shouldCloseOnEsc()) { close(); return true; }
 		else return false;
 	}
 	// --------------------------------------------------
@@ -228,7 +234,7 @@ public @Virtual class TScreenWrapper extends Screen
 					inputMainPhase(this.target.__dragging, inputContext);
 			//mouse click and release bubble starting from hovered element,
 			//but with some extra "dragged element" handling as well
-			case MOUSE_CLICK:
+			case MOUSE_PRESS:
 			{
 				//obtain the initially focused element at this point, so we can cross-check
 				//it and find out if an event handler set the focus to another element
@@ -288,7 +294,7 @@ public @Virtual class TScreenWrapper extends Screen
 			case KEY_PRESS:
 			{
 				//first check if tab navigation is involved
-				final var isTab = inputContext.getKeyboardKey().keyCode == 258;
+				final var isTab = inputContext.getKeyboardKey().keyCode == GLFW_KEY_TAB;
 				
 				//if tab navigation is involved, and user has CTRL down, force the tab navigation
 				/*@Deprecated -- don't do this for now; make the GUI elements responsible for this

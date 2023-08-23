@@ -11,6 +11,7 @@ import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
 
 import com.google.common.annotations.Beta;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
@@ -29,6 +30,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
@@ -36,6 +38,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 /**
  * {@link TCDCommons}'s implementation of {@link DrawContext}.
@@ -47,12 +50,13 @@ public final class TDrawContext extends DrawContext
 	//private static final EntityModelLoader ERD_EML = getModelLoader(ERD);
 	private static final Camera ERD_CAMERA = new Camera();
 	// ==================================================
-	public static final @Beta int DEFAULT_TEXT_SIDE_OFFSET = 3;
+	public static final @Beta int DEFAULT_TEXT_SIDE_OFFSET = 5;
 	public static final @Beta int DEFAULT_TEXT_COLOR = 16777215;
 	public static final @Beta int DEFAULT_ERROR_COLOR = Color.MAGENTA.getRGB();
-	public static final Identifier TEXTURE_FILL = new Identifier(TCDCommons.getModID(), "textures/gui/fill.png");
+	public static final @Beta Identifier TEXTURE_FILL = new Identifier(TCDCommons.getModID(), "textures/gui/fill.png");
 	// ==================================================
-	protected final ColorStack colorStack;
+	protected final ColorStack colorStack = new ColorStack();
+	protected final TextScaleStack textScaleStack = new TextScaleStack();
 	protected final MinecraftClient client;
 	// --------------------------------------------------
 	/**
@@ -64,6 +68,7 @@ public final class TDrawContext extends DrawContext
 	// --------------------------------------------------
 	public final int mouseX, mouseY;
 	public final float deltaTime;
+	protected float textScale = 1;
 	// ==================================================
 	protected TDrawContext(DrawContext drawContext, int mouseX, int mouseY, float deltaTime)
 	{
@@ -76,7 +81,8 @@ public final class TDrawContext extends DrawContext
 		mixin_this.setVertexConsumers(mixin_that.getVertexConsumers());
 		
 		//initialize variables
-		this.colorStack = new ColorStack();
+		//this.colorStack = new ColorStack();
+		//this.textSizeStack = new TextSizeStack();
 		this.currentTarget = null;
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
@@ -107,28 +113,36 @@ public final class TDrawContext extends DrawContext
 	public final void updateContext(TParentElement target) { this.currentTarget = target; }
 	//public final @Nullable TParentElement getCurrentTarget() { return this.currentTarget; } -- not even used
 	// ==================================================
-	/* - TODO - Get #fill to work with the aplha color channel and the color stack
+	/**
 	 * Fills a given area on the screen with a given color.<p>
 	 * Overridden to add support for the {@link #colorStack}.
-	 *
+	 */
 	public final @Override void fill(RenderLayer layer, int x1, int x2, int y1, int y2, int z, int color)
 	{
 		//verify position validity
 		if (x1 < y1) { int i = x1; x1 = y1; y1 = i; }
 		if (x2 < y2) { int i = x2; x2 = y2; y2 = i; }
 		
-		//calculate the color (use the 'multiply' blending method)
+		//calculate the color parameters, and blend with the color stack (use the 'multiply' blending method)
 		final var calc = this.colorStack.calculate();
-		float a = (ColorHelper.Argb.getAlpha(color) / 255f) * calc.a;
-		float r = (ColorHelper.Argb.getRed(color) / 255f) * calc.r;
-		float g = (ColorHelper.Argb.getGreen(color) / 255f) * calc.g;
-		float b = (ColorHelper.Argb.getBlue(color) / 255f) * calc.b;
+		float a = (ColorHelper.Argb.getAlpha(color) / 255.0f) * calc.a; //note: 255 has to be a decimal
+		float r = (ColorHelper.Argb.getRed(color) / 255.0f) * calc.r;
+		float g = (ColorHelper.Argb.getGreen(color) / 255.0f) * calc.g;
+		float b = (ColorHelper.Argb.getBlue(color) / 255.0f) * calc.b;
 		
-		//draw the fill
-		setShaderColor(r, g, b, a); //set the desired shader color
-		drawTexture(TEXTURE_FILL, x1, y1, x2 - x1, y2 - y1, 0, 0, 1, 1, 1, 1);
-		applyTShaderColor(); //reset the color back to what it was
-	}*/
+		//define the fill vertices
+		final var matrix4f = getMatrices().peek().getPositionMatrix();
+		final var vertexConsumer = getVertexConsumers().getBuffer(layer);
+	    vertexConsumer.vertex(matrix4f, x1, x2, z).color(r, g, b, a).next();
+	    vertexConsumer.vertex(matrix4f, x1, y2, z).color(r, g, b, a).next();
+	    vertexConsumer.vertex(matrix4f, y1, y2, z).color(r, g, b, a).next();
+	    vertexConsumer.vertex(matrix4f, y1, x2, z).color(r, g, b, a).next();
+	    
+	    //draw the fill vertices
+	    RenderSystem.disableDepthTest();
+	    getVertexConsumers().draw();
+	    RenderSystem.enableDepthTest();
+	}
 	// ==================================================
 	/**
 	 * Pushes a color to the shader {@link #colorStack}.<p>
@@ -162,8 +176,8 @@ public final class TDrawContext extends DrawContext
 		this.colorStack.push(red, green, blue, alpha, blendMethod);
 		applyTShaderColor();
 	}
+	public final void popTShaderColor() { this.colorStack.pop(); applyTShaderColor(); }
 	public final void applyTShaderColor() { this.colorStack.apply(this); }
-	public final void popTShaderColor() { this.colorStack.pop(); this.colorStack.apply(this); }
 	
 	/**
 	 * Sets the shader color to a color of choice, bypassing the {@link #colorStack}.<p>
@@ -184,6 +198,10 @@ public final class TDrawContext extends DrawContext
 		//and so there's always a way to set shader color without using the color stack
 		super.setShaderColor(red, green, blue, alpha);
 	}
+	// --------------------------------------------------
+	public final void pushTTextScale(float scale) { this.textScaleStack.push(scale); applyTTextScale(); }
+	public final void popTTextScale() { this.textScaleStack.pop(); applyTTextScale(); }
+	public final void applyTTextScale() { this.textScaleStack.apply(this); }
 	// ==================================================
 	/**
 	 * Draws a display {@link Text} for the {@link #currentTarget}.
@@ -192,8 +210,6 @@ public final class TDrawContext extends DrawContext
 	 */
 	public final void drawTElementTextTH(Text text, HorizontalAlignment horizontalAlgnment)
 	{
-		//NOTE - 16777215 when element is enabled; 10526880 when element is disabled;
-		//NOTE - side-offset must be the same value as in `drawTElementTextTHC`
 		drawTElementTextTHSC(text, horizontalAlgnment, DEFAULT_TEXT_SIDE_OFFSET, DEFAULT_TEXT_COLOR);
 	}
 	
@@ -205,7 +221,6 @@ public final class TDrawContext extends DrawContext
 	 */
 	public final void drawTElementTextTHC(Text text, HorizontalAlignment horizontalAlgnment, int color)
 	{
-		//NOTE - side-offset must be the same value as in `drawTElementTextTH`
 		drawTElementTextTHSC(text, horizontalAlgnment, DEFAULT_TEXT_SIDE_OFFSET, color);
 	}
 	
@@ -218,24 +233,50 @@ public final class TDrawContext extends DrawContext
 	 */
 	public final void drawTElementTextTHSC(Text text, HorizontalAlignment horizontalAlgnment, int sideOffset, int color)
 	{
+		drawTElementTextTHSCS(text, horizontalAlgnment, sideOffset, color, 1);
+	}
+	
+	public final void drawTElementTextTHSS(Text text, HorizontalAlignment horizontalAlgnment, int sideOffset, float textScale)
+	{
+		drawTElementTextTHSCS(text, horizontalAlgnment, sideOffset, DEFAULT_TEXT_COLOR, textScale);
+	}
+	
+	public final void drawTElementTextTHSCS(Text text, HorizontalAlignment horizontalAlgnment, int sideOffset, int color, float textScale)
+	{
 		//null-check the text and the alignment
 		if(text == null || horizontalAlgnment == null)
 			return;
+
+		//obtain some info and do some calculations
+		textScale *= this.textScale; //important part
 		
-		//obtain some info
-		TextRenderer txtR = this.client.textRenderer;
-		int x = this.currentTarget.getX();
-		int y = this.currentTarget.getY() + (this.currentTarget.getHeight() - 8) / 2;
-		int width = this.currentTarget.getWidth();
-		
-		//draw based on horizontal alignment
+		final TextRenderer txtR = this.client.textRenderer;
+		final int textWidth = txtR.getWidth(text);
+		final int targetCenter = this.currentTarget.getY() + (this.currentTarget.getHeight() / 2);
+
+		//calculate text X and Y
+		double textX, textY = targetCenter - (txtR.fontHeight * textScale / 2);
 		switch(horizontalAlgnment)
 		{
-			case CENTER: drawCenteredTextWithShadow(txtR, text, x + width / 2, y, color); break;
-			case LEFT: drawTextWithShadow(txtR, text, x + sideOffset, y, color); break;
-			case RIGHT: drawTextWithShadow(txtR, text, x + width - sideOffset - txtR.getWidth(text.getString()), y, color); break;
-			default: break;
+			case LEFT:
+				textX = this.currentTarget.getX() + sideOffset;
+				break;
+			case RIGHT:
+				textX = this.currentTarget.getEndX() - ((textWidth * textScale) + sideOffset);
+				break;
+			case CENTER:
+				textX = this.currentTarget.getX() + (this.currentTarget.getWidth() / 2);
+				textX -= (textWidth * textScale) / 2;
+				break;
+			default: throw new IllegalArgumentException("Unexpected " + HorizontalAlignment.class.getSimpleName() + ".");
 		}
+
+		//draw
+		getMatrices().push();
+		getMatrices().translate(textX, textY, 0);
+		getMatrices().scale(textScale, textScale, 1);
+		drawTextWithShadow(txtR, text, 0, 0, color);
+		getMatrices().pop();
 	}
 	// --------------------------------------------------
 	/**

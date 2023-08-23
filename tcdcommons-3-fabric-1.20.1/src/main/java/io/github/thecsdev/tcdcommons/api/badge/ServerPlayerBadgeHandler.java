@@ -40,7 +40,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	 * @throws NullPointerException when an argument is null.
 	 * @see #player
 	 */
-	public final void readNbt(NbtCompound nbt)
+	public final void loadFromPlayerNbt(NbtCompound nbt)
 	{
 		//check if there are any badges
 		final var modId = getModID();
@@ -66,7 +66,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	 * @throws NullPointerException when an argument is null.
 	 * @see #player
 	 */
-	public final NbtCompound writeNbt(NbtCompound nbt)
+	public final NbtCompound saveToPlayerNbt(NbtCompound nbt)
 	{
 		//check if there are any badges
 		if(this.badges.isEmpty()) return nbt;

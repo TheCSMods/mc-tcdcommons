@@ -40,7 +40,9 @@ public @Virtual class TButtonWidget extends TClickableWidget implements ITextPro
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
 		pencil.drawTButton(getButtonTextureY());
+		pencil.enableScissor(getX(), getY(), getEndX(), getEndY());
 		pencil.drawTElementTextTH(this.text, HorizontalAlignment.CENTER);
+		pencil.disableScissor();
 	}
 	// ==================================================
 }
