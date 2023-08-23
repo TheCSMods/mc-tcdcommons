@@ -79,18 +79,13 @@ public final class TFileChooserScreen extends TScreenPlus
 	// --------------------------------------------------
 	public static TFileChooserBuilder builder() { return new TFileChooserBuilder(); }
 	public static CompletableFuture<TFileChooserResult> showOpenFileDialog() { return showOpenFileDialog(null); }
-	public static CompletableFuture<TFileChooserResult> showOpenFileDialog(Path startingPath) { return showDialog(FileChooserDialogType.OPEN_FILE, startingPath); }
+	public static CompletableFuture<TFileChooserResult> showOpenFileDialog(@Nullable String targetExtension) { return showDialog(FileChooserDialogType.OPEN_FILE, targetExtension); }
 	public static CompletableFuture<TFileChooserResult> showSaveFileDialog() { return showSaveFileDialog(null); }
-	public static CompletableFuture<TFileChooserResult> showSaveFileDialog(Path startingPath) { return showDialog(FileChooserDialogType.SAVE_FILE, startingPath); }
-	public static CompletableFuture<TFileChooserResult> showSelectDirectoryDialog() { return showSelectDirectoryDialog(null); }
-	public static CompletableFuture<TFileChooserResult> showSelectDirectoryDialog(Path startingPath) { return showDialog(FileChooserDialogType.SELECT_DIRECTORY, startingPath); }
-	protected static CompletableFuture<TFileChooserResult> showDialog(FileChooserDialogType type, Path startingPath)
+	public static CompletableFuture<TFileChooserResult> showSaveFileDialog(@Nullable String targetExtension) { return showDialog(FileChooserDialogType.SAVE_FILE, targetExtension); }
+	public static CompletableFuture<TFileChooserResult> showSelectDirectoryDialog() { return showDialog(FileChooserDialogType.SELECT_DIRECTORY, null); }
+	protected static CompletableFuture<TFileChooserResult> showDialog(FileChooserDialogType type, @Nullable String targetExtension)
 	{
-		if(startingPath == null) startingPath = Path.of(System.getProperty("user.home"));
-		return builder()
-				.setStartingPath(startingPath)
-				.addFileFilter(TFileFilter.ALL_FILES)
-				.showDialog(type, null);
+		return builder().showDialog(type, targetExtension);
 	}
 	// ==================================================
 	public final @Override void close() { closedUsingClose = true; MC_CLIENT.setScreen(this.parent); }

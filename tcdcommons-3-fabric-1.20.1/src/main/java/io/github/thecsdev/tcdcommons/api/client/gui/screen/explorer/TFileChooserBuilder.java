@@ -16,7 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 /**
- * Sometimes the {@link TFileChooserScreen#showDialog(FileChooserDialogType, Path)}
+ * Sometimes the {@link TFileChooserScreen#showDialog(FileChooserDialogType, String)}
  * options are too limited, and you need more control over how the
  * {@link TFileChooserScreen} will behave. This is where {@link TFileChooserBuilder} comes in.
  * @see TFileChooserScreen#builder()
