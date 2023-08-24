@@ -2,6 +2,8 @@ package io.github.thecsdev.tcdcommons.network;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.LOGGER;
 
+import java.util.Arrays;
+
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.badge.ServerPlayerBadgeHandler;
@@ -45,16 +47,42 @@ public final class TCDCommonsNetworkHandler extends Object
 		final var badges = ServerPlayerBadgeHandler.getBadgeHandler(player).toArray();
 		if(badges.length == 0) return false; //network optimization - BEWARE
 		
+		// Split badges into chunks and send each chunk
+		//this is done to avoid hitting packet length limits
+		final int chunkSize = 15;
+		for (int i = 0; i < badges.length; i += chunkSize)
+		{
+			int end = Math.min(i + chunkSize, badges.length);
+			Identifier[] badgeChunk = Arrays.copyOfRange(badges, i, end);
+			s2c_sendPlayerBadges(player, badgeChunk);
+		}
+		
+		//return true once done
+		return true;
+	}
+	// --------------------------------------------------
+	/**
+	 * Sends a smaller "chunk" of {@link PlayerBadge} {@link Identifier}s, rather than
+	 * a whole collection, so as to avoid hitting the maximum packet length limit.
+	 */
+	private static void s2c_sendPlayerBadges(ServerPlayerEntity player, Identifier[] badgeChunk)
+	{
 		//write player badges to a buffer
 		final var data = new PacketByteBuf(Unpooled.buffer());
-		data.writeInt(badges.length);
-		for(Identifier badgeId : badges)
-			if(badgeId != null) data.writeIdentifier(badgeId);
+		data.writeInt(badgeChunk.length);
+		for(Identifier badgeId : badgeChunk) { if(badgeId != null) data.writeIdentifier(badgeId); }
+		
 		//create and send packet
-		final var packet = new CustomPayloadS2CPacket(S2C_PLAYER_BADGES, data);
-		try { player.networkHandler.sendPacket(packet); }
-		catch(Exception e) { LOGGER.debug("Failed to send " + S2C_PLAYER_BADGES + " packet; " + e.getMessage()); }
-		return true;
+		try
+		{
+			final var packet = new CustomPayloadS2CPacket(S2C_PLAYER_BADGES, data);
+			player.networkHandler.sendPacket(packet);
+		}
+		catch(Exception e)
+		{
+			LOGGER.debug("Failed to send " + S2C_PLAYER_BADGES + " packet; " + e.getMessage());
+			throw e;
+		}
 	}
 	// ==================================================
 }
