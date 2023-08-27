@@ -13,13 +13,14 @@ public final class CustomPayloadNetwork extends Object
 	// ==================================================
 	private CustomPayloadNetwork() {}
 	// --------------------------------------------------
+	//note: Mixin Reflection used these two variables. DO NOT RENAME THEM!
 	private static final Map<Identifier, CustomPayloadNetworkReceiver> C2S = new LinkedHashMap<>();
 	private static final Map<Identifier, CustomPayloadNetworkReceiver> S2C = new LinkedHashMap<>();
 	// ==================================================
 	/**
 	 * Registers a {@link CustomPayloadNetworkReceiver} for a given custom payload packet.<p>
 	 * <b>Important:</b> Receivers are executed on the network thread.
-	 * @param side The side which to listen on.
+	 * @param side The {@link NetworkSide} which to listen on.
 	 * @param packetId The unique {@link Identifier} of the custom payload packets to listen for.
 	 * @param receiver The listener interface.
 	 * @return The {@link CustomPayloadNetworkReceiver} that was registered.
@@ -42,6 +43,23 @@ public final class CustomPayloadNetwork extends Object
 			default: throw new IllegalArgumentException("Unexpected network side " + side);
 		}
 		return receiver;
+	}
+	
+	/**
+	 * Un-Registers a {@link CustomPayloadNetworkReceiver} for a given custom payload packet.
+	 * @param side The {@link NetworkSide} the {@link CustomPayloadNetworkReceiver} is listening on.
+	 * @param packetId The unique {@link Identifier} of the custom payload packets being listened.
+	 * @return {@code true} if the {@link CustomPayloadNetworkReceiver} was present before getting removed.
+	 */
+	public static boolean unregisterReceiver(NetworkSide side, Identifier packetId)
+	{
+		Objects.requireNonNull(packetId);
+		switch(Objects.requireNonNull(side))
+		{
+			case SERVERBOUND: return (C2S.remove(packetId) != null);
+			case CLIENTBOUND: return (S2C.remove(packetId) != null);
+			default: return false;
+		}
 	}
 	// ==================================================
 }

@@ -67,8 +67,8 @@ public final class PlayerBadgeCommand
 				//null check
 				if(target == null) continue;
 				//grant or revoke
-				if(grant) ServerPlayerBadgeHandler.getBadgeHandler(target).addBadge(badgeId);
-				else ServerPlayerBadgeHandler.getBadgeHandler(target).removeBadge(badgeId);
+				if(grant) ServerPlayerBadgeHandler.getServerBadgeHandler(target).addBadge(badgeId);
+				else ServerPlayerBadgeHandler.getServerBadgeHandler(target).removeBadge(badgeId);
 			}
 			//send feedback
 			final var feedbackGoR = grant ?
@@ -91,7 +91,7 @@ public final class PlayerBadgeCommand
 			final var target = EntityArgumentType.getPlayer(context, "target");
 			//get badges
 			//final var badges = ServerPlayerBadgeHandler.getBadgeHandler(target).getBadges().stream() - deprecated
-			final var badges = StreamSupport.stream(ServerPlayerBadgeHandler.getBadgeHandler(target).spliterator(), false)
+			final var badges = StreamSupport.stream(ServerPlayerBadgeHandler.getServerBadgeHandler(target).spliterator(), false)
 				    .map(Identifier::toString) // convert each Identifier object to String
 				    .collect(Collectors.joining(", ")); // join with a comma and space
 			//send feedback
@@ -116,7 +116,7 @@ public final class PlayerBadgeCommand
 				//null check
 				if(target == null) continue;
 				//clear
-				ServerPlayerBadgeHandler.getBadgeHandler(target).clearBadges();
+				ServerPlayerBadgeHandler.getServerBadgeHandler(target).clearBadges();
 				//send feedback
 				final var feedback = translatable("commands.badge.clear.of_many",
 						Objects.toString(targets.size()));

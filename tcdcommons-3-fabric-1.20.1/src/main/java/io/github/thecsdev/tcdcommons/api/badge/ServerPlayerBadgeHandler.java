@@ -107,7 +107,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	 * @param player The {@link ServerPlayerEntity} in question.
 	 * @throws NullPointerException When an argument is null.
 	 */
-	public static ServerPlayerBadgeHandler getBadgeHandler(ServerPlayerEntity player)
+	public static ServerPlayerBadgeHandler getServerBadgeHandler(ServerPlayerEntity player)
 	{
 		//obtain
 		ServerPlayerBadgeHandler pbh = getCustomDataEntryG(player, PlayerBadgeHandler.PBH_CUSTOM_DATA_ID);

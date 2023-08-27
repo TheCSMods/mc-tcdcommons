@@ -25,7 +25,7 @@ public abstract class MixinServerPlayerEntity
 		try
 		{
 			//read player badges
-			ServerPlayerBadgeHandler.getBadgeHandler(self).loadFromPlayerNbt(nbt);
+			ServerPlayerBadgeHandler.getServerBadgeHandler(self).loadFromPlayerNbt(nbt);
 			//read other custom NBT data
 			EntityEvent.SERVER_PLAYER_READ_NBT.invoker().invoke(self, nbt);
 		}
@@ -46,7 +46,7 @@ public abstract class MixinServerPlayerEntity
 		try
 		{
 			//write player badges
-			ServerPlayerBadgeHandler.getBadgeHandler(self).saveToPlayerNbt(nbt);
+			ServerPlayerBadgeHandler.getServerBadgeHandler(self).saveToPlayerNbt(nbt);
 			//write other custom NBT data
 			EntityEvent.SERVER_PLAYER_WRITE_NBT.invoker().invoke(self, nbt);
 		}

@@ -36,24 +36,38 @@ public abstract class MixinMinecraftClient
 		//first make sure the screen got properly assigned and set
 		if(this.currentScreen != screen) return;
 		
-		//track the currently opened TScreen, if any
-		if(CURRENT_T_SCREEN != null && screen != CURRENT_T_SCREEN.getAsScreen())
+		//track the currently opened TScreen, if any;
+		//use try-catch to prevent other mods from breaking the TScreen-tracking
+		try
 		{
-			//invoke `onClosed` for any opened TScreen-s
-			final var i = ((AccessorTScreen)CURRENT_T_SCREEN);
-			CURRENT_T_SCREEN = null; //prevent StackOverflowError issues
-			i.tcdcommons_onClosed();
-			//prevent further execution if `onClosed` changed the screen
-			if(this.currentScreen != screen)
-				return;
+			//call `onClosed` on any currently opened TScreen-s
+			if(CURRENT_T_SCREEN != null && screen != CURRENT_T_SCREEN.getAsScreen())
+			{
+				//invoke `onClosed` for any opened TScreen-s
+				final var i = ((AccessorTScreen)CURRENT_T_SCREEN);
+				CURRENT_T_SCREEN = null; //prevent StackOverflowError issues
+				i.tcdcommons_onClosed();
+				//prevent further execution if `onClosed` changed the screen
+				if(this.currentScreen != screen)
+					return;
+			}
+			//call `onOpened` on any TScreen-s that just got opened
+			if(screen instanceof TScreenWrapper)
+			{
+				CURRENT_T_SCREEN = ((TScreenWrapper)screen).getTargetTScreen();
+				((AccessorTScreen)CURRENT_T_SCREEN).tcdcommons_onOpened();
+			}
+			else CURRENT_T_SCREEN = null;
 		}
-		//
-		if(screen instanceof TScreenWrapper)
+		catch(Exception exc)
 		{
-			CURRENT_T_SCREEN = ((TScreenWrapper)screen).getTargetTScreen();
-			((AccessorTScreen)CURRENT_T_SCREEN).tcdcommons_onOpened();
+			//if an exception is raised, track the opened TScreen;
+			//this is a fail-safe, to make sure nothing breaks in the event the exception ends up being handled
+			if(screen instanceof TScreenWrapper) CURRENT_T_SCREEN = ((TScreenWrapper)screen).getTargetTScreen();
+			else CURRENT_T_SCREEN = null;
+			//finally throw the raised exception
+			throw exc;
 		}
-		else CURRENT_T_SCREEN = null;
 		
 		//invoke the screen change event
 		MinecraftClientEvent.SET_SCREEN_POST.invoker().invoke(screen);

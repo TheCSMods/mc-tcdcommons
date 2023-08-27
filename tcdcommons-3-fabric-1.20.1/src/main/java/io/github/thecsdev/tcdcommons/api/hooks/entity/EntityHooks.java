@@ -34,7 +34,7 @@ public final class EntityHooks
 	 * @param entity The target {@link Entity}.
 	 * @param entryId The unique identifier for the custom data entry.
 	 * @return The custom data entry associated with the given key, cast to the provided type, or null if the cast fails.
-	 * @throws NullPointerException When any argument is null.
+	 * @throws NullPointerException When any argument is {@code null}.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T getCustomDataEntryG(Entity entity, Identifier entryId)

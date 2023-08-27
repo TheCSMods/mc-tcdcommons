@@ -37,11 +37,12 @@ public abstract class MixinCustomPayloadC2SPacket
 		//obtain the server play network handler if it exists
 		final ServerPlayNetworkHandler spnh = (serverPlayPacketListener instanceof ServerPlayNetworkHandler) ?
 				(ServerPlayNetworkHandler)serverPlayPacketListener : null;
+		final @Nullable PlayerEntity player = (spnh == null ? null : spnh.getPlayer());
 		
 		//execute receiver
 		receiverC2S.receiveCustomPayload(new PacketContext()
 		{
-			public @Override @Nullable PlayerEntity getPlayer() { return spnh == null ? null : spnh.getPlayer(); }
+			public @Override @Nullable PlayerEntity getPlayer() { return player; }
 			public @Override PacketListener getPacketListener() { return serverPlayPacketListener; }
 			public @Override Identifier getPacketId() { return getChannel(); }
 			public @Override PacketByteBuf getPacketData() { return data; }

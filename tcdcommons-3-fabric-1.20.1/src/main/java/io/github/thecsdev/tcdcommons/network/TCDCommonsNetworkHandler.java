@@ -44,7 +44,7 @@ public final class TCDCommonsNetworkHandler extends Object
 			return false;
 		
 		//obtain player badges
-		final var badges = ServerPlayerBadgeHandler.getBadgeHandler(player).toArray();
+		final var badges = ServerPlayerBadgeHandler.getServerBadgeHandler(player).toArray();
 		if(badges.length == 0) return false; //network optimization - BEWARE
 		
 		// Split badges into chunks and send each chunk
