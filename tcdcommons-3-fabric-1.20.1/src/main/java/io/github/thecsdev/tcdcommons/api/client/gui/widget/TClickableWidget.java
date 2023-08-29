@@ -71,7 +71,7 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 		//requires a parent screen
 		else if(getParentTScreen() == null) return false;
 		//don't handle input if disabled
-		else if(!this.enabled) return false;
+		else if(!isEnabled()) return false;
 		
 		//check for input type
 		switch(inputContext.getInputType())

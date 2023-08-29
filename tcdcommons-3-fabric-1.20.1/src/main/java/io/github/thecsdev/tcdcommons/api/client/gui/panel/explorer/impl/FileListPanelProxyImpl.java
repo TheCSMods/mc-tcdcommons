@@ -10,13 +10,13 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.AbstractFileL
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.impl.TFileExplorerPanel.FileExplorerPanelProxy;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 
-final @Internal class FEPFileListPanelProxy implements FileListPanelProxy
+final @Internal class FileListPanelProxyImpl implements FileListPanelProxy
 {
 	// ==================================================
 	protected final TFileExplorerPanel explorer;
 	protected final FileExplorerPanelProxy proxy;
 	// ==================================================
-	protected FEPFileListPanelProxy(TFileExplorerPanel explorer)
+	protected FileListPanelProxyImpl(TFileExplorerPanel explorer)
 	{
 		this.explorer = Objects.requireNonNull(explorer);
 		this.proxy = Objects.requireNonNull(explorer.proxy);

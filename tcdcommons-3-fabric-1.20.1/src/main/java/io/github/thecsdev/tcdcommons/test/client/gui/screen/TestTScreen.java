@@ -72,12 +72,20 @@ public final class TestTScreen extends TScreenPlus
 			});
 			menu_file.addButton(literal("Open Projects from File System"), btn2 -> {});
 			menu_file.addButton(literal("Recent files >"), btn2 -> {});
-			//TODO - SEPARATOR
+			menu_file.addSeparator();
 			menu_file.addButton(literal("Close Editor"), btn2 -> {});
 			menu_file.addButton(literal("Close All Editors"), btn2 -> {});
-			//TODO - SEPARATOR
+			menu_file.addSeparator();
 			menu_file.addButton(literal("Save"), btn2 -> {});
-			menu_file.addButton(literal("Save As"), btn2 -> {});
+			menu_file.addButton(literal("Save As"), btn2 ->
+			{
+				TFileChooserScreen.builder().showSaveFileDialog().thenAccept(result ->
+				{
+					System.out.println("File chooser results: " +
+							result.getReturnValue() + " | " +
+							result.getSelectedFile());
+				});
+			});
 			menu_file.addButton(literal("Save All"), btn2 -> {});
 			menu_file.addButton(literal("Revert"), btn2 -> {});
 			//

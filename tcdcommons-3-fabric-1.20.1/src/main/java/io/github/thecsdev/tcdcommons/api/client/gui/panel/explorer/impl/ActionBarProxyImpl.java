@@ -18,13 +18,13 @@ import io.github.thecsdev.tcdcommons.api.util.enumerations.FileChooserDialogType
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 import net.minecraft.text.Text;
 
-final @Internal class FEPActionBarProxy implements ActionBarProxy
+final @Internal class ActionBarProxyImpl implements ActionBarProxy
 {
 	// ==================================================
 	protected final TFileExplorerPanel explorer;
 	protected final FileExplorerPanelProxy proxy;
 	// ==================================================
-	protected FEPActionBarProxy(TFileExplorerPanel explorer)
+	protected ActionBarProxyImpl(TFileExplorerPanel explorer)
 	{
 		this.explorer = Objects.requireNonNull(explorer);
 		this.proxy = Objects.requireNonNull(explorer.proxy);
@@ -160,7 +160,7 @@ final @Internal class FEPActionBarProxy implements ActionBarProxy
 	// --------------------------------------------------
 	private final void onSubmit_securityError(SecurityException se)
 	{
-		TCDCommons.LOGGER.error(FEPActionBarProxy.class.getSimpleName() + " encountered a " +
+		TCDCommons.LOGGER.error(ActionBarProxyImpl.class.getSimpleName() + " encountered a " +
 				SecurityException.class.getSimpleName());
 		se.printStackTrace();
 		this.explorer.completeAsError();

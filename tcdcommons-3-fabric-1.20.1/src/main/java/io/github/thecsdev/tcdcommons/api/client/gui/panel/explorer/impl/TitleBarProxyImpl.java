@@ -10,13 +10,13 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.impl.TFileExp
 import io.github.thecsdev.tcdcommons.api.client.gui.util.UITexture;
 import net.minecraft.text.Text;
 
-final @Internal class FEPTitleBarProxy implements TitleBarProxy
+final @Internal class TitleBarProxyImpl implements TitleBarProxy
 {
 	// ==================================================
 	protected final TFileExplorerPanel explorer;
 	protected final FileExplorerPanelProxy proxy;
 	// ==================================================
-	protected FEPTitleBarProxy(TFileExplorerPanel explorer)
+	protected TitleBarProxyImpl(TFileExplorerPanel explorer)
 	{
 		this.explorer = Objects.requireNonNull(explorer);
 		this.proxy = Objects.requireNonNull(explorer.proxy);

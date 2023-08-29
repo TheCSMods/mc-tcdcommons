@@ -200,8 +200,8 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	// ==================================================
 	public final float getAlpha() { return this.alpha ; }
 	public final void setAlpha(float alpha) { this.alpha = Math.max(0, Math.min(1, alpha)); }
-	public final boolean isVisible() { return this.alpha > 0; }
-	public final boolean isEnabledAndVisible() { return isVisible() && getEnabled(); }
+	public final boolean isVisible() { return this.alpha > 0.05f && (getParentTElement() == null || getParentTElement().isVisible()); }
+	public final boolean isEnabledAndVisible() { return isVisible() && isEnabled(); }
 	//
 	public final TextRenderer getTextRenderer()
 	{

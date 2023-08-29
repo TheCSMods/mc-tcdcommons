@@ -91,7 +91,7 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 		//requires a parent screen
 		if(getParentTScreen() == null) return false;
 		//don't handle input if disabled
-		else if(!this.enabled) return false;
+		else if(!isEnabled()) return false;
 		
 		//handle inputs
 		switch(inputContext.getInputType())

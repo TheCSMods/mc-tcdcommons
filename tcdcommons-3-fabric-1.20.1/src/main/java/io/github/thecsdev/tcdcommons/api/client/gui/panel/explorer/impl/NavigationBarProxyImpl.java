@@ -8,13 +8,13 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.NavigationBar.NavigationBarProxy;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.impl.TFileExplorerPanel.FileExplorerPanelProxy;
 
-final @Internal class FEPNavigationBarProxy implements NavigationBarProxy
+final @Internal class NavigationBarProxyImpl implements NavigationBarProxy
 {
 	// ==================================================
 	protected final TFileExplorerPanel explorer;
 	protected final FileExplorerPanelProxy proxy;
 	// ==================================================
-	protected FEPNavigationBarProxy(TFileExplorerPanel explorer)
+	protected NavigationBarProxyImpl(TFileExplorerPanel explorer)
 	{
 		this.explorer = Objects.requireNonNull(explorer);
 		this.proxy = Objects.requireNonNull(explorer.proxy);

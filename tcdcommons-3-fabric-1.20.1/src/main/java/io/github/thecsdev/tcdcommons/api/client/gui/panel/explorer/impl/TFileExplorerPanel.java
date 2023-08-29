@@ -139,16 +139,16 @@ public final class TFileExplorerPanel extends TRefreshablePanelElement
 		if(this.userMadeAChoice) return;
 		
 		//initialize components
-		this.titleBar = new TitleBar(getX(), getY(), getWidth(), new FEPTitleBarProxy(this));
-		this.navigationBar = new NavigationBar(getX(), this.titleBar.getEndY(), getWidth(), new FEPNavigationBarProxy(this));
-		this.actionBar = new ActionBar(getX(), getEndY() - ActionBar.HEIGHT, getWidth(), new FEPActionBarProxy(this));
+		this.titleBar = new TitleBar(getX(), getY(), getWidth(), new TitleBarProxyImpl(this));
+		this.navigationBar = new NavigationBar(getX(), this.titleBar.getEndY(), getWidth(), new NavigationBarProxyImpl(this));
+		this.actionBar = new ActionBar(getX(), getEndY() - ActionBar.HEIGHT, getWidth(), new ActionBarProxyImpl(this));
 		
 		final int panelY = this.navigationBar.getEndY();
 		final int panelH = this.actionBar.getY() - panelY;
 		final int sidePanelW = getWidth() / 3, listPanelW = getWidth() - sidePanelW;
 		
-		this.sidebarPanel = new SidebarPanel(getX(), panelY, sidePanelW - 10, panelH, new FEPSidebarPanelProxy(this));
-		this.fileListPanel = new FileListPanel(getX() + sidePanelW, panelY, listPanelW - 10, panelH, new FEPFileListPanelProxy(this));
+		this.sidebarPanel = new SidebarPanel(getX(), panelY, sidePanelW - 10, panelH, new SidebarPanelProxyImpl(this));
+		this.fileListPanel = new FileListPanel(getX() + sidePanelW, panelY, listPanelW - 10, panelH, new FileListPanelProxyImpl(this));
 		
 		//add components
 		addChild(this.titleBar, false);

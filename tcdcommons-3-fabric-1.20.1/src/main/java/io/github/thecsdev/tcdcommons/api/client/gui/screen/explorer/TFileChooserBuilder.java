@@ -61,7 +61,7 @@ public final class TFileChooserBuilder extends Object
 	public final CompletableFuture<TFileChooserResult> showOpenFileDialog(String targetExtension) { return showDialog(FileChooserDialogType.OPEN_FILE, targetExtension); }
 	
 	public final CompletableFuture<TFileChooserResult> showSaveFileDialog() { return showSaveFileDialog(null); }
-	public final CompletableFuture<TFileChooserResult> showSaveFileDialog(String targetExtension) { return showDialog(FileChooserDialogType.OPEN_FILE, targetExtension); }
+	public final CompletableFuture<TFileChooserResult> showSaveFileDialog(String targetExtension) { return showDialog(FileChooserDialogType.SAVE_FILE, targetExtension); }
 	
 	public final CompletableFuture<TFileChooserResult> showSelectDirectoryDialog() { return showDialog(FileChooserDialogType.SELECT_DIRECTORY, null); }
 	

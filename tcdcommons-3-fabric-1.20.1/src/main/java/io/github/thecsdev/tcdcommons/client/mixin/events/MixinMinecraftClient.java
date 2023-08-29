@@ -54,7 +54,7 @@ public abstract class MixinMinecraftClient
 			//call `onOpened` on any TScreen-s that just got opened
 			if(screen instanceof TScreenWrapper)
 			{
-				CURRENT_T_SCREEN = ((TScreenWrapper)screen).getTargetTScreen();
+				CURRENT_T_SCREEN = ((TScreenWrapper<?>)screen).getTargetTScreen();
 				((AccessorTScreen)CURRENT_T_SCREEN).tcdcommons_onOpened();
 			}
 			else CURRENT_T_SCREEN = null;
@@ -63,7 +63,7 @@ public abstract class MixinMinecraftClient
 		{
 			//if an exception is raised, track the opened TScreen;
 			//this is a fail-safe, to make sure nothing breaks in the event the exception ends up being handled
-			if(screen instanceof TScreenWrapper) CURRENT_T_SCREEN = ((TScreenWrapper)screen).getTargetTScreen();
+			if(screen instanceof TScreenWrapper) CURRENT_T_SCREEN = ((TScreenWrapper<?>)screen).getTargetTScreen();
 			else CURRENT_T_SCREEN = null;
 			//finally throw the raised exception
 			throw exc;

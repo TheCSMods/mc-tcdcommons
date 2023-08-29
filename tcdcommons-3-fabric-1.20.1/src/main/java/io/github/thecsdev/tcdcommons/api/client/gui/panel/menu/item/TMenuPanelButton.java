@@ -16,47 +16,28 @@ import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 
-public @Virtual class TMenuItemElement extends TButtonWidget
+public @Virtual class TMenuPanelButton extends TButtonWidget implements IMenuPanelItem
 {
 	// ==================================================
 	private static final TextRenderer TR = TCDCommonsClient.MC_CLIENT.textRenderer;
 	// ==================================================
-	public TMenuItemElement() { this(literal("-")); }
-	public TMenuItemElement(Text text) { this(null, text); }
-	public TMenuItemElement(TMenuPanel targetParentMenu, Text text)
+	public TMenuPanelButton() { this(literal("-")); }
+	public TMenuPanelButton(Text text) { this(null, text); }
+	public TMenuPanelButton(TMenuPanel targetParentMenu, Text text)
 	{
 		super(0, 0, 0, 0, null);
 		setText(text);
-		targetParentMenu.addChild(this, true);
+		if(targetParentMenu != null)
+			targetParentMenu.addChild(this, true);
 	}
 	// --------------------------------------------------
 	protected final void TButtonWidget_super_setText(@Nullable Text text) { super.setText(text); }
 	public @Virtual @Override void setText(@Nullable Text text) { super.setText(text); pack(); }
 	// --------------------------------------------------
-	/**
-	 * This method sets the size of this {@link TMenuItemElement} to its minimum 
-	 * possible size by calling {@link #setSize(int, int)}. It's akin to the packing 
-	 * of a component in Swing, where the component is resized to the smallest 
-	 * possible size that accommodates its contents.<p>
-	 * This allows the parent {@link TMenuPanel} to properly control this element's size
-	 * when re-aligning its children.
-	 * @see #realignParentMenuChildren()
-	 * @see TMenuPanel#realignChildren()
-	 */
-	protected @Virtual void pack()
+	public @Virtual @Override void pack()
 	{
 		setSize(TR.getWidth(text == null ? literal("-") : text) + 12, TR.fontHeight + 4);
 		realignParentMenuChildren();
-	}
-	
-	/**
-	 * If {@link #getParent()} is a {@link TMenuPanel}, calls
-	 * {@link TMenuPanel#realignChildren()} on it.
-	 */
-	protected final void realignParentMenuChildren()
-	{
-		if(getParent() instanceof TMenuPanel)
-			((TMenuPanel)getParent()).realignChildren();
 	}
 	// ==================================================
 	public @Virtual @Override void render(TDrawContext pencil)

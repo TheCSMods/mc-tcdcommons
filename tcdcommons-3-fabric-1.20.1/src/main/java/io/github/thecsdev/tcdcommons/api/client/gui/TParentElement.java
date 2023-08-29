@@ -44,7 +44,7 @@ public interface TParentElement extends IEnableStateProvider
 	 *	 <li>Infinite recursion resulting from a child element containing itself as one of its children</li>
 	 * </ul>
 	 * If the iteration depth exceeds this limit, the
-	 * {@link #__findChild(TParentElement, Predicate, boolean, int)} method will return null.
+	 * {@link #__findChild(TParentElement, Predicate, boolean, int)} method will return {@code null}.
 	 */
 	public static final int MAX_CHILD_NESTING_DEPTH = 7;
 	// ==================================================
@@ -98,6 +98,15 @@ public interface TParentElement extends IEnableStateProvider
 	default boolean removeChild(TElement child) { return getChildren().remove(child); }
 	default boolean removeChild(TElement child, boolean reposition) { return getChildren().remove(child, reposition); }
 	default void clearChildren() { getChildren().clear(); }
+	// --------------------------------------------------
+	/**
+	 * Returns {@code true} if {@link #getEnabled()} returns {@code true},
+	 * and {@link #getParent()}'s {@link #isEnabled()} also returns {@code true}.<p>
+	 * In other words, this will return {@code true} if both this element and all
+	 * of its {@link TParentElement}s are enabled.
+	 */
+	default boolean isEnabled() { return getEnabled() && (getParent() == null || getParent().isEnabled()); }
+	default @Override boolean getEnabled() { return true; }
 	// ==================================================
 	/**
 	 * Finds and returns the first {@link TParentElement} for which the provided action returns true.

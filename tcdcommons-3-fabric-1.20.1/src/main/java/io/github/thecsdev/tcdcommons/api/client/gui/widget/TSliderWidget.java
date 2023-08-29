@@ -189,7 +189,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		//requires a parent screen
 		if(getParentTScreen() == null) return false;
 		//don't handle input if disabled
-		else if(!this.enabled) return false;
+		else if(!isEnabled()) return false;
 		
 		//handle input based on type
 		switch(inputContext.getInputType())

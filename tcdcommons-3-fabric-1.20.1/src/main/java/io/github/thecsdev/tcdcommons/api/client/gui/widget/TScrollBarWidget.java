@@ -116,7 +116,7 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 	{
 		//first forward event to `super`
 		if(super.input(inputContext))
-			return true;;
+			return true;
 			
 		//handle input based on type
 		switch(inputContext.getInputType())

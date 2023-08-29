@@ -3,7 +3,8 @@ package io.github.thecsdev.tcdcommons.api.client.gui.panel.menu;
 import java.util.function.Consumer;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.item.TMenuItemElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.item.TMenuPanelButton;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.item.TMenuPanelSeparator;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import io.github.thecsdev.tcdcommons.api.event.TEvent;
 import io.github.thecsdev.tcdcommons.api.event.TEventFactory;
@@ -67,18 +68,23 @@ public abstract class TMenuPanel extends TPanelElement
 	public abstract void onRealignChildren();
 	// ==================================================
 	/**
-	 * Creates and adds a new {@link TMenuItemElement} with
+	 * Creates and adds a new {@link TMenuPanelButton} with
 	 * the given text and on-click action.
 	 * @param text The menu item {@link Text}.
 	 * @param onClick The on-click action for the menu item.
-	 * @return The created and added {@link TMenuItemElement}.
+	 * @return The created and added {@link TMenuPanelButton}.
 	 */
-	public @Virtual TMenuItemElement addButton(Text text, Consumer<TButtonWidget> onClick)
+	public @Virtual TMenuPanelButton addButton(Text text, Consumer<TButtonWidget> onClick)
 	{
-		final var item = new TMenuItemElement(this, text);
+		final var item = new TMenuPanelButton(this, text);
 		item.setOnClick(onClick);
 		return item;
 	}
+	
+	/**
+	 * Creates and adds a new {@link TMenuPanelSeparator}.
+	 */
+	public @Virtual TMenuPanelSeparator addSeparator() { return new TMenuPanelSeparator(this); }
 	// ==================================================
 	public static interface TMenuPanelEvent_ReAlignChildren { public void invoke(TMenuPanel element); }
 	// ==================================================

@@ -19,10 +19,14 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.impl.TFileExp
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserResult.ReturnValue;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.InputType;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.FileChooserDialogType;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 import io.github.thecsdev.tcdcommons.api.util.io.TExtensionFileFilter;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.sound.SoundEvents;
 
 /**
  * A file chooser screen that allows the user to choose a
@@ -71,7 +75,20 @@ public final class TFileChooserScreen extends TScreenPlus
 		this.currentPath = Objects.requireNonNull(startingPath);
 		
 		this.parent = MC_CLIENT.currentScreen;
-		this.contentPane = new TFillColorElement(0, 0, 100, 100, /*-1771805596*/436207615);
+		this.contentPane = new TFillColorElement(0, 0, 100, 100, /*-1771805596*/436207615)
+		{
+			public boolean input(TInputContext inputContext)
+			{
+				//only handle hovered and mouse LMB clicks
+				if(!isHovered() || inputContext.getInputType() != InputType.MOUSE_PRESS || inputContext.getMouseButton() != 0)
+					return false;
+				//play a "pling" sound to let the user know they can't click "out of bounds"
+				MC_CLIENT.getSoundManager().play(
+						PositionedSoundInstance.master(SoundEvents.BLOCK_NOTE_BLOCK_PLING,
+						2));
+				return true;
+			}
+		};
 		this.contentPane.setZOffset(MAGIC_ITEM_Z_OFFSET);
 		this.explorerPanel = new TFileExplorerPanel(0, 0, 100, 100, new FEPProxy(this));
 		this.contentPane.addChild(this.explorerPanel, false); //sub-children need to be added here

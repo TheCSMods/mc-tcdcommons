@@ -10,7 +10,7 @@ import com.google.common.annotations.Beta;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.item.TMenuItemElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.item.TMenuPanelButton;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.InputDiscoveryPhase;
@@ -96,10 +96,10 @@ public @Virtual class TContextMenuPanel extends TMenuPanel
 		else this.eClosed.invoker().invoke(this);
 	};
 	// ==================================================
-	public @Virtual @Override TMenuItemElement addButton(Text text, Consumer<TButtonWidget> onClick)
+	public @Virtual @Override TMenuPanelButton addButton(Text text, Consumer<TButtonWidget> onClick)
 	{
 		final var item = super.addButton(text, onClick);
-		item.eClicked.register(btn -> close()); //close context menu on click
+		item.eClicked.register(btn -> TContextMenuPanel.this.close()); //close context menu on click
 		return item;
 	}
 	// --------------------------------------------------
@@ -205,11 +205,11 @@ public @Virtual class TContextMenuPanel extends TMenuPanel
 			this.eParentChanged.register(this.ehParentChanged);
 		
 		//reset the size of this panel
+		final int sp = this.scrollPadding, sp2 = sp * 2;
 		this.width = this.initWidh;
-		this.height = this.initHeight;
+		this.height = this.initHeight - sp;
 		
 		//prepare to iterate all children
-		final int sp = this.scrollPadding, sp2 = this.scrollPadding * 2;
 		final TScreen scHalfWHScreen = (getParentTScreen() != null) ? getParentTScreen() : this.target.getParentTScreen();
 		final int scHalfWidth = (scHalfWHScreen != null) ? (scHalfWHScreen.getWidth() / 3) : this.initWidh;
 		final int scHalfHeight = (scHalfWHScreen != null) ? (scHalfWHScreen.getHeight() / 3) : 100;

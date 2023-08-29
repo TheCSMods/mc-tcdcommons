@@ -50,14 +50,14 @@ import net.minecraft.text.Text;
  * then you may extend this class and create your own {@link TScreenWrapper} implementation.
  * However, <b>avoid interacting with Minecraft's {@link Screen} code</b> as much as possible!
  */
-public @Virtual class TScreenWrapper extends Screen
+public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 {
 	// ==================================================
-	protected final TScreen target;
+	protected final T target;
 	// --------------------------------------------------
 	protected @Nullable Window clientWindow;
 	// ==================================================
-	public TScreenWrapper(TScreen target)
+	public TScreenWrapper(T target)
 	{
 		super(target.getTitle());
 		this.target = target;
@@ -66,7 +66,7 @@ public @Virtual class TScreenWrapper extends Screen
 	/**
 	 * Returns the {@link #target} {@link TScreen} for this {@link TScreenWrapper}.
 	 */
-	public final TScreen getTargetTScreen() { return this.target; }
+	public final T getTargetTScreen() { return this.target; }
 	public final void Screen_super_close() { super.close(); }
 	// ==================================================
 	public final @Override Text getTitle() { return this.target.getTitle(); }

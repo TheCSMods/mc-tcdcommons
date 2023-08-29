@@ -34,7 +34,7 @@ public abstract class TScreen implements TParentElement
 	// ==================================================
 	protected @Nullable MinecraftClient client = MinecraftClient.getInstance();
 	protected final TElementList children = new TElementList(this);
-	private final @Internal TScreenWrapper wrapper;
+	private final @Internal TScreenWrapper<?> wrapper;
 	// --------------------------------------------------
 	protected @Nullable Text title;
 	
@@ -51,7 +51,7 @@ public abstract class TScreen implements TParentElement
 		this.title = Objects.requireNonNull(title); //(1) title must be assigned first
 		this.wrapper = Objects.requireNonNull(createScreenWrapper());
 	}
-	protected @Virtual TScreenWrapper createScreenWrapper() { return new TScreenWrapper(this); }
+	protected @Virtual TScreenWrapper<?> createScreenWrapper() { return new TScreenWrapper<TScreen>(this); }
 	// --------------------------------------------------
 	public final Screen getAsScreen() { return this.wrapper; }
 	public final @Nullable MinecraftClient getClient() { return this.client; }
@@ -287,9 +287,11 @@ public abstract class TScreen implements TParentElement
 		{
 			// Check if the mouse coordinates are within the GUI element
 			//and its parents
-			if(!__isMouseInElementBounds(mouseX, mouseY, child) ||
-					child.findParent(p -> !__isMouseInElementBounds(mouseX, mouseY, p)) != null ||
-					(hovered.get() != null && child.getZIndex() < hovered.get().getZIndex()))
+			if(
+					!child.isEnabledAndVisible() ||
+					(hovered.get() != null && child.getZIndex() < hovered.get().getZIndex()) ||
+					!__isMouseInElementBounds(mouseX, mouseY, child) ||
+					child.findParent(p -> !__isMouseInElementBounds(mouseX, mouseY, p)) != null)
 				return;
 			
 			//assign
