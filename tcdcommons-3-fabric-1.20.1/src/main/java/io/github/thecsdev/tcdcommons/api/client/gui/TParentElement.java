@@ -46,7 +46,7 @@ public interface TParentElement extends IEnableStateProvider
 	 * If the iteration depth exceeds this limit, the
 	 * {@link #__findChild(TParentElement, Predicate, boolean, int)} method will return {@code null}.
 	 */
-	public static final int MAX_CHILD_NESTING_DEPTH = 7;
+	public static final int MAX_CHILD_NESTING_DEPTH = 0x10;
 	// ==================================================
 	public int getX();
 	public int getY();
@@ -187,7 +187,7 @@ public interface TParentElement extends IEnableStateProvider
 	 * @param iteration The nesting iteration number. Pass 0 if this is the first call.
 	 * @return The first {@link TElement} for which the {@link Predicate} returns true.
 	 */
-	public static @Internal @Nullable TElement __findChild(
+	private static @Internal @Nullable TElement __findChild(
 			final TParentElement parent,
 			final Predicate<TElement> predicate,
 			final boolean nested,
@@ -200,7 +200,7 @@ public interface TParentElement extends IEnableStateProvider
 		//(MUST NOT RETURN NULL FROM THE FOR LOOP)
 		for(var child : parent.getChildren())
 		{
-			//maintenance stuff
+			//maintenance stuff - error correction fallback
 			child.__updateParent(parent);
 			
 			//apply the predicate

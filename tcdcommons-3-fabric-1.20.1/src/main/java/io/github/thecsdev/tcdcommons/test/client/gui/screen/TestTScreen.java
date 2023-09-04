@@ -1,6 +1,6 @@
 package io.github.thecsdev.tcdcommons.test.client.gui.screen;
 
-import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel.DEFAULT_MENU_HEIGHT;
+import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel.HEIGHT;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
@@ -34,7 +34,7 @@ public final class TestTScreen extends TScreenPlus
 		
 		//init stuff
 		init_menuBar(x, w);
-		init_panel(x, DEFAULT_MENU_HEIGHT + 5, w, getHeight() - (DEFAULT_MENU_HEIGHT*2 - 10));
+		init_panel(x, HEIGHT + 5, w, getHeight() - (HEIGHT*2 - 10));
 		
 		//create a test entity renderer
 		/*final var ent = new TEntityRendererElement(10, (getHeight() / 2) - 50, 100, 100, EntityType.ARMOR_STAND);

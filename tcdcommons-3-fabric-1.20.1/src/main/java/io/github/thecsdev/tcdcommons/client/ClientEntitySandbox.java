@@ -28,8 +28,8 @@ public final class ClientEntitySandbox
 	// ==================================================
 	private static final @Nullable World SANDBOX_WORLD = new ClientSandboxWorld();
 	private static final Cache<EntityType<?>, Entity> ENTITY_CACHE = CacheBuilder.newBuilder()
-			.expireAfterWrite(30, TimeUnit.MINUTES)
-			.expireAfterAccess(10, TimeUnit.MINUTES)
+			.expireAfterWrite(1, TimeUnit.HOURS)
+			.expireAfterAccess(30, TimeUnit.MINUTES)
 			.removalListener((RemovalNotification<EntityType<?>, Entity> remNotif) ->
 			{
 				final Entity entity = remNotif.getValue();

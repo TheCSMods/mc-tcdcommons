@@ -93,33 +93,27 @@ public @Virtual class TSelectWidget<T extends TSelectWidget.Entry> extends TButt
 	/**
 	 * {@inheritDoc}<p>
 	 * For {@link TSelectWidget}, it also creates the context menu using
-	 * {@link #createContextMenu()}, after which {@link #onContextMenu(TContextMenuPanel)}
-	 * is called, and then the context menu is opened.
+	 * {@link #createContextMenu()}, and then the context menu is opened.
 	 */
-	protected @Virtual @Override void onClick()
-	{
-		super.onClick();
-		final var cm = createContextMenu();
-		onContextMenu(cm);
-		cm.open();
-	}
+	protected @Virtual @Override void onClick() { super.onClick(); createContextMenu().open(); }
 	
 	/**
 	 * {@inheritDoc}<p>
 	 * For {@link TSelectWidget}, a {@link TContextMenuPanel} must always
 	 * be created, and this method must never return {@code null}.
 	 */
-	public @Virtual @Override TContextMenuPanel createContextMenu() { return new TContextMenuPanel(this); }
-	
-	/**
-	 * Called by {@link #onClick()} after a {@link TContextMenuPanel} is
-	 * created using {@link #createContextMenu()}.
-	 */
-	protected @Virtual void onContextMenu(TContextMenuPanel contextMenu)
+	public @Virtual @Override TContextMenuPanel createContextMenu()
 	{
+		//create the context menu
+		final var menu = new TContextMenuPanel(this);
+		
+		//add entries to the context menu
 		for(final T entry : this.entries)
 			contextMenu.addButton(entry.getText(), __ -> setSelected(entry))
 				.setTooltip(contextMenu.getTooltip());
+		
+		//return the context menu
+		return menu;
 	}
 	// --------------------------------------------------
 	/**

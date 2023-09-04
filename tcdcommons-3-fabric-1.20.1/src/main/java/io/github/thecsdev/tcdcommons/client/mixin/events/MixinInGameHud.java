@@ -1,6 +1,6 @@
 package io.github.thecsdev.tcdcommons.client.mixin.events;
 
-import static io.github.thecsdev.tcdcommons.client.mixin.CMInternal.CURRENT_T_SCREEN;
+import static io.github.thecsdev.tcdcommons.client.mixin.TCMInternal.CURRENT_T_SCREEN;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

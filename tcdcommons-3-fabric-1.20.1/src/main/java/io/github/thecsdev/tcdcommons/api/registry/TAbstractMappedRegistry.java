@@ -1,11 +1,12 @@
 package io.github.thecsdev.tcdcommons.api.registry;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import com.google.common.collect.HashBiMap;
@@ -25,7 +26,7 @@ public abstract class TAbstractMappedRegistry<T> implements TRegistry<T>
 	static final String ERR_CANNOT_ADD = "This registry does not support registering new entries.";
 	static final String ERR_CANNOT_REMOVE = "This registry does not support unregistering existing entries.";
 	// --------------------------------------------------
-	protected final ConcurrentHashMap<Identifier, T> map = new ConcurrentHashMap<>();
+	protected final Map<Identifier, T> map = new LinkedHashMap<>();
 	// ==================================================
 	public final @Override Iterator<Entry<Identifier, T>> iterator() { return this.map.entrySet().iterator(); }
 	// ==================================================

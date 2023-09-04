@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.screen;
 
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
+import static io.github.thecsdev.tcdcommons.client.mixin.TCMInternal.CURRENT_SCISSORS;
 import static net.minecraft.client.util.InputUtil.GLFW_KEY_LEFT_SUPER;
 import static net.minecraft.client.util.InputUtil.GLFW_KEY_RIGHT_SUPER;
 import static net.minecraft.client.util.InputUtil.isKeyPressed;
@@ -32,9 +33,9 @@ import net.minecraft.text.Text;
 public abstract class TScreen implements TParentElement
 {
 	// ==================================================
-	protected @Nullable MinecraftClient client = MinecraftClient.getInstance();
+	protected @Nullable MinecraftClient client = MC_CLIENT;
 	protected final TElementList children = new TElementList(this);
-	private final @Internal TScreenWrapper<?> wrapper;
+	private final @Internal TScreenWrapper<?> __wrapper;
 	// --------------------------------------------------
 	protected @Nullable Text title;
 	
@@ -49,24 +50,27 @@ public abstract class TScreen implements TParentElement
 	public TScreen(Text title)
 	{
 		this.title = Objects.requireNonNull(title); //(1) title must be assigned first
-		this.wrapper = Objects.requireNonNull(createScreenWrapper());
+		this.__wrapper = Objects.requireNonNull(createScreenWrapper());
 	}
 	protected @Virtual TScreenWrapper<?> createScreenWrapper() { return new TScreenWrapper<TScreen>(this); }
 	// --------------------------------------------------
-	public final Screen getAsScreen() { return this.wrapper; }
+	public final Screen getAsScreen() { return this.__wrapper; }
 	public final @Nullable MinecraftClient getClient() { return this.client; }
 	public final TextRenderer getTextRenderer() { return this.client.textRenderer; }
 	public final ItemRenderer getItemRenderer() { return this.client.getItemRenderer(); }
 	//
 	public final Text getTitle() { return this.title; }
+	public final @Override boolean isEnabled() { return TParentElement.super.isEnabled(); }
 	public final @Override boolean getEnabled() { return true; }
-	public @Virtual void close() { this.wrapper.Screen_super_close(); }
+	public @Virtual void close() { this.__wrapper.Screen_super_close(); }
 	protected @Virtual void onOpened() {}
 	protected @Virtual void onClosed() {}
 	//
 	public @Virtual boolean shouldPause() { return true; }
 	public @Virtual boolean shouldCloseOnEsc() { return true; }
 	public @Virtual boolean shouldRenderInGameHud() { return true; }
+	//
+	public final boolean isOpen() { return MC_CLIENT.currentScreen == this.__wrapper; }
 	//
 	public final Point getMousePosition() { return this.__mousePosition.getLocation(); }
 	@Internal final void setMousePosition(int x, int y) { this.__mousePosition.x = x; this.__mousePosition.y = y; }
@@ -76,8 +80,8 @@ public abstract class TScreen implements TParentElement
 	// ==================================================
 	public final @Override int getX() { return 0; }
 	public final @Override int getY() { return 0; }
-	public final @Override int getWidth() { return this.wrapper.width; }
-	public final @Override int getHeight() { return this.wrapper.height; }
+	public final @Override int getWidth() { return this.__wrapper.width; }
+	public final @Override int getHeight() { return this.__wrapper.height; }
 	// --------------------------------------------------
 	public final @Nullable TElement getDraggingElement() { return this.__dragging; }
 	public final @Nullable TElement getHoveredElement() { return this.__hovered; }
@@ -137,7 +141,7 @@ public abstract class TScreen implements TParentElement
 	{
 		//draw solid background texture when needed
 		if(this.client.world == null)
-			this.wrapper.renderBackgroundTexture(pencil);
+			this.__wrapper.renderBackgroundTexture(pencil);
 	}
 	// --------------------------------------------------
 	public @Virtual @Override boolean input(TInputContext inputContext)
@@ -221,7 +225,15 @@ public abstract class TScreen implements TParentElement
 	 * Renders all children elements of this {@link TScreen}.
 	 * @apiNote Not recommended to call outside of {@link TScreen#render(TDrawContext)}.
 	 */
-	protected final void renderChildren(final TDrawContext pencil) { __renderChildren(pencil, null, 0); }
+	protected final void renderChildren(final TDrawContext pencil)
+	{
+		//clear scissor flags first
+		CURRENT_SCISSORS.setBounds(0, 0, getWidth(), getHeight());
+		
+		//begin rendering children
+		__renderChildren(pencil, null, 0);
+	}
+	//
 	private final void __renderChildren(final TDrawContext pencil, final TElement teParent, final int iteration)
 	{
 		//null check, depth check, and prepare to render
@@ -231,17 +243,30 @@ public abstract class TScreen implements TParentElement
 		//iterate all children of this screen
 		//(using forEachChild for parent/child relation updates, but must NOT be a nested loop tho.)
 		final TParentElement parent = (teParent != null ? teParent : this);
-		parent.forEachChild(child ->
+
+		//push parent scissors
+		final int pX = parent.getX(), pY = parent.getY(), pXW = pX + parent.getWidth(), pYH = pY + parent.getHeight();
+		pencil.enableScissor(pX, pY, pXW, pYH); //constrain to parent bounds
+		if(CURRENT_SCISSORS.width <= 1 || CURRENT_SCISSORS.height <= 1)
 		{
-			final int pX = parent.getX(),
-					pY = parent.getY(),
-					pXW = pX + parent.getWidth(),
-					pYH = pY + parent.getHeight();
+			pencil.disableScissor(); //make sure to undo the scissor before returning
+			return; //do not render elements outside of scissor bounds
+		}
+		
+		//iterate children and render them
+		parent.forEachChild(child -> //using `forEachChild` for the `__updateParent` error correction
+		{
+			//make sure child is within scissor bounds
+			if(
+				child.getY() >= CURRENT_SCISSORS.y + CURRENT_SCISSORS.height || //testing vertical bottom
+				child.getX() >= CURRENT_SCISSORS.x + CURRENT_SCISSORS.width || //testing horizontal right
+				child.getEndY() <= CURRENT_SCISSORS.y || //testing vertical top
+				child.getEndX() <= CURRENT_SCISSORS.x //testing horizontal left
+			) return;
 			
-			//push context, scissors, and alpha
+			//push context, matrices, and alpha
 			pencil.getMatrices().push();
 			pencil.getMatrices().translate(0, 0, child.getZOffset());
-			pencil.enableScissor(pX, pY, pXW, pYH); //constrain to parent bounds
 			pencil.pushTShaderColor(1, 1, 1, child.getAlpha());
 			
 			//render the child, and its children
@@ -253,22 +278,29 @@ public abstract class TScreen implements TParentElement
 			pencil.updateContext(child); //now back to rendering the child
 			child.postRender(pencil);
 			
-			//pop context, scissors, and alpha
+			//pop context, matrices, and alpha
 			pencil.updateContext(this); //now back to rendering 'this'
 			//
 			pencil.popTShaderColor();
-			pencil.disableScissor();
 			pencil.getMatrices().pop();
 		},
-		false/*as mentioned earlier, must NOT nest*/);
+		false /*do not nest, as nesting will be handled manually*/);
+		
+		//pop parent scissors
+		pencil.disableScissor();
 		
 		//render hovered child tooltip if possible
-		var target = this.__focused != null ? this.__focused : this.__hovered;
-		if(target == null) return;
+		var target = (this.__focused != null && this.__focused.getTooltip() != null) ?
+				this.__focused : this.__hovered;
+		
+		if(target != null && target.getTooltip() == null) //bubble to parent if needed
+			target = target.findParentTElement(p -> (p.getTooltip() != null));
+		if(target == null) return; //if target not found, return
+		
 		final var tt = target.getTooltip();
 		final var ttp = target.getTooltipPositioner();
 		if(tt != null && ttp != null)
-			this.wrapper.setTooltip(tt, ttp, true);
+			this.__wrapper.setTooltip(tt, ttp, true);
 	}
 	// --------------------------------------------------
 	/**

@@ -9,7 +9,8 @@
 		"MixinGameMenuScreen",
 		"MixinMinecraftClient",
 		"MixinInGameHud",
-		"MixinCustomPayloadS2CPacket"
+		"MixinCustomPayloadS2CPacket",
+		"MixinDrawContext"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

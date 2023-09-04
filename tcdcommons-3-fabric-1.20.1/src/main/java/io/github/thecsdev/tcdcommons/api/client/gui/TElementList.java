@@ -19,6 +19,8 @@ public final class TElementList implements Iterable<TElement>
 	 * {@link TElement} children belong to.
 	 */
 	private final TParentElement parent;
+	private final @Nullable TElement parentElement;
+	
 	//warning: children list type may change at any time
 	private final @Internal IdealList<TElement> __children = new IdealList<>();
 	
@@ -27,9 +29,14 @@ public final class TElementList implements Iterable<TElement>
 	 * on the sides of this element in the following order:<br/>
 	 * TOP, BOTTOM, LEFT, RIGHT
 	 */
+	@Deprecated(forRemoval = true, since = "3") //TODO - extreme performance bottleneck. figure out some other way
 	private final Tuple4<TElement, TElement, TElement, TElement> topmostElements = new Tuple4<>();
 	// ==================================================
-	public TElementList(TParentElement parent) { this.parent = Objects.requireNonNull(parent); }
+	public TElementList(TParentElement parent)
+	{
+		this.parent = Objects.requireNonNull(parent);
+		this.parentElement = (this.parent instanceof TElement) ? (TElement)this.parent : null;
+	}
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link TParentElement} that owns this {@link TElementList} of children.
@@ -39,7 +46,8 @@ public final class TElementList implements Iterable<TElement>
 	/**
 	 * Returns the {@link #topmostElements} for this {@link #parent} element.
 	 */
-	public Tuple4<TElement, TElement, TElement, TElement> getTopmostElements() { return this.topmostElements; }
+	@Deprecated(forRemoval = true, since = "3")
+	public final Tuple4<TElement, TElement, TElement, TElement> getTopmostElements() { return this.topmostElements; }
 	
 	/**
 	 * Returns an {@link Iterator} for iterating the {@link TElementList}.
@@ -91,23 +99,26 @@ public final class TElementList implements Iterable<TElement>
 		
 		//(1) add
 		this.__children.add(index, child); //throws IndexOutOfBoundsException
-		__updateTopmostChild(child);
 		
 		//(2) update parent
 		final var oldParent = child.__parent; //must be done here
 		child.__updateParent(this.parent);
 		child.forEachChild(null, true); //update child children's __parent
 		
-		//(3) reposition
-		if(reposition) child.move(this.parent.getX(), this.parent.getY());
+		//(3) reposition and update topmost
+		if(reposition)
+		{
+			//child.move(this.parent.getX(), this.parent.getY()); - DO NOT DO THIS! TERRIBLE PERFORMANCE!
+			child.x += this.parent.getX(); //instead, adjust XY directly
+			child.y += this.parent.getY();
+			child.moveChildren(this.parent.getX(), this.parent.getY()); //and also move children
+		}
+		__updateTopmostChild(child); //after repositioning, update topmost
 		
 		//(4) invoke the TElement events
 		child.eParentChanged.invoker().invoke(child, oldParent, child.__parent);
-		if(this.parent instanceof TElement)
-		{
-			var teParent = (TElement)this.parent;
-			teParent.eChildAdded.invoker().invoke(teParent, child, reposition);
-		}
+		if(this.parentElement != null)
+			this.parentElement.eChildAdded.invoker().invoke(this.parentElement, child, reposition);
 		
 		//(5) return
 		return true;
@@ -144,11 +155,8 @@ public final class TElementList implements Iterable<TElement>
 		if(!topmostsWereCleared)
 		{
 			child.eParentChanged.invoker().invoke(child, oldParent, child.__parent);
-			if(this.parent instanceof TElement)
-			{
-				var teParent = (TElement)this.parent;
-				teParent.eChildRemoved.invoker().invoke(teParent, child, reposition);
-			}
+			if(this.parentElement != null)
+				this.parentElement.eChildRemoved.invoker().invoke(this.parentElement, child, reposition);
 		}
 		
 		//(6) return

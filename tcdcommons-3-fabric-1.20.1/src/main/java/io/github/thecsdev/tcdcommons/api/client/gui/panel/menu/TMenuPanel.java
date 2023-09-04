@@ -80,7 +80,7 @@ public abstract class TMenuPanel extends TPanelElement
 		item.setOnClick(onClick);
 		return item;
 	}
-	
+	// --------------------------------------------------
 	/**
 	 * Creates and adds a new {@link TMenuPanelSeparator}.
 	 */

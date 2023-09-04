@@ -228,10 +228,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 			//mouse move bubbles starting from hovered element, with no extra handling
 			case MOUSE_MOVE: return inputMainPhaseBubble(this.target.__hovered, inputContext) != null;
 			//mouse drag is only forwarded to the current dragging element; nothing else
-			case MOUSE_DRAG:
-				return
-					this.target.__dragging != null &&
-					inputMainPhase(this.target.__dragging, inputContext);
+			case MOUSE_DRAG: return this.target.__dragging != null && inputMainPhase(this.target.__dragging, inputContext);
 			//mouse click and release bubble starting from hovered element,
 			//but with some extra "dragged element" handling as well
 			case MOUSE_PRESS:
@@ -248,7 +245,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 				//assign the result as the "dragging element"
 				if(this.target.__dragging == null && resultEl != null)
 				{
-					this.target.__dragging = (TElement)result;
+					this.target.__dragging = resultEl;
 					this.target.__draggingButton = inputContext.getMouseButton();
 				}
 				
@@ -346,6 +343,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 		//we then forward the input to the target element...
 		else if(inputMainPhase(targetElement, inputContext))
 			return targetElement;
+		
 		//...and if the target element doesn't handle it, forward the
 		//input to its parent hierarchy, parent by parent
 		else return (targetElement.findParent(p -> inputMainPhase(p, inputContext)));

@@ -74,7 +74,7 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 		this.alpha = 1;
 		this.zOffset = 0;
 		this.tooltip = null;
-		this.tooltipPositioner = GuiUtils.createDefaultTooltipPositioner(this);
+		this.tooltipPositioner = null; //initially null for performance reasons (lazy)
 	}
 	
 	/**
@@ -85,7 +85,6 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	@Internal void __updateParent(final TParentElement parent)
 	{
 		//ignore if parent is the same, and handle parent assigning
-		//if(this.__parent == parent) return; -- biiig NOPE. turns out it causes bugs (who'd've thought...)
 		this.__parent = parent;
 		//handle parent being TElement
 		if(parent instanceof TElement)
@@ -97,9 +96,8 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 		//handle parent being TScreen
 		else if(parent instanceof TScreen)
 		{
-			final var parentScreen = (TScreen)parent;
 			this.__parentElement = null;
-			this.__parentScreen = parentScreen;
+			this.__parentScreen = (TScreen)parent;
 		}
 		//other parent types are unsupported
 		else
@@ -227,6 +225,7 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	public final float getZOffset() { return this.zOffset; }
 	public @Virtual void setZOffset(float zOffset) { this.zOffset = zOffset; }
 	//
+	public final @Override boolean isEnabled() { return TParentElement.super.isEnabled(); }
 	public @Virtual @Override boolean getEnabled() { return true; }
 	public @Virtual boolean isFocusable() { return false; }
 	//
@@ -244,7 +243,13 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	 * @apiNote Do not do anything other than create and return a {@link TContextMenuPanel}
 	 * instance from here. Any events such as {@link #eContextMenu} will be invoked automatically.
 	 */
-	public @Virtual @Nullable TContextMenuPanel createContextMenu() { return null; }
+	public @Virtual @Nullable TContextMenuPanel createContextMenu()
+	{
+		//create the context menu, the context menu event gets invoked automatically
+		final var menu = new TContextMenuPanel(this);
+		//if the menu has any menu items added, return the menu, and return null otherwise
+		return (menu.getChildren().size() > 0) ? menu : null;
+	}
 	// --------------------------------------------------
 	/**
 	 * Used for periodic updates for this {@link TElement}.
@@ -259,7 +264,12 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	// ==================================================
 	public final @Nullable Tooltip getTooltip() { return this.tooltip; }
 	public @Virtual void setTooltip(@Nullable Tooltip tooltip) { this.tooltip = tooltip; }
-	public final @Nullable TooltipPositioner getTooltipPositioner() { return this.tooltipPositioner; }
+	public final TooltipPositioner getTooltipPositioner()
+	{
+		return this.tooltipPositioner != null ?
+				this.tooltipPositioner :
+				(this.tooltipPositioner = GuiUtils.createDefaultTooltipPositioner(this));
+	}
 	// ==================================================
 	/**
 	 * Returns the {@link TElement} that comes <b>before</b> this

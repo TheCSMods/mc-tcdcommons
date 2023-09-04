@@ -455,33 +455,11 @@ public @Virtual class TPanelElement extends TElement
 		if(super.input(inputContext))
 			return true;
 		//and make sure the parent screen is in place
-		if(getParentTScreen() == null)
+		else if(getParentTScreen() == null)
 			return false;
 		
-		//mouse input forwarding
-		//- this will forward mouse related inputs to children first,
-		//  as children take priority when it comes to such inputs
-		if(inputContext.getInputType().isMouseRelated())
-		{
-			//obtain hovered element...
-			final var hovered = getParentTScreen().getHoveredElement();
-			//...and do not handle the input if it's null
-			if(hovered == null) return false;
-			//this element will handle the input if this element is hovered...
-			else if(hovered == this) { /*break out of `if-else` statements*/ }
-			//.../and the children will handle it if they are the hovered ones
-			else
-			{
-				//if the hovered element is not a child of this element;
-				//don't handle this event at all, as this element isn't hovered either
-				if(hovered.getParent() != this) return false;
-				//forward the input to the hovered child; if it handles it, return true
-				if(hovered.input(inputContext)) return true;
-				//if the hovered child doesn't handle it, this element will proceed to handle it
-			}
-		}
 		//don't handle keyboard-related inputs if this element isn't focused
-		else if(inputContext.getInputType().isKeyboardRelated())
+		if(inputContext.getInputType().isKeyboardRelated())
 			if(getParentTScreen().getFocusedElement() != this)
 				return false;
 		

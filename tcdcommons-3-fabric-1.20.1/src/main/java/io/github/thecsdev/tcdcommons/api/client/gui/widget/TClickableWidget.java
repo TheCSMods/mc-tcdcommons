@@ -78,10 +78,22 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 		{
 			case MOUSE_PRESS:
 				//break if the user pressed any button other than LMB
-				if(inputContext.getMouseButton() != 0) break;
-				//click
-				click(true);
-				return true;
+				final int btn = inputContext.getMouseButton();
+				//handle click mouse buttons
+				if(btn == 0) { click(true); return true; }
+				else if(btn == 1)
+				{
+					final var contextMenu = createContextMenu();
+					if(contextMenu != null)
+					{
+						contextMenu.open();
+						GuiUtils.playClickSound();
+						return true;
+					}
+					return false;
+				}
+				//unsupported mouse buttons will return false
+				return false;
 			case KEY_RELEASE:
 				//break if the user pressed any key other than enter
 				//257 - ENTER; 335 - NUMPAD ENTER; 32 - SPACE;

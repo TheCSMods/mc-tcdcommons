@@ -29,6 +29,7 @@ public @Virtual class TMenuPanelButton extends TButtonWidget implements IMenuPan
 		setText(text);
 		if(targetParentMenu != null)
 			targetParentMenu.addChild(this, true);
+		setOnClick(__ -> System.out.println("FUCKING WHAT THE FUCK")); //TODO - TEST, REMOVE!
 	}
 	// --------------------------------------------------
 	protected final void TButtonWidget_super_setText(@Nullable Text text) { super.setText(text); }

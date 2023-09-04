@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.panel.menu;
 
+import org.jetbrains.annotations.ApiStatus.Experimental;
+
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
@@ -8,9 +10,9 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 public @Virtual class TMenuBarPanel extends TMenuPanel
 {
 	// ==================================================
-	public static final int DEFAULT_MENU_HEIGHT = 15;
+	public static final int HEIGHT = 15;
 	// ==================================================
-	public TMenuBarPanel(TParentElement target)
+	public @Experimental TMenuBarPanel(TParentElement target)
 	{
 		this(0, 0,
 				(target instanceof TPanelElement) ?
@@ -20,7 +22,7 @@ public @Virtual class TMenuBarPanel extends TMenuPanel
 	}
 	public TMenuBarPanel(int x, int y, int width)
 	{
-		super(x, y, width, DEFAULT_MENU_HEIGHT);
+		super(x, y, width, HEIGHT);
 		this.scrollFlags = SCROLL_HORIZONTAL;
 	}
 	// ==================================================

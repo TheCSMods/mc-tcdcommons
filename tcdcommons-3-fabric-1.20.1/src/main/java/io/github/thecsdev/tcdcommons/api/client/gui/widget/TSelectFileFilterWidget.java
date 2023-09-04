@@ -24,7 +24,7 @@ public @Virtual class TSelectFileFilterWidget extends TSelectWidget<TSelectFileF
 	}
 	// ==================================================
 	/**
-	 * Returns an {@link FileFilterEntry} that is associated with a given {@link TFileFilter} value.
+	 * Returns a {@link FileFilterEntry} that is associated with a given {@link TFileFilter} value.
 	 * Will return {@code null} if no such {@link FileFilterEntry} exists or if it was removed.
 	 * @param fileFilter The {@link TFileFilter} value to look for in the {@link FileFilterEntry}s.
 	 * @see FileFilterEntry#getFileFilter()
@@ -34,7 +34,7 @@ public @Virtual class TSelectFileFilterWidget extends TSelectWidget<TSelectFileF
 	/**
 	 * Sets the selected {@link FileFilterEntry} using its {@link TFileFilter} value.
 	 * @throws NoSuchElementException If this {@link TSelectFileFilterWidget} does not have
-	 * an {@link FileFilterEntry} that corresponds with the given {@link TFileFilter} value.
+	 * a {@link FileFilterEntry} that corresponds with the given {@link TFileFilter} value.
 	 * @see #entryOf(TFileFilter)
 	 * @see FileFilterEntry#getFileFilter()
 	 */

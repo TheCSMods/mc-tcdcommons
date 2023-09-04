@@ -4,6 +4,7 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.widget.TClickableWidg
 
 import java.awt.Color;
 
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -27,6 +28,7 @@ import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorDrawContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.DiffuseLighting;
@@ -469,20 +471,25 @@ public final class TDrawContext extends DrawContext
 	 * @apiNote Some {@link EntityRenderer}s <b>do not support rendering</b>
 	 * their corresponding {@link Entity}s <b>while not in-game</b>.
 	 */
-	@Beta
+	@Experimental
 	public final void drawTEntity(Entity entity, int x, int y, int size, boolean followCursor)
 	{
 		//null check
 		if(entity == null) return;
 		
 		//prepare to handle living entities as well
+		int mouseX = followCursor ? this.mouseX + (size/2) : x + 100;
+		int mouseY = followCursor ? this.mouseY + (size/2) : y + 50;
 		@Nullable LivingEntity livingEntity = null;
-		if(entity instanceof LivingEntity) livingEntity = (LivingEntity)entity;
+		if(entity instanceof LivingEntity)
+		{
+			livingEntity = (LivingEntity)entity;
+			InventoryScreen.drawEntity(this, x, y, size, mouseX, mouseY, livingEntity);
+			return;
+		}
 		
 		//prepare the context - push stuff
 		//(position and rotate the entity appropriately)
-		int mouseX = followCursor ? this.mouseX + (size/2) : x + 100;
-		int mouseY = followCursor ? this.mouseY + (size/2) : y + 50;
 		float atanMouseX40 = (float)Math.atan(((mouseX - x) / 40.0F));
 		float atanMouseY40 = -(float)Math.atan(((mouseY - y) / 40.0F));
 		Quaternionf quaternionf = new Quaternionf().rotateZ(3.1415927F).rotateY(3.1415927F);
@@ -492,7 +499,7 @@ public final class TDrawContext extends DrawContext
 		float i = entity.getYaw(), j = entity.getPitch();
 		entity.setYaw(180.0F + atanMouseX40 * 40.0F);
 		entity.setPitch(-atanMouseY40 * 20.0F);
-		float h = 0, k = 0, l = 0;
+		/*float h = 0, k = 0, l = 0; -- no longer rendering living entities here
 		if(livingEntity != null)
 		{
 			h = livingEntity.bodyYaw;
@@ -501,7 +508,7 @@ public final class TDrawContext extends DrawContext
 			livingEntity.bodyYaw = 180.0F + atanMouseX40 * 20.0F;
 			livingEntity.headYaw = entity.getYaw();
 			livingEntity.prevHeadYaw = entity.getYaw();
-		}
+		}*/
 		
 		//render
 		__drawTEntity(x, y, size, quaternionf, quaternionf2, entity);
@@ -510,12 +517,12 @@ public final class TDrawContext extends DrawContext
 		//(return the entity back to its initial state)
 		entity.setYaw(i);
 		entity.setPitch(j);
-		if(livingEntity != null)
+		/*if(livingEntity != null) -- no longer rendering living entities here
 		{
 			livingEntity.bodyYaw = h;
 			livingEntity.prevHeadYaw = k;
 			livingEntity.headYaw = l;
-		}
+		}*/
 	}
 	
 	//note: don't forget to make sure this method is up-to-date with InventoryScreen#drawEntity
