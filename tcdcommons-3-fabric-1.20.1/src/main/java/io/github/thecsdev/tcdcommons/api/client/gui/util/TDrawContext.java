@@ -1,8 +1,10 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.util;
 
 import static io.github.thecsdev.tcdcommons.api.client.gui.widget.TClickableWidget.BUTTON_TEXTURE_SLICE_SIZE;
+import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import java.awt.Color;
+import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -37,7 +39,6 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -441,23 +442,38 @@ public final class TDrawContext extends DrawContext
 				BUTTON_TEXTURE_SLICE_SIZE);
 	}
 	// ==================================================
-	public final <T extends PlayerBadge> void drawTPlayerBadge(T playerBadge, @Nullable PlayerEntity player)
+	/**
+	 * Draws a {@link PlayerBadge} over the {@link #currentTarget}.
+	 * @param playerBadge The {@link PlayerBadge} to draw.
+	 * @see #drawTPlayerBadge(PlayerBadge, int, int, int, int)
+	 */
+	public final <T extends PlayerBadge> void drawTPlayerBadge(T playerBadge)
 	{
 		drawTPlayerBadge(
-				playerBadge, player,
+				playerBadge,
 				this.currentTarget.getX(), this.currentTarget.getY(),
 				this.currentTarget.getWidth(), this.currentTarget.getHeight());
 	}
 	
-	public final <T extends PlayerBadge> void drawTPlayerBadge(
-			T playerBadge,
-			@Nullable PlayerEntity player,
-			int x, int y, int width, int height)
+	/**
+	 * Draws a {@link PlayerBadge} at the given coordinates, using the
+	 * {@link PlayerBadge}'s corresponding {@link PlayerBadgeRenderer} that is
+	 * registered in {@link TClientRegistries#PLAYER_BADGE_RENDERER}.
+	 * @param playerBadge The {@link PlayerBadge} to render.
+	 * @param x The X coordinate.
+	 * @param y The Y coordinate.
+	 * @param width The visual size of the {@link PlayerBadge} (width).
+	 * @param height The visual size of the {@link PlayerBadge} (height).
+	 * @throws NoSuchElementException If a corresponding {@link PlayerBadgeRenderer} isn't registered.
+	 * @throws ClassCastException If the corresponding {@link PlayerBadgeRenderer}'s generic type doesn't match.
+	 */
+	public final <T extends PlayerBadge> void drawTPlayerBadge
+	(T playerBadge, int x, int y, int width, int height) throws NoSuchElementException, ClassCastException
 	{
 		final var playerBadgeId = playerBadge.getId();
 		@SuppressWarnings("unchecked")
 		final var br = (PlayerBadgeRenderer<T>)TClientRegistries.PLAYER_BADGE_RENDERER.getValue(playerBadgeId).get();
-		br.render(playerBadge, player, this, x, y, width, height, this.deltaTime);
+		br.render(playerBadge, this, x, y, width, height, this.deltaTime);
 	}
 	// ==================================================
 	/**
@@ -480,11 +496,11 @@ public final class TDrawContext extends DrawContext
 		//prepare to handle living entities as well
 		int mouseX = followCursor ? this.mouseX + (size/2) : x + 100;
 		int mouseY = followCursor ? this.mouseY + (size/2) : y + 50;
-		@Nullable LivingEntity livingEntity = null;
-		if(entity instanceof LivingEntity)
+		final @Nullable LivingEntity livingEntity = (entity instanceof LivingEntity) ? (LivingEntity)entity : null;
+		if(livingEntity != null && MC_CLIENT.world != null /*client world is required for vanilla rendering*/)
 		{
-			livingEntity = (LivingEntity)entity;
-			InventoryScreen.drawEntity(this, x, y, size, mouseX, mouseY, livingEntity);
+			//use Vanilla rendering for living entities, so i don't have to keep that part up-to-date by myself
+			InventoryScreen.drawEntity(this, x, y, size, x - mouseX, y - mouseY, livingEntity);
 			return;
 		}
 		
@@ -499,7 +515,7 @@ public final class TDrawContext extends DrawContext
 		float i = entity.getYaw(), j = entity.getPitch();
 		entity.setYaw(180.0F + atanMouseX40 * 40.0F);
 		entity.setPitch(-atanMouseY40 * 20.0F);
-		/*float h = 0, k = 0, l = 0; -- no longer rendering living entities here
+		float h = 0, k = 0, l = 0;
 		if(livingEntity != null)
 		{
 			h = livingEntity.bodyYaw;
@@ -508,7 +524,7 @@ public final class TDrawContext extends DrawContext
 			livingEntity.bodyYaw = 180.0F + atanMouseX40 * 20.0F;
 			livingEntity.headYaw = entity.getYaw();
 			livingEntity.prevHeadYaw = entity.getYaw();
-		}*/
+		}
 		
 		//render
 		__drawTEntity(x, y, size, quaternionf, quaternionf2, entity);
@@ -517,12 +533,12 @@ public final class TDrawContext extends DrawContext
 		//(return the entity back to its initial state)
 		entity.setYaw(i);
 		entity.setPitch(j);
-		/*if(livingEntity != null) -- no longer rendering living entities here
+		if(livingEntity != null)
 		{
 			livingEntity.bodyYaw = h;
 			livingEntity.prevHeadYaw = k;
 			livingEntity.headYaw = l;
-		}*/
+		}
 	}
 	
 	//note: don't forget to make sure this method is up-to-date with InventoryScreen#drawEntity

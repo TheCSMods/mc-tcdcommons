@@ -27,6 +27,7 @@ import io.netty.util.internal.UnstableApi;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.text.Text;
 
@@ -124,10 +125,9 @@ public abstract class TScreen implements TParentElement
 	 */
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
-		//render background
-		this.renderBackground(pencil);
-		//draw children
+		renderBackground(pencil);
 		renderChildren(pencil);
+		renderTooltip(pencil);
 	}
 	
 	/**
@@ -142,6 +142,97 @@ public abstract class TScreen implements TParentElement
 		//draw solid background texture when needed
 		if(this.client.world == null)
 			this.__wrapper.renderBackgroundTexture(pencil);
+	}
+	// --------------------------------------------------
+	/**
+	 * Renders all children elements of this {@link TScreen}.
+	 * @apiNote Not recommended to call outside of {@link TScreen#render(TDrawContext)}.
+	 */
+	protected final void renderChildren(final TDrawContext pencil)
+	{
+		//clear scissor flags first
+		CURRENT_SCISSORS.setBounds(0, 0, getWidth(), getHeight());
+		
+		//begin rendering children
+		__renderChildren(pencil, null, 0);
+	}
+	//
+	private final void __renderChildren(final TDrawContext pencil, final TElement teParent, final int iteration)
+	{
+		//null check, depth check, and prepare to render
+		if(iteration > TParentElement.MAX_CHILD_NESTING_DEPTH)
+			return;
+		
+		//iterate all children of this screen
+		//(using forEachChild for parent/child relation updates, but must NOT be a nested loop tho.)
+		final TParentElement parent = (teParent != null ? teParent : this);
+
+		//push parent scissors
+		final int pX = parent.getX(), pY = parent.getY(), pXW = pX + parent.getWidth(), pYH = pY + parent.getHeight();
+		pencil.enableScissor(pX, pY, pXW, pYH); //constrain to parent bounds
+		if(CURRENT_SCISSORS.width <= 1 || CURRENT_SCISSORS.height <= 1)
+		{
+			pencil.disableScissor(); //make sure to undo the scissor before returning
+			return; //do not render elements outside of scissor bounds
+		}
+		
+		//iterate children and render them
+		parent.forEachChild(child -> //using `forEachChild` for the `__updateParent` error correction
+		{
+			//make sure child is within scissor bounds
+			if(
+				child.getY() >= CURRENT_SCISSORS.y + CURRENT_SCISSORS.height || //testing vertical bottom
+				child.getX() >= CURRENT_SCISSORS.x + CURRENT_SCISSORS.width || //testing horizontal right
+				child.getEndY() <= CURRENT_SCISSORS.y || //testing vertical top
+				child.getEndX() <= CURRENT_SCISSORS.x //testing horizontal left
+			) return;
+			
+			//push context, matrices, and alpha
+			pencil.getMatrices().push();
+			pencil.getMatrices().translate(0, 0, child.getZOffset());
+			pencil.pushTShaderColor(1, 1, 1, child.getAlpha());
+			
+			//render the child, and its children
+			pencil.updateContext(child); //now rendering the child
+			child.render(pencil);
+			
+			__renderChildren(pencil, child, iteration + 1); //now rendering the child's children
+			
+			pencil.updateContext(child); //now back to rendering the child
+			child.postRender(pencil);
+			
+			//pop context, matrices, and alpha
+			pencil.updateContext(this); //now back to rendering 'this'
+			//
+			pencil.popTShaderColor();
+			pencil.getMatrices().pop();
+		},
+		false /*do not nest, as nesting will be handled manually*/);
+		
+		//pop parent scissors
+		pencil.disableScissor();
+	}
+	
+	/**
+	 * Renders the {@link Tooltip} for the currently selected or hovered {@link TElement}.
+	 * @see #getFocusedElement()
+	 * @see #getHoveredElement()
+	 * @apiNote Not recommended to call outside of {@link TScreen#render(TDrawContext)}.
+	 */
+	protected final void renderTooltip(final TDrawContext pencil)
+	{
+		//render hovered child tooltip if possible
+		var target = (this.__focused != null && this.__focused.getTooltip() != null) ?
+				this.__focused : this.__hovered;
+		
+		if(target != null && target.getTooltip() == null) //bubble to parent if needed
+			target = target.findParentTElement(p -> (p.getTooltip() != null));
+		if(target == null) return; //if target not found, return
+		
+		final var tt = target.getTooltip();
+		final var ttp = target.getTooltipPositioner();
+		if(tt != null && ttp != null)
+			this.__wrapper.setTooltip(tt, ttp, true);
 	}
 	// --------------------------------------------------
 	public @Virtual @Override boolean input(TInputContext inputContext)
@@ -221,88 +312,6 @@ public abstract class TScreen implements TParentElement
 	 */
 	public @Virtual boolean filesDragged(Collection<Path> files) { return false; }
 	// ==================================================
-	/**
-	 * Renders all children elements of this {@link TScreen}.
-	 * @apiNote Not recommended to call outside of {@link TScreen#render(TDrawContext)}.
-	 */
-	protected final void renderChildren(final TDrawContext pencil)
-	{
-		//clear scissor flags first
-		CURRENT_SCISSORS.setBounds(0, 0, getWidth(), getHeight());
-		
-		//begin rendering children
-		__renderChildren(pencil, null, 0);
-	}
-	//
-	private final void __renderChildren(final TDrawContext pencil, final TElement teParent, final int iteration)
-	{
-		//null check, depth check, and prepare to render
-		if(iteration > TParentElement.MAX_CHILD_NESTING_DEPTH)
-			return;
-		
-		//iterate all children of this screen
-		//(using forEachChild for parent/child relation updates, but must NOT be a nested loop tho.)
-		final TParentElement parent = (teParent != null ? teParent : this);
-
-		//push parent scissors
-		final int pX = parent.getX(), pY = parent.getY(), pXW = pX + parent.getWidth(), pYH = pY + parent.getHeight();
-		pencil.enableScissor(pX, pY, pXW, pYH); //constrain to parent bounds
-		if(CURRENT_SCISSORS.width <= 1 || CURRENT_SCISSORS.height <= 1)
-		{
-			pencil.disableScissor(); //make sure to undo the scissor before returning
-			return; //do not render elements outside of scissor bounds
-		}
-		
-		//iterate children and render them
-		parent.forEachChild(child -> //using `forEachChild` for the `__updateParent` error correction
-		{
-			//make sure child is within scissor bounds
-			if(
-				child.getY() >= CURRENT_SCISSORS.y + CURRENT_SCISSORS.height || //testing vertical bottom
-				child.getX() >= CURRENT_SCISSORS.x + CURRENT_SCISSORS.width || //testing horizontal right
-				child.getEndY() <= CURRENT_SCISSORS.y || //testing vertical top
-				child.getEndX() <= CURRENT_SCISSORS.x //testing horizontal left
-			) return;
-			
-			//push context, matrices, and alpha
-			pencil.getMatrices().push();
-			pencil.getMatrices().translate(0, 0, child.getZOffset());
-			pencil.pushTShaderColor(1, 1, 1, child.getAlpha());
-			
-			//render the child, and its children
-			pencil.updateContext(child); //now rendering the child
-			child.render(pencil);
-			
-			__renderChildren(pencil, child, iteration + 1); //now rendering the child's children
-			
-			pencil.updateContext(child); //now back to rendering the child
-			child.postRender(pencil);
-			
-			//pop context, matrices, and alpha
-			pencil.updateContext(this); //now back to rendering 'this'
-			//
-			pencil.popTShaderColor();
-			pencil.getMatrices().pop();
-		},
-		false /*do not nest, as nesting will be handled manually*/);
-		
-		//pop parent scissors
-		pencil.disableScissor();
-		
-		//render hovered child tooltip if possible
-		var target = (this.__focused != null && this.__focused.getTooltip() != null) ?
-				this.__focused : this.__hovered;
-		
-		if(target != null && target.getTooltip() == null) //bubble to parent if needed
-			target = target.findParentTElement(p -> (p.getTooltip() != null));
-		if(target == null) return; //if target not found, return
-		
-		final var tt = target.getTooltip();
-		final var ttp = target.getTooltipPositioner();
-		if(tt != null && ttp != null)
-			this.__wrapper.setTooltip(tt, ttp, true);
-	}
-	// --------------------------------------------------
 	/**
 	 * An internal method called by the {@link TScreenWrapper} whenever
 	 * the mouse cursor moves and the hovered element needs to be re-calculated.

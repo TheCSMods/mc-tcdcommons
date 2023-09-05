@@ -9,5 +9,5 @@ public final class TRegistries
 	/**
 	 * Contains {@link PlayerBadge}s that were registered for this session.
 	 */
-	public static final TRegistry<PlayerBadge> PLAYER_BADGE = new TSimpleRegistry<>();
+	public static final TSimpleRegistry<PlayerBadge> PLAYER_BADGE = new TSimpleRegistry<>();
 }

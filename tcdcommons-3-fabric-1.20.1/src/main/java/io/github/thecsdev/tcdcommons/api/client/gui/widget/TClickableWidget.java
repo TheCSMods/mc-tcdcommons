@@ -1,6 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_ENTER;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_KP_ENTER;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
@@ -98,7 +100,7 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 				//break if the user pressed any key other than enter
 				//257 - ENTER; 335 - NUMPAD ENTER; 32 - SPACE;
 				final int keyCode = inputContext.getKeyboardKey().keyCode;
-				if(!(keyCode == 257 || keyCode == 335/* || keyCode == 32*/)) break;
+				if(!(keyCode == GLFW_KEY_ENTER || keyCode == GLFW_KEY_KP_ENTER/* || keyCode == 32*/)) break;
 				//click
 				click(true);
 				return true;

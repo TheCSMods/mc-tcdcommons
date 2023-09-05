@@ -46,7 +46,6 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 	{
 		super.setSize(width, height, flags);
 		recalcCache_mobSize();
-		recalcCache_cXY();
 	}
 	// ==================================================
 	public final @Nullable Entity getEntity() { return this.entity; }
@@ -74,7 +73,6 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 		//set-up flags and re-calculate size
 		this.entityErrorState = false;
 		recalcCache_mobSize();
-		recalcCache_cXY();
 	}
 	//
 	protected final @Internal void updateEntityTypeName(EntityType<?> entityType)
@@ -117,12 +115,20 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 		this.entityCenterY = (getEndY() - (this.height / 4));
 		//calculate text Y for the entity name text
 		if(this.entityTypeName != null)
-			entityTextY = entityCenterY - (this.entityTypeName.count() * MC_CLIENT.textRenderer.fontHeight);
-		else entityTextY = entityCenterY;
+		{
+			final int fh = MC_CLIENT.textRenderer.fontHeight;
+			this.entityTextY =
+				(getY() + (getHeight() / 2)) +
+				(fh / 2) -
+				(this.entityTypeName.count() * fh);
+		}
+		else this.entityTextY = this.entityCenterY;
 	}
 	// ==================================================
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
+		recalcCache_cXY();
+		
 		//in the event of an error, render the entity's name text
 		if(this.entityErrorState || this.entity == null)
 		{

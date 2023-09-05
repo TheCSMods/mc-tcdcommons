@@ -4,6 +4,8 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPa
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.other.TFillColorElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
@@ -12,8 +14,10 @@ import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooser
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectEnumWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget.SimpleEntry;
+import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSliderWidget;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.EntityType;
 import net.minecraft.text.Text;
 
 public final class TestTScreen extends TScreenPlus
@@ -35,19 +39,6 @@ public final class TestTScreen extends TScreenPlus
 		//init stuff
 		init_menuBar(x, w);
 		init_panel(x, HEIGHT + 5, w, getHeight() - (HEIGHT*2 - 10));
-		
-		//create a test entity renderer
-		/*final var ent = new TEntityRendererElement(10, (getHeight() / 2) - 50, 100, 100, EntityType.ARMOR_STAND);
-		ent.setFollowsCursor(true);
-		addChild(ent);
-		
-		final var entOverlay = new TFillColorElement(ent.getX(), ent.getY(), ent.getWidth(), ent.getHeight());
-		entOverlay.setColor(-922746881);
-		addChild(entOverlay);
-		
-		final var entOverlayZSlider = new TSliderWidget(ent.getX(), ent.getEndY(), ent.getWidth(), 10, 0);
-		entOverlayZSlider.setOnClick(__ -> entOverlay.setZOffset((float) (entOverlayZSlider.getValue() * 100)));
-		addChild(entOverlayZSlider);*/
 	}
 	// --------------------------------------------------
 	protected final TMenuBarPanel init_menuBar(int x, int width)
@@ -131,6 +122,19 @@ public final class TestTScreen extends TScreenPlus
 		
 		final var btn_selectEnum = new TSelectEnumWidget<TestEnum>(10, 40, 160, 20);
 		panel.addChild(btn_selectEnum, true);
+		
+		//create a test entity renderer
+		final var ent = new TEntityRendererElement(10, 70, 100, 100, EntityType.ARMOR_STAND);
+		ent.setFollowsCursor(true);
+		panel.addChild(ent, true);
+		
+		final var entOverlay = new TFillColorElement(ent.getX(), ent.getY(), ent.getWidth(), ent.getHeight());
+		entOverlay.setColor(-922746881);
+		panel.addChild(entOverlay, false);
+		
+		final var entOverlayZSlider = new TSliderWidget(ent.getX(), ent.getEndY(), ent.getWidth(), 10, 0);
+		entOverlayZSlider.setOnClick(__ -> entOverlay.setZOffset((float) (entOverlayZSlider.getValue() * 100)));
+		panel.addChild(entOverlayZSlider, false);
 		
 		//return the panel
 		return panel;

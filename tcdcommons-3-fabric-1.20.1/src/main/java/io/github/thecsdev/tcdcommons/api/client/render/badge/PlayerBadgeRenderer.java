@@ -2,8 +2,6 @@ package io.github.thecsdev.tcdcommons.api.client.render.badge;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.client.registry.TClientRegistries;
 import net.minecraft.client.gui.DrawContext;
@@ -30,7 +28,6 @@ public abstract class PlayerBadgeRenderer<T extends PlayerBadge>
 	/**
 	 * Renders this {@link PlayerBadge} on the client-side {@link Screen}.
 	 * @param badge The {@link PlayerBadge} being rendered.
-	 * @param player The {@link Nullable} {@link PlayerEntity} that the {@link PlayerBadge} may be associated with.
 	 * @param pencil The rendering {@link DrawContext}.
 	 * @param x The starting on-screen X position where to start drawing the badge.
 	 * @param y The starting on-screen Y position where to start drawing the badge.
@@ -41,7 +38,6 @@ public abstract class PlayerBadgeRenderer<T extends PlayerBadge>
 	 */
 	public abstract void render(
 			T badge,
-			@Nullable PlayerEntity player,
 			DrawContext pencil,
 			int x, int y, int width, int height,
 			float deltaTime);

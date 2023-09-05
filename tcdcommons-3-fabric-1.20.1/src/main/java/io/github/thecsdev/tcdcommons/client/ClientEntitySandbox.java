@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.client;
 
+import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
+
 import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -20,8 +22,7 @@ import net.minecraft.world.World;
  * Used by {@link TEntityRendererElement} to render {@link Entity}s.
  */
 @Beta
-@Internal
-public final class ClientEntitySandbox
+public final @Internal class ClientEntitySandbox
 {
 	// ==================================================
 	private ClientEntitySandbox() {}
@@ -41,11 +42,12 @@ public final class ClientEntitySandbox
 	public static @Nullable Entity getCachedEntityFromType(EntityType<?> entityType)
 	{
 		//check arguments
-		if(entityType == null || !entityType.isSummonable())
+		if(entityType == EntityType.PLAYER) return MC_CLIENT.player;
+		else if(entityType == null || !entityType.isSummonable())
 			return null;
 		
 		//check if an entry already exists
-		final var existing = ENTITY_CACHE.getIfPresent(entityType);
+		final Entity existing = ENTITY_CACHE.getIfPresent(entityType);
 		if(existing != null) return existing;
 		
 		//create a new entity and put it in the cache
