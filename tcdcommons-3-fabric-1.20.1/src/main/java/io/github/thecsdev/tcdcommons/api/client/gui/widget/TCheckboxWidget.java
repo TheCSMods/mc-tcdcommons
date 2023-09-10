@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
+import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
+
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
@@ -58,15 +60,15 @@ public @Virtual class TCheckboxWidget extends TButtonWidget
 			forCheckbox = HorizontalAlignment.LEFT;
 		
 		//obtain the text renderer
-		MinecraftClient minecraftClient = MinecraftClient.getInstance();
-		TextRenderer tr = minecraftClient.textRenderer;
+		final TextRenderer tr = MC_CLIENT.textRenderer;
 		
 		//set
 		this.textAlignment = forText;
 		this.checkboxAlignment = forCheckbox;
 		
 		//define x1 and x2 as temp. values for the X bounds
-		int x1 = this.x, x2 = this.x + this.width, msgW = tr.getWidth(getText().asOrderedText());
+		final Text txt = getText();
+		int x1 = this.x, x2 = this.x + this.width, msgW = (txt != null) ? tr.getWidth(txt.asOrderedText()) : 0;
 		
 		//checkbox XY
 		this.cX = (forCheckbox == HorizontalAlignment.RIGHT) ? x2 - 20 : x1;

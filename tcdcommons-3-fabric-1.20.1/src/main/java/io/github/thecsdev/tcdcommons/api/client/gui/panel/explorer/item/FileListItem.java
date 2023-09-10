@@ -35,7 +35,6 @@ public @Virtual class FileListItem extends TButtonWidget
 	protected @Nullable File file;
 	//protected @Deprecated @Nullable Text fileName; -- super.text exists
 	protected @Nullable Text fileSizeName;
-	protected @Nullable UITexture icon;
 	protected boolean fileHidden;
 	//
 	protected final int fileNameSideOffset;
@@ -48,7 +47,6 @@ public @Virtual class FileListItem extends TButtonWidget
 	}
 	// ==================================================
 	public final @Nullable File getFile() { return this.file; }
-	public final @Nullable UITexture getIcon() { return this.icon; }
 	// --------------------------------------------------
 	public final void setFile(@Nullable File file)
 	{
@@ -106,13 +104,12 @@ public @Virtual class FileListItem extends TButtonWidget
 		//draw icon
 		if(this.icon != null)
 		{
-			if(!this.fileHidden)
-				this.icon.drawTexture(pencil, getX(), getY(), HEIGHT, HEIGHT);
+			if(!this.fileHidden) renderBackground(pencil);
 			else
 			{
 				//note: the game doesn't render with transparency, so use 60% white and 40% black instead
 				pencil.pushTShaderColor(0.6f, 0.6f, 0.6f, 1);
-				this.icon.drawTexture(pencil, getX(), getY(), HEIGHT, HEIGHT);
+				renderBackground(pencil);
 				pencil.popTShaderColor();
 			}
 		}
@@ -120,6 +117,13 @@ public @Virtual class FileListItem extends TButtonWidget
 		pencil.drawTElementTextTHSC(super.text, HorizontalAlignment.LEFT, this.fileNameSideOffset, DEFAULT_TEXT_COLOR);
 		pencil.drawTElementTextTH(this.fileSizeName, HorizontalAlignment.RIGHT);
 	}
+	
+	protected @Virtual @Override void renderBackground(TDrawContext pencil)
+	{
+		if(this.icon != null)
+			this.icon.drawTexture(pencil, getX(), getY(), HEIGHT, HEIGHT);
+	}
+	
 	public @Virtual @Override void postRender(TDrawContext pencil)
 	{
 		if(isFocused()) pencil.drawTBorder(COLOR_OUTLINE_FOCUSED);

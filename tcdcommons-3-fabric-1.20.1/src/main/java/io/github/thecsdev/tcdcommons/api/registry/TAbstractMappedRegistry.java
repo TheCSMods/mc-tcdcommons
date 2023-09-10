@@ -1,5 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.registry;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class TAbstractMappedRegistry<T> implements TRegistry<T>
 	static final String ERR_CANNOT_ADD = "This registry does not support registering new entries.";
 	static final String ERR_CANNOT_REMOVE = "This registry does not support unregistering existing entries.";
 	// --------------------------------------------------
-	protected final Map<Identifier, T> map = new LinkedHashMap<>();
+	protected final Map<Identifier, T> map = Collections.synchronizedMap(new LinkedHashMap<>());
 	// ==================================================
 	public final @Override Iterator<Entry<Identifier, T>> iterator() { return this.map.entrySet().iterator(); }
 	// ==================================================

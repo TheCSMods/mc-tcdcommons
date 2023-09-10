@@ -1,6 +1,5 @@
 package io.github.thecsdev.tcdcommons.api.event;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +13,10 @@ final class TEventImpl<T> implements TEvent<T>
 	private final List<T> listeners;
 	private final T invoker;
 	// ==================================================
-	public TEventImpl(ArrayList<T> listeners, T invoker)
+	/**
+	 * @apiNote Make sure the {@link List} is {@code synchronized}.
+	 */
+	public TEventImpl(List<T> listeners, T invoker)
 	{
 		this.listeners = Objects.requireNonNull(listeners);
 		this.invoker = Objects.requireNonNull(invoker);

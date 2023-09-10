@@ -2,8 +2,14 @@ package io.github.thecsdev.tcdcommons.api.badge;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -28,7 +34,7 @@ public class PlayerBadgeHandler implements Iterable<Identifier>
 	/**
 	 * A set that stores the {@link Identifier}s of the {@link PlayerBadge}s assigned to this player.
 	 */
-	protected final HashSet<Identifier> badges = new HashSet<>();
+	protected final Set<Identifier> badges = Collections.synchronizedSet(new HashSet<>());
 	// ==================================================
 	public final @Override Iterator<Identifier> iterator() { return this.badges.iterator(); }
 	// ==================================================	
@@ -82,5 +88,27 @@ public class PlayerBadgeHandler implements Iterable<Identifier>
 	 * Returns the set of badges, in form of a new {@link Identifier} array.
 	 */
 	public final Identifier[] toArray() { return this.badges.toArray(new Identifier[0]); }
+	// ==================================================
+	/**
+	 * Creates a new {@link Map}, maps the {@link PlayerBadge} {@link Identifier}s
+	 * by their corresponding "mod IDs", and returns the {@link Map}.
+	 * @param badgeIDs An {@link Iterable} {@link Object} containing the set of {@link PlayerBadge} {@link Identifier}s.
+	 */
+	public static final Map<String, Collection<Identifier>> toMapByModId(Iterable<Identifier> badgeIDs)
+	{
+		//create the map
+		final HashMap<String, Collection<Identifier>> map = new HashMap<>();
+		
+		//add badges, one by one
+		for(final var badgeId : badgeIDs)
+		{
+			final var modId = badgeId.getNamespace();
+			if(!map.containsKey(modId)) map.put(modId, new ArrayList<>());
+			map.get(modId).add(badgeId);
+		}
+		
+		//return the map
+		return map;
+	}
 	// ==================================================
 }

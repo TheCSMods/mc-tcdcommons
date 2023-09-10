@@ -3,7 +3,7 @@ package io.github.thecsdev.tcdcommons.api.event;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,7 @@ public final class TEventFactory
 		Objects.requireNonNull(eventTypeClassGetter);
 		
 		//create list of listeners
-		final ArrayList<T> listeners = new ArrayList<>();
+		final List<T> listeners = Collections.synchronizedList(new IdealList<>());
 		
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
@@ -79,7 +79,7 @@ public final class TEventFactory
 		Objects.requireNonNull(eventTypeClassGetter);
 		
 		//create list of listeners
-		final ArrayList<T> listeners = new ArrayList<>();
+		final List<T> listeners = Collections.synchronizedList(new IdealList<>());
 		
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
@@ -129,7 +129,7 @@ public final class TEventFactory
 		Objects.requireNonNull(eventTypeClassGetter);
 		
 		//create list of listeners
-		final IdealList<WeakReference<T>> listeners = new IdealList<>();
+		final List<WeakReference<T>> listeners = Collections.synchronizedList(new IdealList<>());
 		
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
@@ -180,7 +180,7 @@ public final class TEventFactory
 		Objects.requireNonNull(eventTypeClassGetter);
 		
 		//create list of listeners
-		final IdealList<WeakReference<T>> listeners = new IdealList<>();
+		final List<WeakReference<T>> listeners = Collections.synchronizedList(new IdealList<>());
 		
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
