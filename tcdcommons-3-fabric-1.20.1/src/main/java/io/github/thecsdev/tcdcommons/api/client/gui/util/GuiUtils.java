@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
+import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenWrapper;
+import io.github.thecsdev.tcdcommons.api.client.util.interfaces.IParentScreenProvider;
 import io.github.thecsdev.tcdcommons.api.hooks.client.gui.widget.GridWidgetHooks;
 import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
 import net.minecraft.client.MinecraftClient;
@@ -84,6 +87,37 @@ public final class GuiUtils
 		final int h = window.getScaledHeight();
 		screen.init(client, w, h);
 		return screen;
+	}
+	// --------------------------------------------------
+	/**
+	 * Attempts to find the parent {@link Screen} of the {@link MinecraftClient#currentScreen}.
+	 * @apiNote The current {@link Screen} must be an {@link IParentScreenProvider} for this to work!
+	 */
+	public static Screen getCurrentScreenParent() { return getParentScreen(TCDCommonsClient.MC_CLIENT.currentScreen); }
+	
+	/**
+	 * Attempts to find the parent {@link Screen} of the given {@link Screen}.
+	 * @apiNote The given {@link Screen} must be an {@link IParentScreenProvider} for this to work!
+	 */
+	public static Screen getParentScreen(@Nullable Screen of)
+	{
+		//null check
+		if(of == null) return null;
+		
+		//check if the target is a parent provider
+		if(of instanceof IParentScreenProvider)
+			return ((IParentScreenProvider)of).getParentScreen();
+		
+		//check if the target is a TScreen that itself is a parent provider
+		if(of instanceof TScreenWrapper<?>)
+		{
+			final TScreen tOf = ((TScreenWrapper<?>)of).getTargetTScreen();
+			if(tOf instanceof IParentScreenProvider)
+				return ((IParentScreenProvider)tOf).getParentScreen();
+		}
+		
+		//return null if nothing is found
+		return null;
 	}
 	// ==================================================
 	/**

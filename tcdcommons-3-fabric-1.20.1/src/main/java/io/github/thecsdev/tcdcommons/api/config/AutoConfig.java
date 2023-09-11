@@ -196,7 +196,7 @@ public @Virtual class AutoConfig implements ACJsonHandler<JsonObject>
 	public final void saveToFileOrCrash(boolean log)
 	{
 		try { saveToFile(log); }
-		catch(Exception exc) { TUtils.crashGame("Failed to save config file \"" + this.fileName + "\"", exc); }
+		catch(Exception exc) { TUtils.throwCrash("Failed to save config file \"" + this.fileName + "\"", exc); }
 	}
 	
 	/**
@@ -244,7 +244,7 @@ public @Virtual class AutoConfig implements ACJsonHandler<JsonObject>
 	public final void loadFromFileOrCrash(boolean log)
 	{
 	    try { loadFromFile(log); } catch (IOException exc)
-	    { TUtils.crashGame("Failed to load config file \"" + this.fileName + "\".", exc); }
+	    { TUtils.throwCrash("Failed to load config file \"" + this.fileName + "\".", exc); }
 	}
 	
 	/**

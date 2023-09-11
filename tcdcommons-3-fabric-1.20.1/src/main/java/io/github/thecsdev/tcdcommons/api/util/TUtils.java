@@ -15,14 +15,15 @@ public final class TUtils
 	private TUtils() {}
 	// ==================================================
 	/**
-	 * Crashes the game.
+	 * Throws a {@link CrashException}.
 	 * @param message The message to include alongside the crash, in the crash report.
 	 * @param cause The {@link Throwable} that caused whatever issue took place.
 	 * @throws CrashException Always.
 	 */
-	public static void crashGame(String message, Throwable cause) throws CrashException
+	public static void throwCrash(String message, Throwable cause) throws CrashException
 	{
-		throw new CrashException(new CrashReport(message, cause));
+		final var exc = new CrashException(new CrashReport(message, cause));
+		throw exc;
 	}
 	// --------------------------------------------------
 	/**
