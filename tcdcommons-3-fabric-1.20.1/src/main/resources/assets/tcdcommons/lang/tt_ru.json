@@ -13,7 +13,7 @@
 	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "Саклау",
 	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "Ачу",
 	
-	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "Барлык файл (*,*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "Барлык файл (*.*)",
 	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s файл (%1$s)",
 	
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "Бу урын юк...",
