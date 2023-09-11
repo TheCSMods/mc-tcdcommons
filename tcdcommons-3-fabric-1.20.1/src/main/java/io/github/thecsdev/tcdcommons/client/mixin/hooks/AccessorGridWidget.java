@@ -12,6 +12,6 @@ import net.minecraft.client.gui.widget.Widget;
 @Mixin(GridWidget.class)
 public interface AccessorGridWidget
 {
-	public abstract @Mutable @Accessor("children") List<Widget> getChildren();
+	public abstract @Accessor("children") List<Widget> getChildren();
 	public abstract @Mutable @Accessor("children") void setChildren(List<Widget> children);
 }
