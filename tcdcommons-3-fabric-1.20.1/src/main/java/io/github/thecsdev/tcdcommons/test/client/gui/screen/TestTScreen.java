@@ -54,7 +54,7 @@ public final class TestTScreen extends TScreenPlus
 			menu_file.addButton(literal("New"), btn2 -> {});
 			menu_file.addButton(literal("Open file"), btn2 ->
 			{
-				TFileChooserScreen.builder().showOpenFileDialog().thenAccept(result ->
+				TFileChooserScreen.builder().showOpenFileDialog(result ->
 				{
 					System.out.println("File chooser results: " +
 							result.getReturnValue() + " | " +
@@ -70,7 +70,7 @@ public final class TestTScreen extends TScreenPlus
 			menu_file.addButton(literal("Save"), btn2 -> {});
 			menu_file.addButton(literal("Save As"), btn2 ->
 			{
-				TFileChooserScreen.builder().showSaveFileDialog().thenAccept(result ->
+				TFileChooserScreen.builder().showSaveFileDialog(result ->
 				{
 					System.out.println("File chooser results: " +
 							result.getReturnValue() + " | " +

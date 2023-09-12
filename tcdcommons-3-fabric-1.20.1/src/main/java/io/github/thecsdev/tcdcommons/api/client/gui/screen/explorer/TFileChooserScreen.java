@@ -8,7 +8,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +21,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooser
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.InputType;
+import io.github.thecsdev.tcdcommons.api.client.util.interfaces.IParentScreenProvider;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.FileChooserDialogType;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 import io.github.thecsdev.tcdcommons.api.util.io.TExtensionFileFilter;
@@ -31,19 +32,18 @@ import net.minecraft.sound.SoundEvents;
 /**
  * A file chooser screen that allows the user to choose a
  * {@link File} for opening and saving.
- * @see TFileChooserScreen#showOpenFileDialog()
- * @see TFileChooserScreen#showSaveFileDialog()
- * @see TFileChooserScreen#showSelectDirectoryDialog()
  * @see TFileChooserBuilder
  * @see TFileChooserScreen#builder()
  */
-public final class TFileChooserScreen extends TScreenPlus
+public final class TFileChooserScreen extends TScreenPlus implements IParentScreenProvider
 {
 	// ==================================================
 	protected final FileChooserDialogType type;
 	protected final ArrayList<TFileFilter> filters = new ArrayList<>();
-	protected final CompletableFuture<TFileChooserResult> promise = new CompletableFuture<>();
 	protected final @Nullable String targetExtension; //highly important for "save", so the dialog can know what to save as
+	
+	protected final Consumer<TFileChooserResult> onComplete;
+	private boolean isDone = false;
 	//
 	protected Path currentPath;
 	protected @Nullable TFileFilter currentFileFilter;
@@ -58,11 +58,15 @@ public final class TFileChooserScreen extends TScreenPlus
 	protected final TElement contentPane;
 	protected final TFileExplorerPanel explorerPanel;
 	// ==================================================
-	protected TFileChooserScreen
-	(FileChooserDialogType type, Path startingPath, @Nullable String targetExtension) throws NullPointerException
+	protected TFileChooserScreen(
+			FileChooserDialogType type,
+			Path startingPath,
+			@Nullable String targetExtension,
+			Consumer<TFileChooserResult> onComplete) throws NullPointerException
 	{
 		super(translatable("tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title"));
 		this.type = Objects.requireNonNull(type);
+		this.onComplete = Objects.requireNonNull(onComplete);
 		
 		if(targetExtension != null)
 		{
@@ -95,14 +99,18 @@ public final class TFileChooserScreen extends TScreenPlus
 	}
 	// --------------------------------------------------
 	public static TFileChooserBuilder builder() { return new TFileChooserBuilder(); }
-	public static CompletableFuture<TFileChooserResult> showOpenFileDialog() { return showOpenFileDialog(null); }
-	public static CompletableFuture<TFileChooserResult> showOpenFileDialog(@Nullable String targetExtension) { return showDialog(FileChooserDialogType.OPEN_FILE, targetExtension); }
-	public static CompletableFuture<TFileChooserResult> showSaveFileDialog() { return showSaveFileDialog(null); }
-	public static CompletableFuture<TFileChooserResult> showSaveFileDialog(@Nullable String targetExtension) { return showDialog(FileChooserDialogType.SAVE_FILE, targetExtension); }
-	public static CompletableFuture<TFileChooserResult> showSelectDirectoryDialog() { return showDialog(FileChooserDialogType.SELECT_DIRECTORY, null); }
-	protected static CompletableFuture<TFileChooserResult> showDialog(FileChooserDialogType type, @Nullable String targetExtension)
+	//
+	public static void showOpenFileDialog(Consumer<TFileChooserResult> onComplete) { showOpenFileDialog(null, onComplete); }
+	public static void showOpenFileDialog(@Nullable String targetExtension, Consumer<TFileChooserResult> onComplete) { showDialog(FileChooserDialogType.OPEN_FILE, targetExtension, onComplete); }
+	
+	public static void showSaveFileDialog(Consumer<TFileChooserResult> onComplete) { showSaveFileDialog(null, onComplete); }
+	public static void showSaveFileDialog(@Nullable String targetExtension, Consumer<TFileChooserResult> onComplete) { showDialog(FileChooserDialogType.SAVE_FILE, targetExtension, onComplete); }
+	
+	public static void showSelectDirectoryDialog(Consumer<TFileChooserResult> onComplete) { showDialog(FileChooserDialogType.SELECT_DIRECTORY, null, onComplete); }
+	
+	protected static void showDialog(FileChooserDialogType type, @Nullable String targetExtension, Consumer<TFileChooserResult> onComplete)
 	{
-		return builder().showDialog(type, targetExtension);
+		builder().showDialog(type, targetExtension, onComplete);
 	}
 	// ==================================================
 	public final @Override void close() { closedUsingClose = true; MC_CLIENT.setScreen(this.parent); }
@@ -119,17 +127,19 @@ public final class TFileChooserScreen extends TScreenPlus
 	protected final @Override void onClosed()
 	{
 		//make sure the promise wasn't already completed before
-		if(this.promise.isDone()) return;
+		if(this.isDone) return;
+		this.isDone = true;
 		
 		//complete the promise
 		//this has to be done on the main thread, as this place is not allowed to raise potential exceptions
 		MC_CLIENT.executeSync(() ->
 		{
+			if(this.onComplete == null) return; //fail-safe
 			final var sel = this.getSelectedFile();
 			final var ret = this.closedUsingClose ?
 					(sel == null ? ReturnValue.CANCEL_OPTION : ReturnValue.APPROVE_OPTION) :
 					ReturnValue.ERROR_OPTION;
-			this.promise.complete(new TFileChooserResult()
+			this.onComplete.accept(new TFileChooserResult()
 			{
 				public final @Nullable @Override File getSelectedFile() { return sel; }
 				public final @Override ReturnValue getReturnValue() { return ret; }
@@ -137,7 +147,7 @@ public final class TFileChooserScreen extends TScreenPlus
 		});
 	}
 	// ==================================================
-	public final @Nullable Screen getParentScreen() { return this.parent; }
+	public final @Nullable @Override Screen getParentScreen() { return this.parent; }
 	public final void setParentScreen(@Nullable Screen parent) { this.parent = parent; }
 	// --------------------------------------------------
 	/**
@@ -183,7 +193,7 @@ public final class TFileChooserScreen extends TScreenPlus
 	protected final @Override void init()
 	{
 		//if the promise was completed, this screen is unusable
-		if(this.promise.isDone()) return;
+		if(this.isDone) return;
 		
 		//handle no file filters having been added by this point
 		if(this.filters.size() == 0 && this.currentFileFilter == null)
