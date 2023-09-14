@@ -79,10 +79,13 @@ public @Virtual class AutoConfig implements ACJsonHandler<JsonObject>
 			{
 				final var fieldMods = field.getModifiers();
 				return  //perform checks
+						// - modifiers go first, to avoid errors
+						!Modifier.isStatic(fieldMods) &&
+						!Modifier.isFinal(fieldMods) &&
+						!Modifier.isTransient(fieldMods) &&
+						// - after modifiers, check everything else
 						field.canAccess(this) &&
 						(field.getType().isPrimitive() || ACJsonHandler.class.isAssignableFrom(field.getType())) &&
-						!Modifier.isStatic(fieldMods) && !Modifier.isFinal(fieldMods) &&
-						!Modifier.isTransient(fieldMods) &&
 						field.getAnnotation(NonSerialized.class) == null;
 			})
 			.toList();

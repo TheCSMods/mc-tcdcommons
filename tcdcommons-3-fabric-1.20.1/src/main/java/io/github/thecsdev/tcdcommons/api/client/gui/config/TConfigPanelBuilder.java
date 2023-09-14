@@ -2,201 +2,152 @@ package io.github.thecsdev.tcdcommons.api.client.gui.config;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 
+import java.awt.Rectangle;
+import java.util.Map;
 import java.util.Objects;
+import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.annotations.Beta;
-
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.TElementList;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TLabelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TCheckboxWidget;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
+import io.github.thecsdev.tcdcommons.api.util.collections.HookedMap;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
-import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;
 
-@Beta
-public @Virtual class TConfigPanelBuilder
+/**
+ * A utility for creating config GUIs in {@link TPanelElement}s.
+ */
+public @Virtual class TConfigPanelBuilder<T extends TConfigPanelBuilder<T>> extends Object
 {
 	// ==================================================
-	public static final Text TEXT_SAVE = translatable("selectWorld.edit.save");
-	// ==================================================
-	/**
-	 * The target {@link TPanelElement}, on top of which
-	 * the config GUI will be built.
-	 */
-	public final TPanelElement targetPanel;
-	protected final TElementList targetPanelChildren;
-	
-	/**
-	 * The {@link Runnable} that gets executed after applying
-	 * all config changes so as to save the applied changes.
-	 */
-	protected @Nullable Runnable saveConfig;
+	public static final Text TEXT_SAVE   = translatable("selectWorld.edit.save");
+	public static final Text TEXT_CANCEL = translatable("gui.cancel");
+	private static final int GAP = 3;
 	// --------------------------------------------------
 	/**
-	 * Keeps track of the last {@link TElement} that was
-	 * added to the target {@link #targetPanel}.
+	 * Holds {@link Consumer} actions that are to be invoked for each
+	 * {@link TElement} that was added to the {@link #targetPanel}.
+	 * @apiNote The {@link Consumer} has to accept the {@link Map} key.
+	 * If it doesn't, a {@link ClassCastException} will be raised.
 	 */
-	protected @Nullable TElement lastElement;
-	// ==================================================
-	/**
-	 * Constructs the {@link TConfigPanelBuilder} by copying the "target panel"
-	 * and "save config" values from another {@link TConfigPanelBuilder}.
-	 * @param other The {@link TConfigPanelBuilder} to copy the values from.
-	 */
-	public TConfigPanelBuilder(TConfigPanelBuilder other) { this(other.targetPanel, other.saveConfig); }
-	
-	/**
-	 * @param targetPanel The target {@link TPanelElement} onto which the config GUI will be built.
-	 * @param saveConfig The {@link Runnable} that will run after applying config changes.
-	 * @throws NullPointerException If an argument is null. 
-	 */
-	public TConfigPanelBuilder(TPanelElement targetPanel, Runnable saveConfig)
+	protected final Map<TElement, Consumer<?>> applyActions = HookedMap.of(new WeakHashMap<>(), map ->
 	{
-		this.targetPanel = Objects.requireNonNull(targetPanel);
-		this.targetPanelChildren = this.targetPanel.getChildren();
-		this.saveConfig = saveConfig;
-	}
-	// --------------------------------------------------
-	/**
-	 * Applies all GUI configurations made by the user
-	 * and then runs {@link #saveConfig}.
-	 */
-	public final void applyAllConfigChanges()
-	{
-		//apply
-		this.targetPanel.findChild(child ->
+		//remove all entries that have for whatever reason been removed from the target panel
+		map.entrySet().removeIf(entry ->
 		{
-			if(child instanceof TCGB_Apply)
-				((TCGB_Apply)child).applyConfig();
-			return false;
-		}, true);
-		//save
-		if(this.saveConfig != null)
-			this.saveConfig.run();
+			final var key = entry.getKey();
+			return (key == null) || (key.getParent() != getTargetPanel());
+		});
+	});
+	protected @Nullable Runnable onSave;
+	// --------------------------------------------------
+	protected final TPanelElement targetPanel;
+	protected @Nullable TElement lastAddedElement;
+	// ==================================================
+	protected TConfigPanelBuilder(TPanelElement target) throws NullPointerException
+	{
+		this.targetPanel = Objects.requireNonNull(target);
+	}
+	//
+	protected final @SuppressWarnings("unchecked") T self() { return (T)this; }
+	// --------------------------------------------------
+	/**
+	 * Creates a new {@link TConfigPanelBuilder} instance and returns it.
+	 * @param target The {@link TPanelElement} onto which the config GUI will be built.
+	 * @apiNote For any subclasses, {@link Override} this method by having it return the subclass type.
+	 */
+	public static @Virtual TConfigPanelBuilder<?> builder(TPanelElement target) { return new TConfigPanelBuilder<>(target); }
+	
+	/**
+	 * This method's name may be a bit misleading, as all it does is call {@link #setOnSave(Runnable)}.
+	 * @param onSave See {@link #setOnSave(Runnable)}.
+	 * @apiNote The config GUI elements are added the moment you call "add[...]()` methods
+	 * such as {@link #addLabel(Text)} for example, and not after you invoke {@link #build(Runnable)}.
+	 */
+	public final T build(@Nullable Runnable onSave) { setOnSave(onSave); return self(); }
+	// ==================================================
+	/**
+	 * Returns the {@link #targetPanel} onto which the config GUI is being built.
+	 */
+	public final TPanelElement getTargetPanel() { return this.targetPanel; }
+	
+	/**
+	 * Returns the {@link TElement} that was last added via this {@link TConfigPanelBuilder}.
+	 */
+	public final @Nullable TElement getLastAddedElement() { return this.lastAddedElement; }
+	// --------------------------------------------------
+	/**
+	 * Sets the {@link #onSave} {@link Runnable} action that will be
+	 * invoked once {@link #saveChanges()} is called, and all the config changes are applied.
+	 */
+	public final void setOnSave(@Nullable Runnable onSave) { this.onSave = onSave; }
+	
+	/**
+	 * Iterates over entries in the {@link #applyActions} {@link Map},
+	 * and uses them to apply and save any changes made by the user.
+	 */
+	@SuppressWarnings("unchecked")
+	public final void saveChanges()
+	{
+		//iterate all elements that have apply actions tied to them,
+		//and invoke those apply actions
+		for(final var entry : this.applyActions.entrySet())
+			((Consumer<Object>)entry.getValue()).accept(entry.getKey());
+		
+		//save overall config changes
+		if(this.onSave != null) this.onSave.run();
 	}
 	// ==================================================
 	/**
-	 * Returns the {@link #targetPanel} on top of which the config GUI will be built.
+	 * Returns the "vertical margin" that should be applied next.
 	 */
-	public final @Nullable TPanelElement getTargetPanel() { return this.targetPanel; }
-	
-	/**
-	 * Returns the {@link #lastElement} that was added
-	 * to the target {@link #targetPanel}.
-	 */
-	public final @Nullable TElement getLastElement() { return this.lastElement; }
+	protected @Virtual int vMargin() { return this.lastAddedElement != null ? 5 : 0; }
 	// --------------------------------------------------
-	protected @Virtual int nextGlobalX() { return this.targetPanel.getX() + this.targetPanel.getScrollPadding(); }
-	protected @Virtual int nextGlobalW() { return this.targetPanel.getWidth() - (this.targetPanel.getScrollPadding() * 2); }
-	
-	/**
-	 * Returns the next Y coordinate for the next child that
-	 * may get added to the target {@link #targetPanel}.
-	 */
-	protected @Virtual int nextGlobalY()
+	public final T addLabel(Text text) { addLabelB(text); return self(); }
+	public @Virtual TLabelElement addLabelB(Text text)
 	{
-		return (this.targetPanelChildren.size() == 0) ?
-				this.targetPanel.getY() + this.targetPanel.getScrollPadding() :
-				this.targetPanelChildren.getTopmostElements().Item2.getEndY() + 3;
+		final var n1 = nextPanelVerticalRect(this.targetPanel);
+		final var lbl = new TLabelElement(n1.x, n1.y + vMargin(), n1.width, n1.height, text);
+		this.targetPanel.addChild(lbl, false);
+		this.lastAddedElement = lbl; //mark the last added element
+		return lbl;
 	}
 	// --------------------------------------------------
-	/**
-	 * Applies a tooltip {@link Text} to the last added {@link #lastElement}.
-	 * @param tooltipText The tooltip {@link Text}.
-	 */
-	public final TConfigPanelBuilder setTooltip(Text tooltipText) { return setTooltip(Tooltip.of(tooltipText)); }
-	public @Virtual TConfigPanelBuilder setTooltip(Tooltip tooltipText)
+	public final T addCheckbox(Text text, boolean value, Consumer<TCheckboxWidget> applyValue) { addCheckboxB(text, value, applyValue); return self(); }
+	public @Virtual TCheckboxWidget addCheckboxB(Text text, boolean value, Consumer<TCheckboxWidget> applyValue)
 	{
-		if(this.lastElement != null)
-			this.lastElement.setTooltip(tooltipText);
-		return this;
+		final var n1 = nextPanelVerticalRect(this.targetPanel);
+		final var box = new TCheckboxWidget(n1.x, n1.y + vMargin(), n1.width, n1.height, text, value);
+		box.setHorizontalAlignment(HorizontalAlignment.LEFT, HorizontalAlignment.RIGHT);
+		this.targetPanel.addChild(box, false);
+		this.lastAddedElement = box;            //mark the last added element
+		this.applyActions.put(box, applyValue); //mark the apply action for this element
+		return box;
 	}
 	// ==================================================
 	/**
-	 * Creates and adds a new {@link TLabelElement} to the target {@link #targetPanel}.
-	 * @param text The label text.
+	 * Returns the next free (global) Y coordinate at which to
+	 * place the next {@link TElement} that will be added to a given {@link TPanelElement}.
 	 */
-	public final TConfigPanelBuilder addLabel(final Text text) { return addLabel(text, null); }
+	public static final int nextPanelBottomY(TPanelElement panel)
+	{
+		final TElement bottom = panel.getChildren().getTopmostElements().Item2;
+		return (bottom != null) ? bottom.getEndY() : panel.getY() + panel.getScrollPadding();
+	}
 	
 	/**
-	 * Creates and adds a new {@link TLabelElement} to the target {@link #targetPanel}.
-	 * @param text The label text.
-	 * @param alignment The {@link HorizontalAlignment} of the label text.
+	 * Returns the next free (global-coordinate) space in the vertical
+	 * direction for the next {@link TElement} that will be added to a given {@link TPanelElement}.
 	 */
-	public @Virtual TConfigPanelBuilder addLabel(final Text text, final HorizontalAlignment alignment)
+	public static final Rectangle nextPanelVerticalRect(TPanelElement panel)
 	{
-		var element = new TLabelElement(nextGlobalX(), nextGlobalY(), nextGlobalW(), 20);
-		element.setText(text);
-		element.setTextHorizontalAlignment(alignment != null ? alignment : HorizontalAlignment.LEFT);
-		this.targetPanel.addChild(element, false);
-		//return
-		this.lastElement = element;
-		return this;
-	}
-	// --------------------------------------------------
-	/**
-	 * Creates and adds a new {@link Boolean} checkbox to the target {@link #targetPanel}.
-	 * @param text The checkbox label.
-	 * @param value Will the checkbox start off as checked or unchecked?
-	 * @param onToggle What will happen when the checkbox is clicked?
-	 * @throws NullPointerException If an argument is null.
-	 */
-	public @Virtual TConfigPanelBuilder addBoolean(final Text text, final boolean value, final Consumer<Boolean> onToggle)
-	{
-		Objects.requireNonNull(onToggle);
-		var element = new TCGB_Checkbox(nextGlobalX(), nextGlobalY(), nextGlobalW(), 20, text, value)
-		{
-			public void applyConfig() { onToggle.accept(this.getChecked()); }
-		};
-		element.setHorizontalAlignment(HorizontalAlignment.LEFT, HorizontalAlignment.RIGHT);
-		this.targetPanel.addChild(element, false);
-		//return
-		this.lastElement = element;
-		return this;
-	}
-	// --------------------------------------------------
-	/**
-	 * Adds a {@link TButtonWidget} to the target {@link #targetPanel}.
-	 * @param text The {@link TButtonWidget} text.
-	 * @param onClick The on-click action for the {@link TButtonWidget}.
-	 */
-	public @Virtual TConfigPanelBuilder addButton(Text text, Consumer<TButtonWidget> onClick)
-	{
-		//calculate
-		int tW = ((text == null) ? 80 : Math.min(TCDCommonsClient.MC_CLIENT.textRenderer.getWidth(text), 80)) + 20;
-		int nX = nextGlobalX();
-		int nW = nextGlobalW();
-		nX += nW;
-		nW = Math.min(nW, tW);
-		nX -= nW;
-		//create
-		var element = new TButtonWidget(nX, nextGlobalY(), nW, 20, text, onClick);
-		this.targetPanel.addChild(element, false);
-		//return
-		this.lastElement = element;
-		return this;
-	}
-	// ==================================================
-	/**
-	 * An internal interface applied to special {@link TConfigPanelBuilder} GUI
-	 * elements that is used to apply the given GUI element's state to a target config.
-	 */
-	protected static interface TCGB_Apply { void applyConfig(); }
-	// --------------------------------------------------
-	protected abstract static class TCGB_Checkbox extends TCheckboxWidget implements TCGB_Apply
-	{
-		public TCGB_Checkbox(int x, int y, int width, int height, Text message, boolean checked)
-		{
-			super(x, y, width, height, message, checked);
-		}
+		final int sp = panel.getScrollPadding();
+		return new Rectangle(panel.getX() + sp, nextPanelBottomY(panel), panel.getWidth() - (sp*2), 20);
 	}
 	// ==================================================
 }

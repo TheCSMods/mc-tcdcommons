@@ -163,7 +163,7 @@ public final class GuiUtils
 	 * @param buttonText The {@link Text} to look for on found {@link ButtonWidget}s.
 	 * @throws NullPointerException If an argument is null.
 	 */
-	public static final @Nullable ButtonWidget findButtonWidgetOnScreen
+	public static @Nullable ButtonWidget findButtonWidgetOnScreen
 	(Screen screen, Text buttonText) throws NullPointerException
 	{
 		Objects.requireNonNull(screen);
@@ -175,7 +175,7 @@ public final class GuiUtils
 				.toList());
 	}
 	
-	private static final @Internal @Nullable ButtonWidget __findButtonWidgetOnScreen
+	private static @Internal @Nullable ButtonWidget __findButtonWidgetOnScreen
 	(Text buttonText, List<Element> elements)
 	{
 		String btnTxtStr = buttonText.getString();

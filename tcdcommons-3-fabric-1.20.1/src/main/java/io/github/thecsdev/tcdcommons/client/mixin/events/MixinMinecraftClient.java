@@ -45,6 +45,7 @@ public abstract class MixinMinecraftClient
 			{
 				//invoke `onClosed` for any opened TScreen-s
 				final var i = ((AccessorTScreen)CURRENT_T_SCREEN);
+				CURRENT_T_SCREEN.setFocusedElement(null); //clear any focus when the screen closes
 				CURRENT_T_SCREEN = null; //prevent StackOverflowError issues
 				i.tcdcommons_onClosed();
 				//prevent further execution if `onClosed` changed the screen
@@ -55,6 +56,7 @@ public abstract class MixinMinecraftClient
 			if(screen instanceof TScreenWrapper)
 			{
 				CURRENT_T_SCREEN = ((TScreenWrapper<?>)screen).getTargetTScreen();
+				CURRENT_T_SCREEN.setFocusedElement(null); //clear any focus when the screen opens
 				((AccessorTScreen)CURRENT_T_SCREEN).tcdcommons_onOpened();
 			}
 			else CURRENT_T_SCREEN = null;

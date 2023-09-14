@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -99,8 +98,7 @@ public @Virtual class TCheckboxWidget extends TButtonWidget
 	public @Override void render(TDrawContext pencil)
 	{
 		//obtain the text renderer
-		MinecraftClient minecraftClient = MinecraftClient.getInstance();
-		TextRenderer textRenderer = minecraftClient.textRenderer;
+		final var textRenderer = getTextRenderer();
 		
 	    //draw the texture and the background
 		final boolean isFocused = (getParentTScreen().getFocusedElement() == this);
