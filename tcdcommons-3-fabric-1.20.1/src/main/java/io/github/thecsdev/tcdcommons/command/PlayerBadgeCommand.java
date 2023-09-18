@@ -61,15 +61,25 @@ public final class PlayerBadgeCommand
 			//get parameter values
 			final var targets = EntityArgumentType.getPlayers(context, "targets");
 			final var badgeId = context.getArgument("badge_id", Identifier.class);
+			
 			//execute
 			for(var target : targets)
 			{
 				//null check
 				if(target == null) continue;
+				
+				//obtain SBH
+				final var sbh = ServerPlayerBadgeHandler.getServerBadgeHandler(target);
+				
 				//grant or revoke
-				if(grant) ServerPlayerBadgeHandler.getServerBadgeHandler(target).addBadge(badgeId);
-				else ServerPlayerBadgeHandler.getServerBadgeHandler(target).removeBadge(badgeId);
+				if(grant)
+				{
+					if(sbh.getValue(badgeId) < 1)
+						sbh.setValue(badgeId, 1);
+				}
+				else sbh.setValue(badgeId, 0);
 			}
+			
 			//send feedback
 			final var feedbackGoR = grant ?
 					"commands.badge.grant.one.to_many.success" :
@@ -92,7 +102,8 @@ public final class PlayerBadgeCommand
 			//get badges
 			//final var badges = ServerPlayerBadgeHandler.getBadgeHandler(target).getBadges().stream() - deprecated
 			final var badges = StreamSupport.stream(ServerPlayerBadgeHandler.getServerBadgeHandler(target).spliterator(), false)
-				    .map(Identifier::toString) // convert each Identifier object to String
+					.filter(entry -> entry.getIntValue() > 0)
+				    .map(entry -> Objects.toString(entry.getKey())) // convert each Identifier object to String
 				    .collect(Collectors.joining(", ")); // join with a comma and space
 			//send feedback
 			final var feedback = translatable("commands.badge.list.of_one",

@@ -41,15 +41,7 @@ import net.minecraft.server.command.ServerCommandSource;
 public abstract class MixinCommandManager
 {
 	private @Final @Shadow CommandDispatcher<ServerCommandSource> dispatcher;
-
-	/**
-	 * Wait an inject in a constructor?
-	 * This is a new addition to Fabric's fork of mixin.
-	 * If you are not using fabric's fork of mixin this will fail.
-	 *
-	 * @reason Add commands before ambiguities are calculated.
-	 */
-	//note from TheCSDev: i have no idea what the JavaDoc above is trying to say here ^
+	
 	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V", remap = false), method = "<init>")
 	private void fabric_addCommands(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess registryAccess, CallbackInfo ci)
 	{

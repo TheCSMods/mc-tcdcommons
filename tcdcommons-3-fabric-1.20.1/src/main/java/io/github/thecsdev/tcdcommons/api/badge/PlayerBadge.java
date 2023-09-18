@@ -42,7 +42,7 @@ public abstract class PlayerBadge
 	/**
 	 * Returns the {@link Identifier} of this {@link PlayerBadge} in
 	 * accordance with the {@link TRegistries#PLAYER_BADGE} registry.
-	 * @apiNote Depends on {@link TRegistries#PLAYER_BADGE} being a {@link TSimpleRegistry}.
+	 * @apiNote To self: Depends on {@link TRegistries#PLAYER_BADGE} being a {@link TSimpleRegistry}.
 	 */
 	public final @Nullable Identifier getId()
 	{

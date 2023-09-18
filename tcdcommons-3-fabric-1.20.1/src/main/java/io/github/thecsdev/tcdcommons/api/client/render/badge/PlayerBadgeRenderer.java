@@ -27,7 +27,6 @@ public abstract class PlayerBadgeRenderer<T extends PlayerBadge>
 	// --------------------------------------------------
 	/**
 	 * Renders this {@link PlayerBadge} on the client-side {@link Screen}.
-	 * @param badge The {@link PlayerBadge} being rendered.
 	 * @param pencil The rendering {@link DrawContext}.
 	 * @param x The starting on-screen X position where to start drawing the badge.
 	 * @param y The starting on-screen Y position where to start drawing the badge.
@@ -37,9 +36,9 @@ public abstract class PlayerBadgeRenderer<T extends PlayerBadge>
 	 * @apiNote The {@link PlayerEntity} may not always be present.
 	 */
 	public abstract void render(
-			T badge,
 			DrawContext pencil,
 			int x, int y, int width, int height,
+			int mouseX, int mouseY,
 			float deltaTime);
 	// ==================================================
 }

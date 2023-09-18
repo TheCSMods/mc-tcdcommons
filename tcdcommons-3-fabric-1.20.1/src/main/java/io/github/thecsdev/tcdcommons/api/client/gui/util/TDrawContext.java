@@ -4,7 +4,6 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.widget.TClickableWidg
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import java.awt.Color;
-import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -17,13 +16,10 @@ import com.google.common.annotations.Beta;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
-import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.ColorStack.BlendMethod;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TClickableWidget;
-import io.github.thecsdev.tcdcommons.api.client.registry.TClientRegistries;
-import io.github.thecsdev.tcdcommons.api.client.render.badge.PlayerBadgeRenderer;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
 import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorDrawContext;
@@ -442,20 +438,21 @@ public final class TDrawContext extends DrawContext
 				BUTTON_TEXTURE_SLICE_SIZE);
 	}
 	// ==================================================
-	/**
+	/*
 	 * Draws a {@link PlayerBadge} over the {@link #currentTarget}.
 	 * @param playerBadge The {@link PlayerBadge} to draw.
 	 * @see #drawTPlayerBadge(PlayerBadge, int, int, int, int)
-	 */
+	 *
+	@Deprecated
 	public final <T extends PlayerBadge> void drawTPlayerBadge(T playerBadge)
 	{
 		drawTPlayerBadge(
 				playerBadge,
 				this.currentTarget.getX(), this.currentTarget.getY(),
 				this.currentTarget.getWidth(), this.currentTarget.getHeight());
-	}
+	}*/
 	
-	/**
+	/*
 	 * Draws a {@link PlayerBadge} at the given coordinates, using the
 	 * {@link PlayerBadge}'s corresponding {@link PlayerBadgeRenderer} that is
 	 * registered in {@link TClientRegistries#PLAYER_BADGE_RENDERER}.
@@ -466,15 +463,16 @@ public final class TDrawContext extends DrawContext
 	 * @param height The visual size of the {@link PlayerBadge} (height).
 	 * @throws NoSuchElementException If a corresponding {@link PlayerBadgeRenderer} isn't registered.
 	 * @throws ClassCastException If the corresponding {@link PlayerBadgeRenderer}'s generic type doesn't match.
-	 */
+	 *
+	@Deprecated //for performance reasons, performing a renderer lookup every frame isn't a good idea
 	public final <T extends PlayerBadge> void drawTPlayerBadge
 	(T playerBadge, int x, int y, int width, int height) throws NoSuchElementException, ClassCastException
 	{
 		final var playerBadgeId = playerBadge.getId();
 		@SuppressWarnings("unchecked")
 		final var br = (PlayerBadgeRenderer<T>)TClientRegistries.PLAYER_BADGE_RENDERER.getValue(playerBadgeId).get();
-		br.render(playerBadge, this, x, y, width, height, this.deltaTime);
-	}
+		br.render(this, x, y, width, height, this.mouseX, this.mouseY, this.deltaTime);
+	}*/
 	// ==================================================
 	/**
 	 * Draws an {@link Entity} on the GUI screen.

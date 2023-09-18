@@ -2,16 +2,20 @@ package io.github.thecsdev.tcdcommons.api.badge;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterable;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -20,7 +24,7 @@ import net.minecraft.util.Identifier;
  * <p>
  * This class serves as a container for keeping track of which badges a player has at any given time.
  */
-public class PlayerBadgeHandler implements Iterable<Identifier>
+public class PlayerBadgeHandler implements ObjectIterable<Entry<Identifier>>
 {
 	// ==================================================
 	/**
@@ -29,86 +33,71 @@ public class PlayerBadgeHandler implements Iterable<Identifier>
 	 * @see EntityHooks#getCustomDataEntryG(net.minecraft.entity.Entity, Identifier)
 	 * @see EntityHooks#setCustomDataEntryG(net.minecraft.entity.Entity, Identifier, Object)
 	 */
-	public static final Identifier PBH_CUSTOM_DATA_ID = new Identifier(getModID(), "player_badge_handler");
+	public static final Identifier PBH_CUSTOM_DATA_ID = new Identifier(getModID(), "player_badges");
 	// --------------------------------------------------
 	/**
 	 * A set that stores the {@link Identifier}s of the {@link PlayerBadge}s assigned to this player.
 	 */
-	protected final Set<Identifier> badges = Collections.synchronizedSet(new HashSet<>());
+	protected final Object2IntMap<Identifier> statMap = Object2IntMaps.synchronize(new Object2IntOpenHashMap<>());
 	// ==================================================
-	public final @Override Iterator<Identifier> iterator() { return this.badges.iterator(); }
-	// ==================================================	
-	/*
-	 * Returns the {@link #badges} {@link HashSet}.<br/>
-	 * <b>Important:</b> Do not store null values in there. It could cause errors.
-	 *
-	@Deprecated //direct access to the protected Set may be a bad idea
-	public final Set<Identifier> getBadges() { this.badges.remove(null); return this.badges; }*/
+	public PlayerBadgeHandler() { this.statMap.defaultReturnValue(0); }
 	// --------------------------------------------------
-	/**
-	 * Checks if the player has a specific badge.
-	 *
-	 * @param badgeId The unique {@link Identifier} of the badge to check for.
-	 * @return True if the player has the badge, false otherwise.
-	 */
-	public final boolean containsBadge(Identifier badgeId)  { return this.badges.contains(badgeId); }
-	
-	/**
-	 * Adds a specific badge to the player. If the badge is already present, it will not be added again.
-	 *
-	 * @param badgeId The unique {@link Identifier} of the badge to add.
-	 * @return True if the badge was added, false if the badge was already
-	 * present or if the provided identifier is null.
-	 */
-	public final boolean addBadge(Identifier badgeId)
+	public final @Override ObjectIterator<Entry<Identifier>> iterator()
 	{
-		if(badgeId == null) return false;
-		else return this.badges.add(badgeId);
+		return this.statMap.object2IntEntrySet().iterator();
 	}
-
+	// ==================================================
 	/**
-	 * Removes a specific badge from the player.
+	 * Obtains the {@link Integer} value associated with a {@link PlayerBadge}'s {@link Identifier}.
+	 * @param badgeId The {@link PlayerBadge}'s unique {@link Identifier}.
+	 * @apiNote Default return value is {@code 0}.
+	 */
+	public final int getValue(Identifier badgeId) { return this.statMap.getInt(badgeId); }
+	
+	/**
+	 * Sets the {@link Integer} value associated with a {@link PlayerBadge}'s {@link Identifier}.
+	 * @param badgeId The {@link PlayerBadge}'s unique {@link Identifier}.
+	 * @param value The new value.
+	 */
+	public void setValue(Identifier badgeId, int value) throws NullPointerException
+	{
+		if(value < 1) this.statMap.removeInt(badgeId);
+		else this.statMap.put(Objects.requireNonNull(badgeId), value);
+	}
+	
+	/**
+	 * Increases the {@link Integer} value associated with a {@link PlayerBadge}'s {@link Identifier},
+	 * by a given {@link Integer} amount.
+	 * @param badgeId The {@link PlayerBadge}'s unique {@link Identifier}.
+	 * @param by The amount to increase the value by.
+	 */
+	public final void increaseValue(Identifier badgeId, int by)
+	{
+	    final int i = (int)Math.min((long)getValue(badgeId) + by, 2147483647L);
+		setValue(badgeId, i);
+	}
+	// --------------------------------------------------
+	/*
+	 * Removes a {@link PlayerBadge} stat from the {@link #statMap}.
+	 * @param badgeId The {@link PlayerBadge}'s unique {@link Identifier}.
 	 *
-	 * @param badgeId The unique {@link Identifier} of the badge to remove.
-	 * @return True if the badge was successfully removed, false if the badge was not present.
-	 */
-	public final boolean removeBadge(Identifier badgeId)  {  return this.badges.remove(badgeId); }
-
-	/**
-	 * Clears all badges from the player.
-	 */
-	public final void clearBadges()  { this.badges.clear(); }
+	@Deprecated(forRemoval = true) //use setValue and pass 0 instead
+	public final void removeBadge(Identifier badgeId) { this.statMap.removeInt(badgeId); }*/
 	
 	/**
-	 * Returns the number of badges assigned to this {@link PlayerBadgeHandler}.
+	 * Clears all {@link PlayerBadge} stats from the {@link #statMap}.
 	 */
-	public final int size() { return this.badges.size(); }
-	
-	/**
-	 * Returns the set of badges, in form of a new {@link Identifier} array.
-	 */
-	public final Identifier[] toArray() { return this.badges.toArray(new Identifier[0]); }
+	public final void clearBadges() { this.statMap.clear(); }
 	// ==================================================
 	/**
 	 * Creates a new {@link Map}, maps the {@link PlayerBadge} {@link Identifier}s
 	 * by their corresponding "mod IDs", and returns the {@link Map}.
 	 * @param badgeIDs An {@link Iterable} {@link Object} containing the set of {@link PlayerBadge} {@link Identifier}s.
 	 */
-	public static final Map<String, Collection<Identifier>> toMapByModId(Iterable<Identifier> badgeIDs)
+	public static final Map<String, List<Identifier>> toMapByModId(Iterable<Identifier> badgeIDs)
 	{
-		//create the map
-		final HashMap<String, Collection<Identifier>> map = new HashMap<>();
-		
-		//add badges, one by one
-		for(final var badgeId : badgeIDs)
-		{
-			final var modId = badgeId.getNamespace();
-			if(!map.containsKey(modId)) map.put(modId, new ArrayList<>());
-			map.get(modId).add(badgeId);
-		}
-		
-		//return the map
-		return map;
+		return StreamSupport.stream(badgeIDs.spliterator(), false)
+	            .collect(Collectors.groupingBy(Identifier::getNamespace, HashMap::new, Collectors.toList()));
 	}
 	// ==================================================
 }
