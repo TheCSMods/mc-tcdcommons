@@ -26,6 +26,12 @@ public abstract class PlayerBadgeRenderer<T extends PlayerBadge>
 	protected PlayerBadgeRenderer(Class<T> badgeType) { this.badgeType = Objects.requireNonNull(badgeType); }
 	// --------------------------------------------------
 	/**
+	 * Returns the {@link Class} representing the type of
+	 * {@link PlayerBadge} this {@link PlayerBadgeRenderer} renders.
+	 */
+	public final Class<T> getBadgeType() { return this.badgeType; }
+	// ==================================================
+	/**
 	 * Renders this {@link PlayerBadge} on the client-side {@link Screen}.
 	 * @param pencil The rendering {@link DrawContext}.
 	 * @param x The starting on-screen X position where to start drawing the badge.

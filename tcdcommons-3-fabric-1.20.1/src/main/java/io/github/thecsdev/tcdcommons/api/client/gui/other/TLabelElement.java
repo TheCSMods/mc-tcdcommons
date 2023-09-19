@@ -14,7 +14,7 @@ public @Virtual class TLabelElement extends TBlankElement implements ITextProvid
 	protected @Nullable Text text;
 	protected HorizontalAlignment textHorizontalAlignment = HorizontalAlignment.LEFT;
 	protected int textColor = TDrawContext.DEFAULT_TEXT_COLOR;
-	protected int textSideOffset = TDrawContext.DEFAULT_TEXT_SIDE_OFFSET;
+	protected int textSideOffset = 0 /*TDrawContext.DEFAULT_TEXT_SIDE_OFFSET*/;
 	protected float textScale = 1;
 	// ==================================================
 	public TLabelElement(int x, int y, int width, int height) { this(x, y, width, height, null); }
@@ -22,9 +22,6 @@ public @Virtual class TLabelElement extends TBlankElement implements ITextProvid
 	{
 		super(x, y, width, height);
 		this.text = text;
-		//this.textHorizontalAlignment = HorizontalAlignment.LEFT;
-		//this.textColor = TDrawContext.DEFAULT_TEXT_COLOR;
-		//this.textScale = 1;
 	}
 	// ==================================================
 	public final @Override Text getText() { return this.text; }
