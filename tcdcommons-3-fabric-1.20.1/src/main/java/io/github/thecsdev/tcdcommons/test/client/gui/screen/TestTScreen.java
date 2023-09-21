@@ -120,7 +120,7 @@ public final class TestTScreen extends TScreenPlus
 		btn_select.addEntry(new SimpleEntry(literal("Super duper long option 5 because why not...")));
 		panel.addChild(btn_select, true);
 		
-		final var btn_selectEnum = new TSelectEnumWidget<TestEnum>(10, 40, 160, 20);
+		final var btn_selectEnum = new TSelectEnumWidget<>(10, 40, 160, 20, TestEnum.class);
 		panel.addChild(btn_selectEnum, true);
 		
 		//create a test entity renderer

@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.badge;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
+
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.api.registry.TRegistries;
@@ -44,10 +45,10 @@ public abstract class PlayerBadge
 	 * accordance with the {@link TRegistries#PLAYER_BADGE} registry.
 	 * @apiNote To self: Depends on {@link TRegistries#PLAYER_BADGE} being a {@link TSimpleRegistry}.
 	 */
-	public final @Nullable Identifier getId()
+	public final Optional<Identifier> getId()
 	{
-		if(this.__id != null) return this.__id;
-		else return (this.__id = TRegistries.PLAYER_BADGE.getKey(this).orElse(null));
+		if(this.__id != null) return Optional.of(this.__id);
+		else return Optional.ofNullable(this.__id = TRegistries.PLAYER_BADGE.getKey(this).orElse(null));
 	}
 	// ==================================================
 	/** 

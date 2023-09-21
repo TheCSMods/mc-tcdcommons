@@ -22,36 +22,31 @@ public @Virtual class TSelectEnumWidget<E extends Enum<E>> extends TSelectWidget
 	// ==================================================
 	protected final Class<E> enumType;
 	// ==================================================
-	/**
-	 * @apiNote Do not pass any arguments into the {@code E...} array.
-	 * The array serves as a "getter" utility for the generic {@link Enum} type.
-	 */
-	public @SafeVarargs TSelectEnumWidget(int x, int y, int width, int height, E... enumClassTypeGetter)
-	{ this(x, y, width, height, DEFAULT_LABEL, enumClassTypeGetter); }
+	public TSelectEnumWidget(int x, int y, int width, int height, E enumValue)
+	{
+		this(x, y, width, height, Objects.requireNonNull(enumValue).getDeclaringClass(), DEFAULT_LABEL);
+		setSelected(enumValue);
+	}
 	
-	/**
-	 * @apiNote Do not pass any arguments into the {@code E...} array.
-	 * The array serves as a "getter" utility for the generic {@link Enum} type.
-	 */
-	public @SuppressWarnings("unchecked") @SafeVarargs TSelectEnumWidget
-	(int x, int y, int width, int height, Text text, E... enumClassTypeGetter)
+	public TSelectEnumWidget(int x, int y, int width, int height, Class<E> enumType)
+	{
+		this(x, y, width, height, enumType, DEFAULT_LABEL);
+	}
+	
+	public TSelectEnumWidget(int x, int y, int width, int height, Class<E> enumType, Text text)
 	{
 		//super
 		super(x, y, width, height, text);
 		
 		//define and null-check the enum type
-		this.enumType = (Class<E>) enumClassTypeGetter.getClass().getComponentType();
+		this.enumType = Objects.requireNonNull(enumType);
 		if(!this.enumType.isEnum())
-			throw new IllegalArgumentException("Illegal " + Enum.class.getSimpleName() + " type. "
-					+ "Please avoid using rawtypes when creating a new " + TSelectEnumWidget.class.getSimpleName() + ".");
+			throw new IllegalArgumentException("Illegal " + Enum.class.getSimpleName() + " type. " +
+					enumType.getName() + " is not an " + Enum.class.getSimpleName() + ".");
 		
 		//add enum entries using the enum type
 		for(final var enumValue : this.enumType.getEnumConstants())
 			addEntry(new EnumEntry<>(enumValue));
-		
-		//set selected if a value is passed
-		if(enumClassTypeGetter.length > 0)
-			setSelected(enumClassTypeGetter[0]);
 	}
 	// --------------------------------------------------
 	/**
