@@ -77,8 +77,9 @@ public final class GuiUtils
 	/**
 	 * Re-initializes a {@link Screen} using {@link Screen#init(MinecraftClient, int, int)}.
 	 * @param screen The screen to re-initialize.
+	 * @throws NullPointerException If {@link MinecraftClient#getWindow()} returns {@code null}.
 	 */
-	public static Screen initScreen(Screen screen)
+	public static Screen initScreen(Screen screen) throws NullPointerException
 	{
 		Objects.requireNonNull(screen);
 		final var client = TCDCommonsClient.MC_CLIENT;

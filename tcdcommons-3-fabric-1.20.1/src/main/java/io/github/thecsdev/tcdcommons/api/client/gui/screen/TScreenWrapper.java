@@ -1,7 +1,5 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.screen;
 
-import static net.minecraft.client.util.InputUtil.GLFW_KEY_ESCAPE;
-import static net.minecraft.client.util.InputUtil.GLFW_KEY_TAB;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofCharType;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofKeyboardPR;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofMouseCR;
@@ -9,6 +7,8 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.of
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofMouseDragEnd;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofMouseMove;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.ofMouseScroll;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_ESCAPE;
+import static net.minecraft.client.util.InputUtil.GLFW_KEY_TAB;
 
 import java.nio.file.Path;
 import java.util.List;

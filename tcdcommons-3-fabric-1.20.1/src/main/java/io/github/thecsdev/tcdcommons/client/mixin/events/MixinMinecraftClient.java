@@ -8,12 +8,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenWrapper;
+import io.github.thecsdev.tcdcommons.api.client.registry.TClientRegistries;
 import io.github.thecsdev.tcdcommons.api.events.client.MinecraftClientEvent;
 import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorTScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.world.ClientWorld;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient
@@ -25,6 +29,9 @@ public abstract class MixinMinecraftClient
 	@Inject(method = "onResolutionChanged", at = @At("RETURN"))
 	public void onResolutionChanged(CallbackInfo callback)
 	{
+		//initialize hud-screens
+		TClientRegistries.reInitHudScreens();
+		
 		//invoke the resolution change event
 		final int sW = window.getScaledWidth(), sH = window.getScaledHeight();
 		MinecraftClientEvent.RESOLUTION_CHANGED.invoker().invoke(sW, sH);
@@ -67,12 +74,38 @@ public abstract class MixinMinecraftClient
 			//this is a fail-safe, to make sure nothing breaks in the event the exception ends up being handled
 			if(screen instanceof TScreenWrapper) CURRENT_T_SCREEN = ((TScreenWrapper<?>)screen).getTargetTScreen();
 			else CURRENT_T_SCREEN = null;
-			//finally throw the raised exception
-			throw exc;
+			
+			//finally throw the raised exception, but wrap it as an Error
+			//^ not recommended to try and catch the Error tho, as onOpened/onClosed hasn't been called properly,
+			//  meaning that catching the Error will very likely break other mods
+			final String msg = "An '%s' was raised where it shouldn't have been, and '%s' is unable to "
+					+ "continue keeping track of '%s's.";
+			throw new Error(String.format(msg,
+					Exception.class.getSimpleName(),
+					TCDCommons.getModName(),
+					TScreen.class.getSimpleName()
+				), exc);
 		}
 		
 		//invoke the screen change event
 		MinecraftClientEvent.SET_SCREEN_POST.invoker().invoke(screen);
+	}
+	// --------------------------------------------------
+	@Inject(method = "joinWorld", at = @At("RETURN"))
+	public void onJoinWorld(ClientWorld clientWorld, CallbackInfo callback)
+	{
+		//re-initialize hud screens
+		TClientRegistries.reInitHudScreens();
+		
+		//invoke event
+		MinecraftClientEvent.JOINED_WORLD.invoker().invoke((MinecraftClient)(Object)this, clientWorld);
+	}
+	// --------------------------------------------------
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
+	public void onDisconnect(Screen screen, CallbackInfo callback)
+	{
+		//invoke event
+		MinecraftClientEvent.DISCONNECTED.invoker().invoke((MinecraftClient)(Object)this);
 	}
 	// ==================================================
 }

@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import io.github.thecsdev.tcdcommons.api.client.registry.TClientRegistries;
 import io.github.thecsdev.tcdcommons.api.events.client.gui.hud.InGameHudEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -34,9 +35,34 @@ public abstract class MixinInGameHud
 			callback.cancel();
 	}
 	// --------------------------------------------------
-	@Inject(method = "render", at = @At("TAIL"))
+	@Inject(method = "render", at = @At("RETURN"))
 	public void onPostRender(DrawContext pencil, float tickDelta, CallbackInfo callback)
 	{
+		//render in-game-hud screens
+		if(TClientRegistries.HUD_SCREEN.size() > 0)
+		{
+			final var currentScreen = client.currentScreen;
+			final var clientWindow = client.getWindow();
+			final var mouse = client.mouse;
+			
+			var mX = mouse.isCursorLocked() ? (clientWindow.getWidth() / 2) : mouse.getX();
+			var mY = mouse.isCursorLocked() ? (clientWindow.getHeight() / 2) : mouse.getY();
+			int i = (int)(mX * clientWindow.getScaledWidth() / clientWindow.getWidth());
+		    int j = (int)(mY * clientWindow.getScaledHeight() / clientWindow.getHeight());
+			
+			for(final var entry : TClientRegistries.HUD_SCREEN)
+			{
+				//do not render the current screen
+				if(entry.getValue() == currentScreen)
+					continue;
+				
+				//render the screen onto the in-game-hud
+				entry.getValue().render(pencil, i, j, tickDelta);
+				
+				//note: ticking has been deprecated here, to avoid weird visual bugs
+			}
+		}
+		
 		//invoke the post render event
 		InGameHudEvent.RENDER_POST.invoker().invoke(pencil, tickDelta);
 	}

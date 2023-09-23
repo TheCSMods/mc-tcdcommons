@@ -3,6 +3,8 @@ package io.github.thecsdev.tcdcommons.api.registry;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.common.collect.Iterators;
+
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -12,6 +14,11 @@ import net.minecraft.util.Identifier;
  */
 public interface TRegistry<T> extends Iterable<Map.Entry<Identifier, T>>
 {
+	/**
+	 * Returns the number of registered entries in this {@link TRegistry}.
+	 */
+	default int size() { return Iterators.size(iterator()); }
+	
 	/**
 	 * Registers an entry to this {@link TRegistry}.
 	 * @param id The unique {@link Identifier} of the entry being registered.

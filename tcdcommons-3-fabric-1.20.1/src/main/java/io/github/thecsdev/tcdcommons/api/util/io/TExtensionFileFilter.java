@@ -11,7 +11,7 @@ import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 import net.minecraft.text.Text;
 
 /**
- * A {@link TFileFilter} that filters {@link File} by their extension name.
+ * A {@link TFileFilter} that filters {@link File}s by their extension names.
  */
 public final class TExtensionFileFilter implements TFileFilter
 {
