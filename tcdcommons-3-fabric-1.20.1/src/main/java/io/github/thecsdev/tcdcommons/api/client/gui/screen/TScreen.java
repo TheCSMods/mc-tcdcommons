@@ -112,7 +112,16 @@ public abstract class TScreen implements TParentElement
 	 * @apiNote Do not tick children yourself, {@link TScreenWrapper}
 	 * already does that automatically.
 	 */
-	protected @Virtual void tick() {}
+	protected @Virtual void tick()
+	{
+		//FIXME - Create a child added/removed event and handle it there?
+		if(this.__dragging != null && this.__dragging.getParentTScreen() != this)
+			this.__dragging = null;
+		else if(this.__focused != null && this.__focused.getParentTScreen() != this)
+			this.__focused = null;
+		else if(this.__hovered != null && this.__hovered.getParentTScreen() != this)
+			this.__hovered = null;
+	}
 	// --------------------------------------------------
 	/**
 	 * There's no need for a z-index for {@link TScreen}s, so here it returns 0.
@@ -127,7 +136,10 @@ public abstract class TScreen implements TParentElement
 	{
 		renderBackground(pencil);
 		renderChildren(pencil);
-		renderTooltip(pencil);
+		
+		//TODO - Context menu checking system is hard-coded; Find another more efficient way!
+		if(!(getChildren().getLastChild() instanceof TContextMenuPanel))
+			renderTooltip(pencil);
 	}
 	
 	/**
@@ -329,7 +341,7 @@ public abstract class TScreen implements TParentElement
 			// Check if the mouse coordinates are within the GUI element
 			//and its parents
 			if(
-					!child.isEnabledAndVisible() ||
+					!child.isHoverable() || !child.isVisible() ||
 					(hovered.get() != null && child.getZIndex() < hovered.get().getZIndex()) ||
 					!__isMouseInElementBounds(mouseX, mouseY, child) ||
 					child.findParent(p -> !__isMouseInElementBounds(mouseX, mouseY, p)) != null)

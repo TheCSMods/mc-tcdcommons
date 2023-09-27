@@ -20,8 +20,9 @@ import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext.InputDisc
  */
 public abstract class MouseDragHelper extends Object
 {
-	public double mouseDragX, mouseDragY;
-	
+	// ==================================================
+	protected double mouseDragX, mouseDragY;
+	// ==================================================
 	/**
 	 * Call this whenever the mouse drag event takes place.
 	 * @apiNote Do this during the {@link InputDiscoveryPhase#MAIN} phase.
@@ -59,13 +60,13 @@ public abstract class MouseDragHelper extends Object
 	 * Invoke this when the mouse stops dragging.
 	 */
 	public final void clear() { this.mouseDragX = 0; this.mouseDragY = 0; }
-	
+	// ==================================================
 	/**
 	 * Invoked automatically by {@link #onMouseDrag(double, double)}
 	 * when there's sufficient {@link #mouseDragX} or {@link #mouseDragY}.
 	 */
-	public abstract void apply(int deltaX, int deltaY);
-	
+	protected abstract void apply(int deltaX, int deltaY);
+	// ==================================================
 	/**
 	 * Checks if the given {@link TElement} is outside of its {@link TParentElement}
 	 * bounds, and if it it, it will get snapped back in.
@@ -107,4 +108,5 @@ public abstract class MouseDragHelper extends Object
 		}
 		else return false;
 	}
+	// ==================================================
 }

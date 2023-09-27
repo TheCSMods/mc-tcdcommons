@@ -228,6 +228,7 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	public final @Override boolean isEnabled() { return TParentElement.super.isEnabled(); }
 	public @Virtual @Override boolean getEnabled() { return true; }
 	public @Virtual boolean isFocusable() { return false; }
+	public @Virtual boolean isHoverable() { return true; }
 	//
 	public final boolean isHovered() { return (this.__parentScreen != null && this.__parentScreen.getHoveredElement() == this); }
 	public final boolean isFocused() { return (this.__parentScreen != null && this.__parentScreen.getFocusedElement() == this); }

@@ -11,6 +11,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
+import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectEnumWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget.SimpleEntry;
@@ -25,7 +26,10 @@ public final class TestTScreen extends TScreenPlus
 	// ==================================================
 	public final Screen parent;
 	// ==================================================
-	public TestTScreen(Screen parent) { super(literal("Test TScreen")); this.parent = parent; }
+	public TestTScreen(Screen parent)
+	{
+		super(literal(TestTScreen.class.getSimpleName())); this.parent = parent;
+	}
 	// --------------------------------------------------
 	public final void open() { MC_CLIENT.setScreen(getAsScreen()); }
 	public final @Override void close() { MC_CLIENT.setScreen(this.parent); }
@@ -135,6 +139,15 @@ public final class TestTScreen extends TScreenPlus
 		final var entOverlayZSlider = new TSliderWidget(ent.getX(), ent.getEndY(), ent.getWidth(), 10, 0);
 		entOverlayZSlider.setOnClick(__ -> entOverlay.setZOffset((float) (entOverlayZSlider.getValue() * 100)));
 		panel.addChild(entOverlayZSlider, false);
+		
+		final var btn_hud = new TButtonWidget(10, 190, 100, 20, literal("Test in-game-hud screen"));
+		btn_hud.setEnabled(!TestTWidgetHudScreen.isShown());
+		btn_hud.setOnClick(__ ->
+		{
+			TestTWidgetHudScreen.show();
+			btn_hud.setEnabled(false);
+		});
+		panel.addChild(btn_hud, true);
 		
 		//return the panel
 		return panel;

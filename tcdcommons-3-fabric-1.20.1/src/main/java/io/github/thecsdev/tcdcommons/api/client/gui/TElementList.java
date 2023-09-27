@@ -29,8 +29,9 @@ public final class TElementList implements Iterable<TElement>
 	 * on the sides of this element in the following order:<br/>
 	 * TOP, BOTTOM, LEFT, RIGHT
 	 */
-	@Deprecated(forRemoval = true, since = "3") //TODO - extreme performance bottleneck. figure out some other way
+	@Deprecated(forRemoval = true, since = "3") //FIXME - extreme performance bottleneck. figure out some other way
 	private final Tuple4<TElement, TElement, TElement, TElement> topmostElements = new Tuple4<>();
+	// --------------------------------------------------
 	// ==================================================
 	public TElementList(TParentElement parent)
 	{
@@ -179,12 +180,13 @@ public final class TElementList implements Iterable<TElement>
 	public final boolean contains(TElement child) { return this.__children.contains(child); }
 	public final int size() { return this.__children.size(); }
 	// --------------------------------------------------
-	public final @Nullable TElement getFirstChild() { return __getAt(0); }
+	public final @Nullable TElement getFirstChild() { return  __getAt(0); }
 	public final @Nullable TElement getLastChild() { return __getAt(size() - 1); }
 	private final @Nullable TElement __getAt(int index)
 	{
 		// If the index is out of bounds, return null
-		if(index >= size()) return null;
+		if(index < 0 || index >= size())
+			return null;
 	    
 	    // Otherwise, return the element at the specified index
 	    return this.__children.get(index);
