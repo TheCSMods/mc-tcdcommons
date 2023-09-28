@@ -7,8 +7,8 @@ public enum TEventResult
 	CANCEL_NONE,
 	CANCEL_ALL;
 	
-	public boolean isEventCancelled() { return (this == CANCEL_EVENT || this == CANCEL_ALL); }
-	public boolean isPropagationCancelled() { return (this == CANCEL_PROPAGATION || this == CANCEL_ALL); }
+	public final boolean isEventCancelled() { return (this == CANCEL_EVENT || this == CANCEL_ALL); }
+	public final boolean isPropagationCancelled() { return (this == CANCEL_PROPAGATION || this == CANCEL_ALL); }
 	public TEventResult combine(TEventResult other)
 	{
 		if(other == null || other == CANCEL_NONE) return this;

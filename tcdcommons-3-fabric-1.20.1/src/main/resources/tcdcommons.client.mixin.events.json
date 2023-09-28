@@ -10,7 +10,8 @@
 		"MixinMinecraftClient",
 		"MixinInGameHud",
 		"MixinCustomPayloadS2CPacket",
-		"MixinDrawContext"
+		"MixinDrawContext",
+		"MixinStatisticsS2CPacket"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

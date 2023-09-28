@@ -3,6 +3,14 @@
 	"minVersion": "0.8",
 	"package": "io.github.thecsdev.tcdcommons.mixin.events",
 	"compatibilityLevel": "JAVA_17",
-	"mixins": ["MixinEntity", "MixinServerPlayerEntity", "MixinCommandManager", "MixinArgumentTypes", "MixinServerStatHandler"],
+	"mixins":
+	[
+		"MixinEntity",
+		"MixinServerPlayerEntity",
+		"MixinCommandManager",
+		"MixinArgumentTypes",
+		"MixinServerStatHandler",
+		"MixinClientConnection"
+	],
 	"injectors": { "defaultRequire": 1 }
 }

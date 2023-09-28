@@ -27,7 +27,6 @@ public @Virtual class TConfigPanelBuilder<T extends TConfigPanelBuilder<T>> exte
 	// ==================================================
 	public static final Text TEXT_SAVE   = translatable("selectWorld.edit.save");
 	public static final Text TEXT_CANCEL = translatable("gui.cancel");
-	private static final int GAP = 3;
 	// --------------------------------------------------
 	/**
 	 * Holds {@link Consumer} actions that are to be invoked for each
@@ -136,6 +135,7 @@ public @Virtual class TConfigPanelBuilder<T extends TConfigPanelBuilder<T>> exte
 	 */
 	public static final int nextPanelBottomY(TPanelElement panel)
 	{
+		@SuppressWarnings("removal")
 		final TElement bottom = panel.getChildren().getTopmostElements().Item2;
 		return (bottom != null) ? bottom.getEndY() : panel.getY() + panel.getScrollPadding();
 	}

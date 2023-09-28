@@ -60,6 +60,7 @@ public abstract class AbstractFileListPanel<P extends AbstractFileListPanel.File
 	 */
 	protected final int nextVerticalItemY()
 	{
+		@SuppressWarnings("removal")
 		final var b = getChildren().getTopmostElements().Item2;
 		if(b != null) return b.getEndY() + 3;
 		else return getY() + getScrollPadding();

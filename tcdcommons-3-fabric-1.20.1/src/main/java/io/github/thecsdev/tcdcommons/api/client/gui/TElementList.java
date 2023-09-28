@@ -31,7 +31,6 @@ public final class TElementList implements Iterable<TElement>
 	 */
 	@Deprecated(forRemoval = true, since = "3") //FIXME - extreme performance bottleneck. figure out some other way
 	private final Tuple4<TElement, TElement, TElement, TElement> topmostElements = new Tuple4<>();
-	// --------------------------------------------------
 	// ==================================================
 	public TElementList(TParentElement parent)
 	{

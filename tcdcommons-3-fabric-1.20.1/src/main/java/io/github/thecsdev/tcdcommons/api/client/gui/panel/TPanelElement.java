@@ -81,7 +81,10 @@ public @Virtual class TPanelElement extends TElement
 	public TPanelElement(int x, int y, int width, int height)
 	{
 		super(x, y, width, height);
-		this.topmosts = getChildren().getTopmostElements();
+		
+		@SuppressWarnings("removal")
+		final var t = getChildren().getTopmostElements();
+		this.topmosts = t;
 		
 		this.scrollFlags = 0;
 		this.scrollSensitivity = 20;

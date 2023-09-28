@@ -11,6 +11,7 @@ import io.github.thecsdev.tcdcommons.api.registry.TSimpleRegistry;
 import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.StatsListener;
 
 public final class TClientRegistries
 {
@@ -25,6 +26,7 @@ public final class TClientRegistries
 	/**
 	 * Contains {@link Screen}s that are to be rendered on top of the {@link InGameHud}
 	 * when the {@link InGameHudEvent#RENDER_POST} {@link TEvent} takes place.
+	 * @apiNote {@link StatsListener} will work even when the {@link Screen} is rendered on the {@link InGameHud}.
 	 */
 	public static final TMutableRegistry<Screen> HUD_SCREEN = new TMutableRegistry<>();
 	// ==================================================

@@ -17,6 +17,8 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 final class TWidgetHudElement extends TElement
 {
 	// ==================================================
+	private static final int GRID_CELL_SIZE = 4;
+	// --------------------------------------------------
 	protected final TElement target;
 	// ==================================================
 	public TWidgetHudElement(TElement target)
@@ -79,6 +81,9 @@ final class TWidgetHudElement extends TElement
 			//handle input by type
 			switch(inputContext.getInputType())
 			{
+				//when mouse press happens;
+				//- for button 1, display context menu
+				//- for all other buttons, accept the input for dragging purposes
 				case MOUSE_PRESS:
 					if(inputContext.getMouseButton() == 1)
 					{
@@ -86,11 +91,28 @@ final class TWidgetHudElement extends TElement
 						if(cm != null) cm.open();
 					}
 					return true;
+				//when mouse drag happens, move the element around
 				case MOUSE_DRAG:
 					if(inputContext.getMouseButton() == 0)
 						return this.mdh.onMouseDrag(inputContext.getMouseDelta());
 					else break;
-				case MOUSE_DRAG_END: this.mdh.clear(); return true;
+				//when mouse drag ends, clear the helper, end snap the element to bounds
+				case MOUSE_DRAG_END:
+					//clear the mouse drag helper
+					this.mdh.clear();
+					
+					//snap to grid
+					final int gridSize = GRID_CELL_SIZE;
+					int x = TWidgetHudElement.this.getX(), y = TWidgetHudElement.this.getY();
+					x = Math.round((float)x / gridSize) * gridSize;
+					y = Math.round((float)y / gridSize) * gridSize;
+					TWidgetHudElement.this.setPosition(x, y, false);
+					
+					//finally, snap to parent bounds
+					MouseDragHelper.snapToParentBounds(TWidgetHudElement.this);
+					
+					//return
+					return true;
 				default: break;
 			}
 			//return false by default
