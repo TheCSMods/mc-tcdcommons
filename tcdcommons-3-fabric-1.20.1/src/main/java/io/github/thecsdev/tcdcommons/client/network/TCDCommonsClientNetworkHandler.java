@@ -24,7 +24,7 @@ public final class TCDCommonsClientNetworkHandler extends Object
 		//receiving player badges
 		CustomPayloadNetwork.registerReceiver(NetworkSide.CLIENTBOUND, TCDCommonsNetworkHandler.S2C_PLAYER_BADGES, context ->
 		{
-			final var payload = context.getPacketData();
+			final var payload = context.getPacketBuffer();
 			
 			// ========== KEEPING TRACK OF THE STATS CLIENT-SIDE
 			//prepare

@@ -39,12 +39,12 @@ public abstract class MixinCustomPayloadS2CPacket
 			public @Override @Nullable PlayerEntity getPlayer() { return null; }
 			public @Override PacketListener getPacketListener() { return clientPlayPacketListener; }
 			public @Override Identifier getPacketId() { return getChannel(); }
-			public @Override PacketByteBuf getPacketData() { return data; }
+			public @Override PacketByteBuf getPacketBuffer() { return data; }
 			public @Override NetworkSide getNetworkSide() { return NetworkSide.CLIENTBOUND; }
 		});
 		
 		//release the packet data, and cancel default
-		if(data.refCnt() > 0) data.release();
+		//if(data.refCnt() > 0) data.release(); -- causes incompatibility issues
 		callbackInfo.cancel();
 	}
 }

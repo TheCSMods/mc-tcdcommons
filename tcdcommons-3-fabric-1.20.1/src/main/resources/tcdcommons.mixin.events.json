@@ -10,7 +10,8 @@
 		"MixinCommandManager",
 		"MixinArgumentTypes",
 		"MixinServerStatHandler",
-		"MixinClientConnection"
+		"MixinClientConnection",
+		"MixinPlayerManager"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

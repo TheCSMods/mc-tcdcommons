@@ -39,7 +39,7 @@ public interface CustomPayloadNetworkReceiver
 		public PacketListener getPacketListener();
 		public NetworkSide getNetworkSide();
 		public Identifier getPacketId();
-		public PacketByteBuf getPacketData();
+		public PacketByteBuf getPacketBuffer();
 		public @Nullable PlayerEntity getPlayer();
 	}
 }

@@ -157,12 +157,17 @@ public abstract class TWidgetHudScreen extends TScreen implements IParentScreenP
 	/**
 	 * Clears all {@link WidgetEntry}s from this {@link TWidgetHudScreen}.
 	 */
-	public void clearEntries()
+	public final void clearEntries()
 	{
 		this.entries.forEach(e -> e.whs = null);
 		this.entries.clear();
 		refresh();
 	}
+	
+	/**
+	 * Returns the number of {@link WidgetEntry}s added to this {@link TWidgetHudScreen}.
+	 */
+	public final int entryCount() { return this.entries.size(); }
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link Identifier} for this {@link TWidgetHudScreen}
