@@ -11,7 +11,8 @@
 		"MixinArgumentTypes",
 		"MixinServerStatHandler",
 		"MixinClientConnection",
-		"MixinPlayerManager"
+		"MixinPlayerManager",
+		"MixinCustomPayloadC2SPacket"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
