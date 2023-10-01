@@ -125,11 +125,21 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// --------------------------------------------------
 	public final @Override void render(DrawContext drawContext, int mouseX, int mouseY, float deltaTime)
 	{
+		//TODO - possibly optimize drag/focus/hover flag checks
+		//verify target's flags
+		final var t = this.target;
+		if(t.__dragging != null && t.__dragging.getParentTScreen() != t)
+			t.__dragging = null;
+		else if(t.__focused != null && t.__focused.getParentTScreen() != t)
+			t.__focused = null;
+		else if(t.__hovered != null && t.__hovered.getParentTScreen() != t)
+			t.__hovered = null;
+		
 		//create the TDrawContext
 		final var pencil = TDrawContext.of(drawContext, mouseX, mouseY, deltaTime);
 		//render the target screen
 		pencil.updateContext(getTargetTScreen());
-		this.target.render(pencil);
+		t.render(pencil);
 		//render super on top of the target screen
 		super.render(pencil, mouseX, mouseY, deltaTime);
 	}

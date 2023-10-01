@@ -112,16 +112,7 @@ public abstract class TScreen implements TParentElement
 	 * @apiNote Do not tick children yourself, {@link TScreenWrapper}
 	 * already does that automatically.
 	 */
-	protected @Virtual void tick()
-	{
-		//FIXME - Create a child added/removed event and handle it there?
-		if(this.__dragging != null && this.__dragging.getParentTScreen() != this)
-			this.__dragging = null;
-		else if(this.__focused != null && this.__focused.getParentTScreen() != this)
-			this.__focused = null;
-		else if(this.__hovered != null && this.__hovered.getParentTScreen() != this)
-			this.__hovered = null;
-	}
+	protected @Virtual void tick() {}
 	// --------------------------------------------------
 	/**
 	 * There's no need for a z-index for {@link TScreen}s, so here it returns 0.

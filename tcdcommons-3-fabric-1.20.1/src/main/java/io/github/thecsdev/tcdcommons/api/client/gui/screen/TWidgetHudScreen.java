@@ -123,6 +123,9 @@ public abstract class TWidgetHudScreen extends TScreen implements IParentScreenP
 		//unregister this screen if has no entries
 		if(Objects.equals(HUD_SCREEN.getValue(this.hudScreenId).orElse(null), getAsScreen()))
 			HUD_SCREEN.unregister(this.hudScreenId);
+		
+		//refresh the screen
+		refresh();
 	}
 	public @Virtual @Override void close() { MC_CLIENT.setScreen(this.parent); }
 	// ==================================================
