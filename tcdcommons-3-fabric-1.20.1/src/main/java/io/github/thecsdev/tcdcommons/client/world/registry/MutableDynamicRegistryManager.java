@@ -26,6 +26,7 @@ import net.minecraft.registry.SimpleRegistry;
 public @Virtual class MutableDynamicRegistryManager implements DynamicRegistryManager
 {
 	// ==================================================
+	protected final Method registriesPutMethod;
 	protected final Map<? extends RegistryKey<? extends Registry<?>>, ? extends Registry<?>> registries;
 	// ==================================================
 	public MutableDynamicRegistryManager() { this(new ArrayList<>()); }
@@ -34,6 +35,9 @@ public @Virtual class MutableDynamicRegistryManager implements DynamicRegistryMa
 		this.registries = registries
 				.stream()
 				.collect(Collectors.toMap(Registry::getKey, registry -> registry));
+		
+		try { this.registriesPutMethod = this.registries.getClass().getMethod("put", Object.class, Object.class); }
+		catch(Exception e) { throw new RuntimeException("Unable to access the 'put' method.", e); }
 	}
 	// --------------------------------------------------
 	/**
@@ -59,8 +63,7 @@ public @Virtual class MutableDynamicRegistryManager implements DynamicRegistryMa
 			{
 				//due to Map#put not allowing putting the key due to type mismatch,
 				//and casting not working, there's no other choice but to resort to reflection
-				Method putMethod = this.registries.getClass().getMethod("put", Object.class, Object.class);
-				putMethod.invoke(this.registries, key, reg);
+				registriesPutMethod.invoke(this.registries, key, reg);
 			}
 			catch (Exception exc) { throw new RuntimeException("Failed to put create and store Registry instance", exc); }
 		}

@@ -140,7 +140,7 @@ public final class TestTScreen extends TScreenPlus
 		entOverlayZSlider.setOnClick(__ -> entOverlay.setZOffset((float) (entOverlayZSlider.getValue() * 100)));
 		panel.addChild(entOverlayZSlider, false);
 		
-		final var btn_hud = new TButtonWidget(10, 190, 100, 20, literal("Test in-game-hud screen"));
+		final var btn_hud = new TButtonWidget(10, 190, 160, 20, literal("Test in-game-hud screen"));
 		btn_hud.setEnabled(!TestTWidgetHudScreen.isShown());
 		btn_hud.setOnClick(__ ->
 		{

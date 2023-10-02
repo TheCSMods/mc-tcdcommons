@@ -20,7 +20,9 @@ public class ClientSandboxWorldDRM extends MutableDynamicRegistryManager
 	{
 		//---------- initialize DAMAGE_TYPE registry
 		//obtain registry
-		final var dtr = (SimpleRegistry<DamageType>)get(RegistryKeys.DAMAGE_TYPE);
+		final var dtr = /*(SimpleRegistry<DamageType>)get(RegistryKeys.DAMAGE_TYPE)*/ new DamageTypeDynamicReg();
+		try { this.registriesPutMethod.invoke(this.registries, RegistryKeys.DAMAGE_TYPE, dtr); }
+		catch(Exception e) { throw new RuntimeException("Failed to create DamageType registry.", e); }
 		
 		//create and use a Registerable wrapper instance to
 		//register all damage types to the registry
