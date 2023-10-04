@@ -11,7 +11,8 @@
 		"AccessorButtonWidget",
 		"AccessorGridWidget",
 		"AccessorTScreen",
-		"AccessorPressableWidget"
+		"AccessorPressableWidget",
+		"AccessorCheckboxWidget"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

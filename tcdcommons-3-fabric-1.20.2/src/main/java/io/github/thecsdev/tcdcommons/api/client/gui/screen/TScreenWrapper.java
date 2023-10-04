@@ -123,6 +123,13 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	    this.target.forEachChild(c -> c.tick(), true);
 	}
 	// --------------------------------------------------
+	public final @Override void renderBackground(DrawContext context, int mouseX, int mouseY, float delta)
+	{
+		/* 
+		 * This method started causing visual bugs, and as such, has been removed.
+		 * Please use #renderBackgroundTexture or TScreen#renderBackground instead.
+		 */
+	}
 	public final @Override void render(DrawContext drawContext, int mouseX, int mouseY, float deltaTime)
 	{
 		//TODO - possibly optimize drag/focus/hover flag checks

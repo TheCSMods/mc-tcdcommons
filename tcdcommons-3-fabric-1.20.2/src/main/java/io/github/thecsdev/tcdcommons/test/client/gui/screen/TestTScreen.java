@@ -12,6 +12,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
+import io.github.thecsdev.tcdcommons.api.client.gui.widget.TCheckboxWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectEnumWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget.SimpleEntry;
@@ -148,6 +149,9 @@ public final class TestTScreen extends TScreenPlus
 			btn_hud.setEnabled(false);
 		});
 		panel.addChild(btn_hud, true);
+		
+		final var chk_a = new TCheckboxWidget(10, 220, 160, 20, literal("Testing check-box"));
+		panel.addChild(chk_a, true);
 		
 		//return the panel
 		return panel;

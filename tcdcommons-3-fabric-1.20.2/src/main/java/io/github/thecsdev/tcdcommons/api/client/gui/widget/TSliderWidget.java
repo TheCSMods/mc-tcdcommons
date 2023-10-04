@@ -74,7 +74,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 	// ==================================================
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
-		pencil.drawTButton(true, false);
+		pencil.drawTButton(false, false);
 		renderSliderProgressBar(pencil);
 		renderSliderKnob(pencil);
 		pencil.drawTElementTextTH(this.text, HorizontalAlignment.CENTER);
@@ -110,7 +110,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		}
 		
 		//render the progress button
-	    pencil.pushTShaderColor(0.6f, 0.6f, 0.6f, 1);
+	    pencil.pushTShaderColor(0.8f, 0.8f, 0.8f, 1);
 	    pencil.enableScissor(sX, sY, sX + sW, sY + sH);
 	    pencil.drawTButton(this.enabled, isFocusedOrHovered());
 	    pencil.disableScissor();

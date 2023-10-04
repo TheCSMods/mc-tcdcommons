@@ -523,7 +523,8 @@ public @Virtual class TPanelElement extends TElement
 	
 	/**
 	 * Same as {@link #inputScroll(int, int)}, but <i>smooth</i>.
-	 * @param scrollAmount The input scroll amount.
+	 * @param scrollAmountX The horizontal input scroll amount.
+	 * @param scrollAmountY The vertical input scroll amount.
 	 */
 	public final boolean inputSmoothScroll(int scrollAmountX, int scrollAmountY)
 	{

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
+import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorCheckboxWidget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -14,10 +15,10 @@ import net.minecraft.util.Identifier;
 public @Virtual class TCheckboxWidget extends TButtonWidget
 {
 	// ==================================================
-	/**
-	 * The {@link Identifier} for the GUI checkbox texture used by Minecraft.
-	 */
-	public static final Identifier TEXTURE_CHECKBOX = new Identifier("textures/gui/checkbox.png");
+	public static final Identifier SELECTED_HIGHLIGHTED_TEXTURE = AccessorCheckboxWidget.getSelectedHighlightedTexture();
+	public static final Identifier SELECTED_TEXTURE = AccessorCheckboxWidget.getSelectedTexture();
+	public static final Identifier HIGHLIGHTED_TEXTURE = AccessorCheckboxWidget.getHighlightedTexture();
+	public static final Identifier TEXTURE = AccessorCheckboxWidget.getTexture();
 	// --------------------------------------------------
 	protected boolean checked = false;
 	protected boolean showText;
@@ -101,13 +102,7 @@ public @Virtual class TCheckboxWidget extends TButtonWidget
 		final var textRenderer = getTextRenderer();
 		
 	    //draw the texture and the background
-		final boolean isFocused = (getParentTScreen().getFocusedElement() == this);
-	    pencil.drawTexture(
-	    		TEXTURE_CHECKBOX,
-	    		this.x + cX, this.y + cY, //XY
-	    		isFocused ? 20 : 0, this.checked ? 20 : 0, //UV
-	    		20, this.height, //WH
-	    		64,64); //texture WH
+		pencil.drawTCheckbox(this.x + cX, this.y + cY, 20, this.height, isFocusedOrHovered(), this.checked);
 	    
 	    //draw the text
 	    if(this.showText)

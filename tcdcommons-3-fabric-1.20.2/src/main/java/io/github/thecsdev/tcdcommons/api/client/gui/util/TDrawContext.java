@@ -6,11 +6,7 @@ import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 import java.awt.Color;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
 
 import com.google.common.annotations.Beta;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -19,6 +15,7 @@ import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.ColorStack.BlendMethod;
+import io.github.thecsdev.tcdcommons.api.client.gui.widget.TCheckboxWidget;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
 import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorDrawContext;
@@ -27,10 +24,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
@@ -435,44 +430,49 @@ public final class TDrawContext extends DrawContext
 				curr.getX(), curr.getY(),
 				curr.getWidth(), curr.getHeight());
 	}
-	// ==================================================
-	/*
-	 * Draws a {@link PlayerBadge} over the {@link #currentTarget}.
-	 * @param playerBadge The {@link PlayerBadge} to draw.
-	 * @see #drawTPlayerBadge(PlayerBadge, int, int, int, int)
-	 *
-	@Deprecated
-	public final <T extends PlayerBadge> void drawTPlayerBadge(T playerBadge)
-	{
-		drawTPlayerBadge(
-				playerBadge,
-				this.currentTarget.getX(), this.currentTarget.getY(),
-				this.currentTarget.getWidth(), this.currentTarget.getHeight());
-	}*/
 	
-	/*
-	 * Draws a {@link PlayerBadge} at the given coordinates, using the
-	 * {@link PlayerBadge}'s corresponding {@link PlayerBadgeRenderer} that is
-	 * registered in {@link TClientRegistries#PLAYER_BADGE_RENDERER}.
-	 * @param playerBadge The {@link PlayerBadge} to render.
-	 * @param x The X coordinate.
-	 * @param y The Y coordinate.
-	 * @param width The visual size of the {@link PlayerBadge} (width).
-	 * @param height The visual size of the {@link PlayerBadge} (height).
-	 * @throws NoSuchElementException If a corresponding {@link PlayerBadgeRenderer} isn't registered.
-	 * @throws ClassCastException If the corresponding {@link PlayerBadgeRenderer}'s generic type doesn't match.
-	 *
-	@Deprecated //for performance reasons, performing a renderer lookup every frame isn't a good idea
-	public final <T extends PlayerBadge> void drawTPlayerBadge
-	(T playerBadge, int x, int y, int width, int height) throws NoSuchElementException, ClassCastException
+	public final void drawTCheckbox(int x, int y, boolean highlighted, boolean checked) { drawTCheckbox(x, y, 20, 20, highlighted, checked); }
+	public final void drawTCheckbox(int x, int y, int width, int height, boolean highlighted, boolean checked)
 	{
-		final var playerBadgeId = playerBadge.getId();
-		@SuppressWarnings("unchecked")
-		final var br = (PlayerBadgeRenderer<T>)TClientRegistries.PLAYER_BADGE_RENDERER.getValue(playerBadgeId).get();
-		br.render(this, x, y, width, height, this.mouseX, this.mouseY, this.deltaTime);
-	}*/
+		final Identifier tex = (checked) ?
+				(highlighted ? TCheckboxWidget.SELECTED_HIGHLIGHTED_TEXTURE : TCheckboxWidget.SELECTED_TEXTURE) :
+				(highlighted ? TCheckboxWidget.HIGHLIGHTED_TEXTURE : TCheckboxWidget.TEXTURE);
+		drawGuiTexture(tex, x, y, width, height);
+	}
 	// ==================================================
-	/**
+	@Experimental
+	public final void drawTEntity(Entity entity, int size, boolean followCursor) throws NullPointerException
+	{
+		if(entity == null) return;
+		final var c = this.currentTarget;
+		drawTEntity(entity, c.getX(), c.getY(), c.getWidth(), c.getHeight(), size, followCursor);
+	}
+	
+	@Experimental
+	public final void drawTEntity(Entity entity, int x, int y, int width, int height, int size, boolean followCursor)
+	{
+		//null check
+		if(entity == null) return;
+		
+		//prepare to render
+		final int mouseX = followCursor ? this.mouseX : x + (width / 2) + 100;
+		final int mouseY = followCursor ? this.mouseY : y + (height / 2) + 50;
+		final @Nullable LivingEntity livingEntity = (entity instanceof LivingEntity) ? (LivingEntity)entity : null;
+		
+		//vanilla rendering
+		if(livingEntity != null && MC_CLIENT.world != null) //vanilla rendering depends on client-world
+			InventoryScreen.drawEntity(
+					this,
+					x, y,
+					x + width, y + height,
+					size,
+					0.0625F, mouseX, mouseY,
+					livingEntity);
+
+		//FIXME - Update this entity rendering code to do it the way Majong now does it
+		else throw new UnsupportedOperationException();
+	}
+	/*
 	 * Draws an {@link Entity} on the GUI screen.
 	 * @param entity The {@link Entity} to draw on the screen
 	 * @param x The X coordinate of the bottom of the {@link Entity}'s feet
@@ -482,7 +482,7 @@ public final class TDrawContext extends DrawContext
 	 * @apiNote Still in {@link Beta}. May cause issues and crashes.
 	 * @apiNote Some {@link EntityRenderer}s <b>do not support rendering</b>
 	 * their corresponding {@link Entity}s <b>while not in-game</b>.
-	 */
+	 *
 	@Experimental
 	public final void drawTEntity(Entity entity, int x, int y, int width, int height, int size, boolean followCursor)
 	{
@@ -493,7 +493,7 @@ public final class TDrawContext extends DrawContext
 		int mouseX = followCursor ? this.mouseX + (size/2) : x + 100;
 		int mouseY = followCursor ? this.mouseY + (size/2) : y + 50;
 		final @Nullable LivingEntity livingEntity = (entity instanceof LivingEntity) ? (LivingEntity)entity : null;
-		if(livingEntity != null && MC_CLIENT.world != null /*client world is required for vanilla rendering*/)
+		if(livingEntity != null && MC_CLIENT.world != null) //client world is required for vanilla rendering
 		{
 			//use Vanilla rendering for living entities, so i don't have to keep that part up-to-date by myself
 			InventoryScreen.drawEntity(
@@ -501,15 +501,17 @@ public final class TDrawContext extends DrawContext
 					x, y, //position
 					x + width, x + height, //rectangle bounds
 					size, //entity size
-					this.deltaTime, mouseX, mouseY, //further draw context
+					0.0625F, mouseX, mouseY, //further draw context
 					livingEntity); //entity being rendered
 			return;
 		}
 		
 		//prepare the context - push stuff
 		//(position and rotate the entity appropriately)
-		float atanMouseX40 = (float)Math.atan(((mouseX - x) / 40.0F));
-		float atanMouseY40 = -(float)Math.atan(((mouseY - y) / 40.0F));
+		float centerX = (x + width) / 2F;
+		float centerY = (y + height) / 2F;
+		float atanMouseX40 = (float)Math.atan(((mouseX - centerX) / 40.0F));
+		float atanMouseY40 = -(float)Math.atan(((mouseY - centerY) / 40.0F));
 		Quaternionf quaternionf = new Quaternionf().rotateZ(3.1415927F).rotateY(3.1415927F);
 		Quaternionf quaternionf2 = (new Quaternionf()).rotateX(atanMouseY40 * 20.0F * 0.017453292F);
 		quaternionf.mul((Quaternionfc)quaternionf2);
@@ -541,10 +543,10 @@ public final class TDrawContext extends DrawContext
 			livingEntity.prevHeadYaw = k;
 			livingEntity.headYaw = l;
 		}
-	}
+	}*/
 	
 	//note: don't forget to make sure this method is up-to-date with InventoryScreen#drawEntity
-	private final @Internal void __drawTEntity
+	/*private final @Internal void __drawTEntity
 	(int x, int y, int size, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2, Entity entity)
 	{
 		//push matrices
@@ -571,6 +573,6 @@ public final class TDrawContext extends DrawContext
 		//pop matrices
 		matrices.pop();
 		DiffuseLighting.enableGuiDepthLighting();
-	}
+	}*/
 	// ==================================================
 }
