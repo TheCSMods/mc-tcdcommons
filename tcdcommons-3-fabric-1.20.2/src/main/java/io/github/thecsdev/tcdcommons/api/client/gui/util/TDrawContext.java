@@ -6,7 +6,12 @@ import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 import java.awt.Color;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
+import org.joml.Vector3f;
 
 import com.google.common.annotations.Beta;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,7 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
@@ -40,7 +45,7 @@ public final class TDrawContext extends DrawContext
 	// ==================================================
 	private static final EntityRenderDispatcher ERD = TCDCommonsClient.MC_CLIENT.getEntityRenderDispatcher();
 	//private static final EntityModelLoader ERD_EML = getModelLoader(ERD);
-	private static final Camera ERD_CAMERA = new Camera();
+	//private static final Camera ERD_CAMERA = new Camera();
 	// ==================================================
 	public static final @Beta int DEFAULT_TEXT_SIDE_OFFSET = 5;
 	public static final @Beta int DEFAULT_TEXT_COLOR = 16777215;
@@ -126,15 +131,15 @@ public final class TDrawContext extends DrawContext
 		//define the fill vertices
 		final var matrix4f = getMatrices().peek().getPositionMatrix();
 		final var vertexConsumer = getVertexConsumers().getBuffer(layer);
-	    vertexConsumer.vertex(matrix4f, x1, x2, z).color(r, g, b, a).next();
-	    vertexConsumer.vertex(matrix4f, x1, y2, z).color(r, g, b, a).next();
-	    vertexConsumer.vertex(matrix4f, y1, y2, z).color(r, g, b, a).next();
-	    vertexConsumer.vertex(matrix4f, y1, x2, z).color(r, g, b, a).next();
-	    
-	    //draw the fill vertices
-	    RenderSystem.disableDepthTest();
-	    getVertexConsumers().draw();
-	    RenderSystem.enableDepthTest();
+		vertexConsumer.vertex(matrix4f, x1, x2, z).color(r, g, b, a).next();
+		vertexConsumer.vertex(matrix4f, x1, y2, z).color(r, g, b, a).next();
+		vertexConsumer.vertex(matrix4f, y1, y2, z).color(r, g, b, a).next();
+		vertexConsumer.vertex(matrix4f, y1, x2, z).color(r, g, b, a).next();
+		
+		//draw the fill vertices
+		RenderSystem.disableDepthTest();
+		getVertexConsumers().draw();
+		RenderSystem.enableDepthTest();
 	}
 	// ==================================================
 	/**
@@ -455,124 +460,84 @@ public final class TDrawContext extends DrawContext
 		if(entity == null) return;
 		
 		//prepare to render
+		final float f = 0.0625F;
 		final int mouseX = followCursor ? this.mouseX : x + (width / 2) + 100;
 		final int mouseY = followCursor ? this.mouseY : y + (height / 2) + 50;
 		final @Nullable LivingEntity livingEntity = (entity instanceof LivingEntity) ? (LivingEntity)entity : null;
 		
 		//vanilla rendering
 		if(livingEntity != null && MC_CLIENT.world != null) //vanilla rendering depends on client-world
+		{
 			InventoryScreen.drawEntity(
 					this,
 					x, y,
 					x + width, y + height,
 					size,
-					0.0625F, mouseX, mouseY,
+					f, mouseX, mouseY,
 					livingEntity);
-
-		//FIXME - Update this entity rendering code to do it the way Majong now does it
-		else throw new UnsupportedOperationException();
-	}
-	/*
-	 * Draws an {@link Entity} on the GUI screen.
-	 * @param entity The {@link Entity} to draw on the screen
-	 * @param x The X coordinate of the bottom of the {@link Entity}'s feet
-	 * @param y The Y coordinate of the bottom of the {@link Entity}'s feet
-	 * @param size The {@link Entity} size
-	 * @param followCursor If true, the {@link Entity} will face towards the mouse cursor
-	 * @apiNote Still in {@link Beta}. May cause issues and crashes.
-	 * @apiNote Some {@link EntityRenderer}s <b>do not support rendering</b>
-	 * their corresponding {@link Entity}s <b>while not in-game</b>.
-	 *
-	@Experimental
-	public final void drawTEntity(Entity entity, int x, int y, int width, int height, int size, boolean followCursor)
-	{
-		//null check
-		if(entity == null) return;
-		
-		//prepare to handle living entities as well
-		int mouseX = followCursor ? this.mouseX + (size/2) : x + 100;
-		int mouseY = followCursor ? this.mouseY + (size/2) : y + 50;
-		final @Nullable LivingEntity livingEntity = (entity instanceof LivingEntity) ? (LivingEntity)entity : null;
-		if(livingEntity != null && MC_CLIENT.world != null) //client world is required for vanilla rendering
-		{
-			//use Vanilla rendering for living entities, so i don't have to keep that part up-to-date by myself
-			InventoryScreen.drawEntity(
-					this, //draw context
-					x, y, //position
-					x + width, x + height, //rectangle bounds
-					size, //entity size
-					0.0625F, mouseX, mouseY, //further draw context
-					livingEntity); //entity being rendered
 			return;
 		}
 		
-		//prepare the context - push stuff
-		//(position and rotate the entity appropriately)
-		float centerX = (x + width) / 2F;
-		float centerY = (y + height) / 2F;
-		float atanMouseX40 = (float)Math.atan(((mouseX - centerX) / 40.0F));
-		float atanMouseY40 = -(float)Math.atan(((mouseY - centerY) / 40.0F));
-		Quaternionf quaternionf = new Quaternionf().rotateZ(3.1415927F).rotateY(3.1415927F);
-		Quaternionf quaternionf2 = (new Quaternionf()).rotateX(atanMouseY40 * 20.0F * 0.017453292F);
+		//rendering in a way that supports all entity types
+		float g = x + (width / 2);
+		float h = y + (height / 2);
+		enableScissor(x, y, x + width, y + height);
+		float i = (float)Math.atan(((g - mouseX) / 40.0F));
+		float j = (float)Math.atan(((h - mouseY) / 40.0F));
+		Quaternionf quaternionf = (new Quaternionf()).rotateZ(3.1415927F);
+		Quaternionf quaternionf2 = (new Quaternionf()).rotateX(j * 20.0F * 0.017453292F);
 		quaternionf.mul((Quaternionfc)quaternionf2);
-		
-		float i = entity.getYaw(), j = entity.getPitch();
-		entity.setYaw(180.0F + atanMouseX40 * 40.0F);
-		entity.setPitch(-atanMouseY40 * 20.0F);
-		float h = 0, k = 0, l = 0;
+		float k = 0;
+		float l = entity.getYaw();
+		float m = entity.getPitch();
+		float n = 0;
+		float o = 0;
 		if(livingEntity != null)
 		{
-			h = livingEntity.bodyYaw;
-			k = livingEntity.prevHeadYaw;
-			l = livingEntity.headYaw;
-			livingEntity.bodyYaw = 180.0F + atanMouseX40 * 20.0F;
+			k = livingEntity.bodyYaw;
+			n = livingEntity.prevHeadYaw;
+			o = livingEntity.headYaw;
+			livingEntity.bodyYaw = 180.0F + i * 20.0F;
 			livingEntity.headYaw = entity.getYaw();
 			livingEntity.prevHeadYaw = entity.getYaw();
 		}
-		
-		//render
-		__drawTEntity(x, y, size, quaternionf, quaternionf2, entity);
-		
-		//un-prepare the context - pop stuff
-		//(return the entity back to its initial state)
-		entity.setYaw(i);
-		entity.setPitch(j);
+		entity.setYaw(180.0F + i * 40.0F);
+		entity.setPitch(-j * 20.0F);
+		Vector3f vector3f = new Vector3f(0.0F, entity.getHeight() / 2.0F + f, 0.0F);
+		__drawEntity(g, h, size, vector3f, quaternionf, quaternionf2, entity);
+		entity.setYaw(l);
+		entity.setPitch(m);
 		if(livingEntity != null)
 		{
-			livingEntity.bodyYaw = h;
-			livingEntity.prevHeadYaw = k;
-			livingEntity.headYaw = l;
+			livingEntity.bodyYaw = k;
+			livingEntity.prevHeadYaw = n;
+			livingEntity.headYaw = o;
 		}
-	}*/
+		disableScissor();
+	}
 	
-	//note: don't forget to make sure this method is up-to-date with InventoryScreen#drawEntity
-	/*private final @Internal void __drawTEntity
-	(int x, int y, int size, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2, Entity entity)
+	private final @Internal void __drawEntity(
+			float x, float y, int size,
+			Vector3f vector3f, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2,
+			Entity entity)
 	{
-		//push matrices
-		final var matrices = getMatrices();
-		matrices.push();
-		matrices.translate(x, y, 50);
-		matrices.multiplyPositionMatrix(new Matrix4f().scaling(size, size, size));
-		matrices.multiply(quaternionf);
+		getMatrices().push();
+		getMatrices().translate(x, y, 50.0D);
+		getMatrices().multiplyPositionMatrix((new Matrix4f()).scaling(size, size, -size));
+		getMatrices().translate(vector3f.x, vector3f.y, vector3f.z);
+		getMatrices().multiply(quaternionf);
 		DiffuseLighting.method_34742();
-		
-		//do the vanilla rendering method
-		if(quaternionf2 != null)
+		if (quaternionf2 != null)
 		{
 			quaternionf2.conjugate();
 			ERD.setRotation(quaternionf2);
-		}
-		if(ERD.camera == null) ERD.camera = ERD_CAMERA;
-		
+		} 
 		ERD.setRenderShadows(false);
-		ERD.render(entity, 0, 0, 0, 0, 1, getMatrices(), getVertexConsumers(), 15728880);
+		ERD.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, getMatrices(), getVertexConsumers(), 15728880);
 		draw();
 		ERD.setRenderShadows(true);
-		
-		//pop matrices
-		matrices.pop();
+		getMatrices().pop();
 		DiffuseLighting.enableGuiDepthLighting();
-	}*/
+	  }
 	// ==================================================
 }
