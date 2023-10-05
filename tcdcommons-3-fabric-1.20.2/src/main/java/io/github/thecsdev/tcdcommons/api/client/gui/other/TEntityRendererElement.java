@@ -26,7 +26,7 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 	protected boolean entityErrorState; //when true, entity won't render, and its name will render instead
 	
 	/** The cached center XY coordinates for rendering the {@link #entity}. <b>tY</b> is for text. */
-	protected int entityCenterX, entityCenterY, entityTextY;
+	protected int entityTextX, entityTextY;
 	/** The cached calculated size at which the entity will render. */
 	protected int entityDisplaySize;
 	// --------------------------------------------------
@@ -106,13 +106,12 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 	}
 	
 	/**
-	 * Recalculates the values of {@link #entityCenterX} and {@link #entityCenterY}.
+	 * Recalculates the values of {@link #entityTextX} and {@link #entityTextY}.
 	 */
 	protected final void recalcCache_cXY()
 	{
 		//calculate center XY
-		this.entityCenterX = (this.x + (this.width / 2));
-		this.entityCenterY = (getEndY() - (this.height / 4));
+		this.entityTextX = (this.x + (this.width / 2));
 		//calculate text Y for the entity name text
 		if(this.entityTypeName != null)
 		{
@@ -122,7 +121,7 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 				(fh / 2) -
 				(this.entityTypeName.count() * fh);
 		}
-		else this.entityTextY = this.entityCenterY;
+		else this.entityTextY = (getEndY() - (this.height / 4));
 	}
 	// ==================================================
 	public @Virtual @Override void render(TDrawContext pencil)
@@ -133,7 +132,7 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 		if(this.entityErrorState || this.entity == null)
 		{
 			if(this.entityTypeName != null)
-				this.entityTypeName.drawCenterWithShadow(pencil, this.entityCenterX, this.entityTextY);
+				this.entityTypeName.drawCenterWithShadow(pencil, this.entityTextX, this.entityTextY);
 			else pencil.drawTFill(TDrawContext.DEFAULT_ERROR_COLOR);
 			return;
 		}

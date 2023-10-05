@@ -38,7 +38,7 @@ public final class TCustomPayload implements CustomPayload
 	public TCustomPayload(PacketByteBuf receivedPacketBuffer)
 	{
 		this(receivedPacketBuffer.readIdentifier(),
-			new PacketByteBuf(receivedPacketBuffer.readSlice(receivedPacketBuffer.readIntLE())));
+			new PacketByteBuf(receivedPacketBuffer.readBytes(receivedPacketBuffer.readIntLE())));
 	}
 	
 	/**
@@ -54,6 +54,17 @@ public final class TCustomPayload implements CustomPayload
 		this.packetDataID = Objects.requireNonNull(packetDataID);
 		this.packetData = Objects.requireNonNull(packetData);
 		this.closeOnWrite = closeOnWrite;
+	}
+	
+	@SuppressWarnings("deprecation")
+	protected final @Override void finalize() throws Throwable
+	{
+		//call super
+		super.finalize();
+		
+		//release packet data if not released, to avoid memory leaks
+		if(this.packetData.refCnt() > 0)
+			this.packetData.release();
 	}
 	// ==================================================
 	/**

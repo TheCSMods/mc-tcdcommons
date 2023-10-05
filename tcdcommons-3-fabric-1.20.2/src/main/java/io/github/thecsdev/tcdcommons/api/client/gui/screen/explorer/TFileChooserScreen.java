@@ -81,6 +81,7 @@ public final class TFileChooserScreen extends TScreenPlus implements IParentScre
 		this.parent = MC_CLIENT.currentScreen;
 		this.contentPane = new TFillColorElement(0, 0, 100, 100, /*-1771805596*/436207615)
 		{
+			public boolean isHoverable() { return true; }
 			public boolean input(TInputContext inputContext)
 			{
 				//only handle hovered and mouse LMB clicks

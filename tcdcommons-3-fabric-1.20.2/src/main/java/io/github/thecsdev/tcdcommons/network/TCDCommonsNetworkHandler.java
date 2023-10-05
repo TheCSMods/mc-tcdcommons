@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import com.google.common.collect.ImmutableMap;
+
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.badge.ServerPlayerBadgeHandler;
@@ -33,9 +35,13 @@ public final class TCDCommonsNetworkHandler extends Object
 		/* because the vanilla game makes their maps immutable,
 		 * this here is created with the intent to override vanilla, and make the maps mutable
 		 */
-		//create new maps that are mutable
-		final var c2s = new HashMap<Identifier, PacketByteBuf.PacketReader<? extends CustomPayload>>();
-		final var s2c = new HashMap<Identifier, PacketByteBuf.PacketReader<? extends CustomPayload>>();
+		//obtain the maps and ensure they are mutable
+		final var ogC2S = AccessorCustomPayloadC2SPacket.getIdToReader();
+		final var ogS2C = AccessorCustomPayloadS2CPacket.getIdToReader();
+		final boolean immutable = (ogC2S instanceof ImmutableMap) || (ogS2C instanceof ImmutableMap);
+		
+		final var c2s = immutable ? new HashMap<Identifier, PacketByteBuf.PacketReader<? extends CustomPayload>>() : ogC2S;
+		final var s2c = immutable ? new HashMap<Identifier, PacketByteBuf.PacketReader<? extends CustomPayload>>() : ogS2C;
 		
 		//put vanilla and possibly modded entries into the new maps
 		c2s.putAll(AccessorCustomPayloadC2SPacket.getIdToReader());
@@ -46,8 +52,11 @@ public final class TCDCommonsNetworkHandler extends Object
 		s2c.put(TCustomPayload.ID, TCustomPayload::new);
 		
 		//override vanilla's immutable maps
-		AccessorCustomPayloadC2SPacket.setIdToReader(c2s);
-		AccessorCustomPayloadS2CPacket.setIdToReader(s2c);
+		if(immutable)
+		{
+			AccessorCustomPayloadC2SPacket.setIdToReader(c2s);
+			AccessorCustomPayloadS2CPacket.setIdToReader(s2c);
+		}
 	}
 	// ==================================================
 	/**
