@@ -13,6 +13,11 @@ public interface PlayerManagerEvent
 	 */
 	TEvent<PlayerConnected> PLAYER_CONNECTED = TEventFactory.createLoop();
 	
+	/**
+	 * See {@link PlayerChatted#invoke(ServerPlayerEntity, String)}
+	 */
+	TEvent<PlayerChatted> PLAYER_CHATTED = TEventFactory.createLoop();
+	
 	interface PlayerConnected
 	{
 		/**
@@ -20,5 +25,15 @@ public interface PlayerManagerEvent
 		 * @param player The {@link ServerPlayerEntity} that was added to a {@link PlayerManager}'s player list.
 		 */
 		public void invoke(ServerPlayerEntity player);
+	}
+	
+	interface PlayerChatted
+	{
+		/**
+		 * A {@link TEvent} that is invoked when a {@link ServerPlayerEntity} sends a chat message.
+		 * @param player The {@link ServerPlayerEntity} that chatted.
+		 * @param chatMessage The chat message they sent.
+		 */
+		public void invoke(ServerPlayerEntity player, String chatMessage);
 	}
 }

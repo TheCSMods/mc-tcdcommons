@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -138,7 +140,7 @@ public final class PlayerBadgeCommand
 		return 1;
 	}
 	// ==================================================
-	private static void handleError(CommandContext<ServerCommandSource> context, Throwable e)
+	public static @Internal void handleError(CommandContext<ServerCommandSource> context, Throwable e)
 	{
 		//handle command syntax errors
 		if(e instanceof CommandSyntaxException)

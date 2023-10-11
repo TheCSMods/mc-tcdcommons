@@ -30,13 +30,37 @@ public abstract class MixinArgumentTypes
 			CallbackInfoReturnable<ArgumentSerializer<?, ?>> callback)
 	{
 		//register the player badge command argument type
-		final var catId = new Identifier(getModID(), "player_badge_identifier");
-		final var clazz = PlayerBadgeIdentifierArgumentType.class;
-		final Supplier<PlayerBadgeIdentifierArgumentType> catSupplier = PlayerBadgeIdentifierArgumentType::pbId;
-		final var catSerializer = ConstantArgumentSerializer.of(catSupplier);
+		{
+			final var catId = new Identifier(getModID(), "player_badge_identifier");
+			final var clazz = PlayerBadgeIdentifierArgumentType.class;
+			final Supplier<PlayerBadgeIdentifierArgumentType> catSupplier = PlayerBadgeIdentifierArgumentType::pbId;
+			final var catSerializer = ConstantArgumentSerializer.of(catSupplier);
+			
+			CLASS_MAP.put(clazz, catSerializer);
+			Registry.register(Registries.COMMAND_ARGUMENT_TYPE, catId, catSerializer);
+		}
 		
-		CLASS_MAP.put(clazz, catSerializer);
-		Registry.register(Registries.COMMAND_ARGUMENT_TYPE, catId, catSerializer);
+		//register the TRegistryKeyArgumentType
+		/*{
+			final var catId = TRegistryKeyArgumentType.ID;;
+			final var clazz = TRegistryKeyArgumentType.class;
+			final Supplier<TRegistryKeyArgumentType> catSupplier = TRegistryKeyArgumentType::registryKey;
+			final var catSerializer = ConstantArgumentSerializer.of(catSupplier);
+			
+			CLASS_MAP.put(clazz, catSerializer);
+			Registry.register(Registries.COMMAND_ARGUMENT_TYPE, catId, catSerializer);
+		}
+		
+		//register the SuggestiveIdentifierArgumentType
+		{
+			final var catId = SuggestiveIdentifierArgumentType.ID;;
+			final var clazz = SuggestiveIdentifierArgumentType.class;
+			final Supplier<SuggestiveIdentifierArgumentType> catSupplier = SuggestiveIdentifierArgumentType::suggestiveId;
+			final var catSerializer = ConstantArgumentSerializer.of(catSupplier);
+			
+			CLASS_MAP.put(clazz, catSerializer);
+			Registry.register(Registries.COMMAND_ARGUMENT_TYPE, catId, catSerializer);
+		}*/
 		
 		//invoke the event
 		//TASK - add a command argument type registration event? maybe?

@@ -203,6 +203,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	 * @param player The {@link ServerPlayerEntity} in question.
 	 * @throws NullPointerException When an argument is null.
 	 */
+	@SuppressWarnings("deprecation")
 	public static ServerPlayerBadgeHandler getServerBadgeHandler(ServerPlayerEntity player)
 	{
 		//obtain

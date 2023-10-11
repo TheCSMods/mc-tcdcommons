@@ -12,7 +12,11 @@
 		"MixinServerStatHandler",
 		"MixinClientConnection",
 		"MixinPlayerManager",
-		"MixinCustomPayloadC2SPacket"
+		"MixinCustomPayloadC2SPacket",
+		"MixinServerPlayNetworkHandler",
+		"MixinMinecraftServer",
+		"MixinItemEntity",
+		"MixinLootableContainerBlockEntity"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

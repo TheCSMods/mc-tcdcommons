@@ -11,6 +11,18 @@ import io.github.thecsdev.tcdcommons.api.util.integrity.SelfDefense;
 @Mixin(value = TCDCommonsFabric.class, priority = 9001)
 public abstract class MixinModLoader
 {
+	/* 
+	 * # Mixin signature instructions:
+	 * - `B`: byte
+	 * - `S`: short
+	 * - `I`: int
+	 * - `J`: long
+	 * - `F`: float
+	 * - `D`: double
+	 * - `C`: char
+	 * - `Z`: boolean
+	 */
+	
 	//`require = 0` is required, so as to only inject when there is one in the first place
 	@Inject(method = "<clinit>", at = @At("HEAD"), cancellable = true, require = 0)
 	private static void onClassInit(CallbackInfo callback)
