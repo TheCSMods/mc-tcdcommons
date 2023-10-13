@@ -41,6 +41,9 @@ public class TCDCommons extends Object
 		
 		//init stuff
 		TCDCommonsNetworkHandler.init();
+
+		//FIXME - Important checklist that is MUST-VERIFY before porting to higher version:
+		//- Ensure mixin.events.MixinItemEntity is working as intended, as it uses @ModifyVariable
 	}
 	// ==================================================
 	public static TCDCommons getInstance() { return Instance; }

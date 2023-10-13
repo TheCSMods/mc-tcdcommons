@@ -1,7 +1,9 @@
 package io.github.thecsdev.tcdcommons.api.hooks.entity;
 
 import java.util.HashMap;
+import java.util.Objects;
 
+import io.github.thecsdev.tcdcommons.api.util.collections.GenericProperties;
 import io.github.thecsdev.tcdcommons.mixin.addons.MixinEntityAddon;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -20,7 +22,7 @@ public final class EntityHooks
 	 * @return The {@link HashMap} containing the custom data for the given {@link Entity}.
 	 * @throws NullPointerException When the argument is null.
 	 */
-	public static HashMap<Identifier, Object> getCustomData(Entity entity)
+	public static GenericProperties<Identifier> getCustomData(Entity entity)
 	{
 		return ((MixinEntityAddon)entity).tcdcommons_getCustomData();
 	}
@@ -34,15 +36,13 @@ public final class EntityHooks
 	 * @param entity The target {@link Entity}.
 	 * @param entryId The unique identifier for the custom data entry.
 	 * @return The custom data entry associated with the given key, cast to the provided type, or null if the cast fails.
-	 * @throws NullPointerException When any argument is {@code null}.
+	 * @throws NullPointerException When the {@link Identifier} is {@code null}.
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated //for inconsistency with GenericProperties
 	public static <T> T getCustomDataEntryG(Entity entity, Identifier entryId)
 	{
-		final var dat = getCustomData(entity);
-		final Object value = dat.getOrDefault(entryId, null);
-		try { if(value != null) return (T) value; } catch (ClassCastException e) {}
-		return null;
+		Objects.requireNonNull(entryId);
+		return getCustomData(entity).getPropertyOrDefault(entryId, null);
 	}
 	
 	/**
@@ -55,11 +55,13 @@ public final class EntityHooks
 	 * @param entryId The unique identifier for the custom data entry.
 	 * @param entryValue The value to be stored in the custom data entry.
 	 * @return The value that was set in the custom data entry.
-	 * @throws NullPointerException When any argument is null.
+	 * @throws NullPointerException When the {@link Identifier} is null.
 	 */
+	@Deprecated //for inconsistency with GenericProperties
 	public static <T> T setCustomDataEntryG(Entity entity, Identifier entryId, T entryValue)
 	{
-		getCustomData(entity).put(entryId, entryValue);
+		Objects.requireNonNull(entryId);
+		getCustomData(entity).setProperty(entryId, entryValue);
 		return entryValue;
 	}
 	// ==================================================

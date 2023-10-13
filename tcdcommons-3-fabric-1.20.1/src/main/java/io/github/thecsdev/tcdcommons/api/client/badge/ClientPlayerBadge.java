@@ -24,6 +24,7 @@ public abstract class ClientPlayerBadge extends PlayerBadge
 	 * that tracks {@link PlayerBadge} statistics on the "client-side".
 	 * @param localPlayer The {@link ClientPlayerEntity}.
 	 */
+	@SuppressWarnings("deprecation")
 	public static final PlayerBadgeHandler getClientPlayerBadgeHandler(ClientPlayerEntity localPlayer)
 	{
 		@Nullable PlayerBadgeHandler badgeHandler = getCustomDataEntryG(localPlayer, PBH_CUSTOM_DATA_ID);

@@ -1,5 +1,10 @@
 {
 	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "Translators",
+	"tcdcommons.translators.tutorial": "The translators section below is in CSV format. Just place a comma (,) and write your unique GitHub username. Example: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "Felix14-v2,",
+	
 	"tcdcommons.client_side": "Клиентский",
 	"tcdcommons.server_side": "Серверный",
 	

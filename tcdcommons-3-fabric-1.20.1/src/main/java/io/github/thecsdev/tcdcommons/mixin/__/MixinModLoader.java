@@ -15,6 +15,18 @@ public abstract class MixinModLoader
 	@Inject(method = "<clinit>", at = @At("HEAD"), cancellable = true, require = 0)
 	private static void onClassInit(CallbackInfo callback)
 	{
+		/* 
+		 * # Mixin signature instructions:
+		 * - `B`: byte
+		 * - `S`: short
+		 * - `I`: int
+		 * - `J`: long
+		 * - `F`: float
+		 * - `D`: double
+		 * - `C`: char
+		 * - `Z`: boolean
+		 */
+		
 		/* IMPORTANT NOTE: if you have a static constructor defined, or a static field defined,
 		 * this code WILL end up always executing, even when it isn't supposed to, which is bad.
 		 * 

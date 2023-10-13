@@ -2,6 +2,7 @@ package io.github.thecsdev.tcdcommons.mixin.addons;
 
 import java.util.HashMap;
 
+import io.github.thecsdev.tcdcommons.api.util.collections.GenericProperties;
 import io.github.thecsdev.tcdcommons.mixin.events.MixinEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -18,5 +19,5 @@ public interface MixinEntityAddon
 	 * and the {@link Object} values represent the custom data stored by those mods.
 	 * @apiNote The method name must be unique, so as to avoid conflicts with the game and with other mods.
 	 */
-	public HashMap<Identifier, Object> tcdcommons_getCustomData();
+	public GenericProperties<Identifier> tcdcommons_getCustomData();
 }

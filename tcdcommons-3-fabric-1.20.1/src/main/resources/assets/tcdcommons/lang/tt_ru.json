@@ -1,5 +1,10 @@
 {
 	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "Translators",
+	"tcdcommons.translators.tutorial": "The translators section below is in CSV format. Just place a comma (,) and write your unique GitHub username. Example: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "Amirhan-Taipovjan-Greatest-I,",
+	
 	"modmenu.summaryTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе.",
 	"modmenu.descriptionTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе. Ул, бер үк кодны күчереп язудан качып, эшчәнлекне арттыруга һәм модларны эшкәртү процессын тизләтүгә юнәлдерелгән.",
 
