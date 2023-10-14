@@ -13,6 +13,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenWrapper;
 import io.github.thecsdev.tcdcommons.api.client.registry.TClientRegistries;
 import io.github.thecsdev.tcdcommons.api.events.client.MinecraftClientEvent;
+import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
 import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorTScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -94,11 +95,16 @@ public abstract class MixinMinecraftClient
 	@Inject(method = "joinWorld", at = @At("RETURN"))
 	public void onJoinWorld(ClientWorld clientWorld, CallbackInfo callback)
 	{
+		final var MC_CLIENT = (MinecraftClient)(Object)this;
+		
 		//re-initialize hud screens
-		TClientRegistries.reInitHudScreens();
+		TaskScheduler.executeOnce(
+				MC_CLIENT,
+				() -> MC_CLIENT.player != null, //player cannot be null here
+				() -> TClientRegistries.reInitHudScreens());
 		
 		//invoke event
-		MinecraftClientEvent.JOINED_WORLD.invoker().invoke((MinecraftClient)(Object)this, clientWorld);
+		MinecraftClientEvent.JOINED_WORLD.invoker().invoke(MC_CLIENT, clientWorld);
 	}
 	// --------------------------------------------------
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
