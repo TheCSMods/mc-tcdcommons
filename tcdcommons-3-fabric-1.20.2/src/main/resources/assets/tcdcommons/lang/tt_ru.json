@@ -1,17 +1,23 @@
 {
-	"tcdcommons": "TCDCommons",
-	
-	"tcdcommons.translators.title": "Translators",
-	"tcdcommons.translators.tutorial": "The translators section below is in CSV format. Just place a comma (,) and write your unique GitHub username. Example: 'TheCSDev, SomeOtherUser, AndSoOn'.",
-	"tcdcommons.translators": "Amirhan-Taipovjan-Greatest-I,",
-	
 	"modmenu.summaryTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе.",
 	"modmenu.descriptionTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе. Ул, бер үк кодны күчереп язудан качып, эшчәнлекне арттыруга һәм модларны эшкәртү процессын тизләтүгә юнәлдерелгән.",
+	
+	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "Тәрҗемәчеләр",
+	"tcdcommons.translators.tutorial": "Түбәндәге тәрҗемәчеләр бүлеге CSV форматында бар. Өтерне (,) куегыз гына һәм Сезнең уникаль Github-ның кулланучы исеме язагыз. Үрнәк: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "Amirhan-Taipovjan-Greatest-I",
+
+	"tcdcommons.client_side": "Клиент тарафыннан",
+	"tcdcommons.server_side": "Сервер тарафыннан",
+	
+	"tcdcommons.api.badge.playerbadge": "Уенчы билгесе",
+	"tcdcommons.api.badge.playerbadge.plural": "Уенчы билгеләре",
 
 	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "Файл юлкүрсәткече",
-	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "Файлны саклау",
-	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "Файлны ачу",
-	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "Папканы сайлау",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "Файлны саклагыз",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "Файлны ачыгыз",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "Папканы сайлагыз",
 	
 	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "Файл исеме",
 	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "Файл төре",
@@ -19,7 +25,7 @@
 	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "Ачу",
 	
 	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "Барлык файл (*.*)",
-	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s файл (%1$s)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s файлы (%1$s)",
 	
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "Бу урын юк...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Бу урынны укырга рөхсәт юк...",
