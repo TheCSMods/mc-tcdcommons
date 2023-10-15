@@ -11,6 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
+import org.jetbrains.annotations.ApiStatus.Experimental;
+
 import com.google.common.collect.Queues;
 
 import io.github.thecsdev.tcdcommons.api.util.collections.IdealList;
@@ -94,7 +96,9 @@ public final class TaskScheduler
 	 * Once the task is executed, it will never be executed again.
 	 * @apiNote Note that the {@link ReentrantThreadExecutor} may shut down before the task gets to execute.
 	 * @apiNote Also note that this system does not track game's ticks, aka it uses a time-frame independent from ticks.
+	 * @apiNote Submitting tasks whose conditions cannot be met will result in a memory leak.
 	 */
+	@Experimental
 	public static void executeOnce(
 			final ReentrantThreadExecutor<?> minecraftClientOrServer,
 			final BooleanSupplier condition,
