@@ -30,8 +30,6 @@
 
 	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Select an option...",
 
-	"commands.badge.grant.one.to_many.success": "Granted the badge '%s' to %s player(s).",
-	"commands.badge.revoke.one.to_many.success": "Revoked the badge '%s' from %s player(s).",
-	"commands.badge.list.of_one": "%s has the following badges: \"%s\".",
-	"commands.badge.clear.of_many": "Revoked all badges from %s player(s)."
+	"commands.badges.edit.output": "Edited the player badge stat '%s' for %s player(s).",
+	"commands.badges.clear.output": "Cleared all player badge stats for %s player(s)."
 }

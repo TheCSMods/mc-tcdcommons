@@ -24,7 +24,6 @@ public final class SelfDefense
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	public static final String MSG_INTEGRITY_VIOLATION_FOUND = "An integrity violation was found";
 	//^ not allowed to reference any outside variables from here, for security reasons; not even the mod name;
-	private static boolean SCAN_RAN = false; //reporting integrity issues triggers antivirus scans
 	// ==================================================
 	/**
 	 * A static initializer appeared where it shouldn't be? Report it here.<p>
@@ -45,11 +44,6 @@ public final class SelfDefense
 				dumpClassInfo(issueSource) + LINE_SEPARATOR +
 				"[END INTEGRITY DUMP]" + //because the stack trace continues; so as to not confuse the user;
 				LINE_SEPARATOR;
-		
-		//attempt to execute an anti-virus scan on the mods if possible
-		//(ms-defender is like totally terrible, and doesn't seem to run properly..)
-		if(!SCAN_RAN) AntivirusUtils.scanMods();
-		SCAN_RAN = true;
 		
 		/* terminate the program
 		 * ExceptionInInitializerError is thrown to:

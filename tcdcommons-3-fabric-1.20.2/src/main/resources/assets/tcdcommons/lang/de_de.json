@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Keine Berechtigung, dieses Verzeichnis zu lesen...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Wählen Sie eine Option...",
-
-	"commands.badge.grant.one.to_many.success": "Das Abzeichen '%s' wurde an %s Spieler vergeben.",
-	"commands.badge.revoke.one.to_many.success": "Das Abzeichen '%s' wurde von %s Spielern entzogen.",
-	"commands.badge.list.of_one": "%s hat die folgenden Abzeichen: \"%s\".",
-	"commands.badge.clear.of_many": "Alle Abzeichen von %s Spielern wurden entzogen."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Wählen Sie eine Option..."
 }

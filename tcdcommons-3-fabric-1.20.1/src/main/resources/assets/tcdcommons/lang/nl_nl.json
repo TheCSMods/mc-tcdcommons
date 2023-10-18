@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Geen toestemming om deze map te lezen...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecteer een optie...",
-
-	"commands.badge.grant.one.to_many.success": "Heeft de badge '%s' aan %s speler(s) toegekend.",
-	"commands.badge.revoke.one.to_many.success": "Heeft de badge '%s' bij %s speler(s) ingetrokken.",
-	"commands.badge.list.of_one": "%s heeft de volgende badges: \"%s\".",
-	"commands.badge.clear.of_many": "Heeft alle badges ingetrokken van %s speler(s)."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecteer een optie..."
 }

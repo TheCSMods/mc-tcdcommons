@@ -1,8 +1,7 @@
 {
+	"tcdcommons": "TCDCommons",
 	"modmenu.summaryTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе.",
 	"modmenu.descriptionTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе. Ул, бер үк кодны күчереп язудан качып, эшчәнлекне арттыруга һәм модларны эшкәртү процессын тизләтүгә юнәлдерелгән.",
-	
-	"tcdcommons": "TCDCommons",
 	
 	"tcdcommons.translators.title": "Тәрҗемәчеләр",
 	"tcdcommons.translators.tutorial": "Түбәндәге тәрҗемәчеләр бүлеге CSV форматында бар. Өтерне (,) куегыз гына һәм Сезнең уникаль Github-ның кулланучы исеме язагыз. Үрнәк: 'TheCSDev, SomeOtherUser, AndSoOn'.",
@@ -31,10 +30,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Бу урынны укырга рөхсәт юк...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 	
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау...",
-	
-	"commands.badge.grant.one.to_many.success": "«%s» билгесе %s уенчыга бирелде.",
-	"commands.badge.revoke.one.to_many.success": "«%s» билгесе %s уенчыдан кире кайтарылды.",
-	"commands.badge.list.of_one": "%s уенчыда күрсәтелгән билгеләр бар: «%s».",
-	"commands.badge.clear.of_many": "Барлык билге %s уенчыдан кире кайтарылды."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау..."
 }

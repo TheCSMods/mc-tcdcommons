@@ -5,12 +5,13 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -19,122 +20,119 @@ import io.github.thecsdev.tcdcommons.api.badge.ServerPlayerBadgeHandler;
 import io.github.thecsdev.tcdcommons.command.argument.PlayerBadgeIdentifierArgumentType;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Identifier;
 
 public final class PlayerBadgeCommand
 {
+	// ==================================================
+	//public static final Text TEXT_CLEAR_KICK = translatable("commands.badges.clear.kick"); -- unused
+	public static final String TEXT_EDIT_OUTPUT = "commands.badges.edit.output";
+	public static final String TEXT_CLEAR_OUTPUT = "commands.badges.clear.output";
 	// ==================================================
 	private PlayerBadgeCommand() {}
 	// ==================================================
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
 	{
-		//# Permission levels:
-		//Level 0 - Player
-		//Level 1 - Moderator
-		//Level 2 - Game-master
-		//Level 3 - Administrator
-		//Level 4 - Owner aka operator
-		
-		//register command with permission level 3
+		//prepare
 		final var config = TCDCommons.getInstance().getConfig();
-		dispatcher.register(literal("badge").requires(scs -> config.enablePlayerBadges && scs.hasPermissionLevel(3))
-				.then(literal("grant")
-						.then(argument("targets", EntityArgumentType.players())
-								.then(argument("badge_id", PlayerBadgeIdentifierArgumentType.pbId())
-										.executes(context -> execute_grantOrRevoke(context, true)))))
-				.then(literal("revoke")
-						.then(argument("targets", EntityArgumentType.players())
-								.then(argument("badge_id", PlayerBadgeIdentifierArgumentType.pbId())
-										.executes(context -> execute_grantOrRevoke(context, false)))))
-				.then(literal("list")
-						.then(argument("target", EntityArgumentType.player())
-								.executes(context -> execute_list(context))))
-				.then(literal("clear")
-						.then(argument("targets", EntityArgumentType.players())
-								.executes(context -> execute_clear(context))))
-		);
+		final var command = literal("badges").requires(scs -> config.enablePlayerBadges && scs.hasPermissionLevel(2));
+		
+		//arguments
+		command.then(badges_edit());
+		command.then(badges_clear());
+		
+		//finally, register the command
+		dispatcher.register(command);
+	}
+	// --------------------------------------------------
+	private static ArgumentBuilder<ServerCommandSource, ?> badges_edit()
+	{
+		return literal("edit")
+				.then(argument("targets", EntityArgumentType.players())
+						.then(argument("badge", PlayerBadgeIdentifierArgumentType.pbId())
+								.then(literal("set")
+										.then(argument("value", IntegerArgumentType.integer(0))
+												.executes(ctx -> execute_edit(ctx, true))
+												)
+										)
+								.then(literal("increase")
+										.then(argument("value", IntegerArgumentType.integer())
+												.executes(ctx -> execute_edit(ctx, false))
+												)
+										)
+								)
+						);
+	}
+	private static ArgumentBuilder<ServerCommandSource, ?> badges_clear()
+	{
+		return literal("clear")
+				.then(argument("targets", EntityArgumentType.players())
+						.executes(ctx -> execute_clear(ctx)));
 	}
 	// ==================================================
-	private static int execute_grantOrRevoke(CommandContext<ServerCommandSource> context, boolean grant)
+	private static int execute_edit(CommandContext<ServerCommandSource> context, boolean setOrIncrease)
 	{
 		try
 		{
 			//get parameter values
-			final var targets = EntityArgumentType.getPlayers(context, "targets");
-			final var badgeId = context.getArgument("badge_id", Identifier.class);
+			final var arg_targets = EntityArgumentType.getPlayers(context, "targets");
+			final var arg_badge = IdentifierArgumentType.getIdentifier(context, "badge");
+			final int arg_value = IntegerArgumentType.getInteger(context, "value");
 			
 			//execute
-			for(var target : targets)
+			final AtomicInteger affected = new AtomicInteger();
+			for(final var target : arg_targets)
 			{
 				//null check
 				if(target == null) continue;
 				
-				//obtain SBH
-				final var sbh = ServerPlayerBadgeHandler.getServerBadgeHandler(target);
+				//set stat value
+				final var statHandler = ServerPlayerBadgeHandler.getServerBadgeHandler(target);
+				if(setOrIncrease) statHandler.setValue(arg_badge, arg_value);
+				else statHandler.increaseValue(arg_badge, arg_value);
+				affected.incrementAndGet();
 				
-				//grant or revoke
-				if(grant)
-				{
-					if(sbh.getValue(badgeId) < 1)
-						sbh.setValue(badgeId, 1);
-				}
-				else sbh.setValue(badgeId, 0);
+				//update the client
+				statHandler.sendStats(target);
 			}
 			
 			//send feedback
-			final var feedbackGoR = grant ?
-					"commands.badge.grant.one.to_many.success" :
-					"commands.badge.revoke.one.to_many.success";
-			final var feedback = translatable(feedbackGoR,
-					Objects.toString(badgeId),
-					Objects.toString(targets.size()));
-			context.getSource().sendFeedback(() -> feedback, false);
+			context.getSource().sendFeedback(() -> translatable(
+					TEXT_EDIT_OUTPUT,
+					Objects.toString(arg_badge),
+					Integer.toString(affected.get())
+				), false);
 		}
-		catch (CommandException | CommandSyntaxException e) { handleError(context, e); }
+		catch(CommandException | CommandSyntaxException | IllegalStateException | NullPointerException e) { handleError(context, e); }
 		return 1;
 	}
-	// --------------------------------------------------
-	private static int execute_list(CommandContext<ServerCommandSource> context)
-	{
-		try
-		{
-			//get parameter values
-			final var target = EntityArgumentType.getPlayer(context, "target");
-			//get badges
-			//final var badges = ServerPlayerBadgeHandler.getBadgeHandler(target).getBadges().stream() - deprecated
-			final var badges = StreamSupport.stream(ServerPlayerBadgeHandler.getServerBadgeHandler(target).spliterator(), false)
-					.filter(entry -> entry.getIntValue() > 0)
-				    .map(entry -> Objects.toString(entry.getKey())) // convert each Identifier object to String
-				    .collect(Collectors.joining(", ")); // join with a comma and space
-			//send feedback
-			final var feedback = translatable("commands.badge.list.of_one",
-					target.getDisplayName().getString(),
-					badges);
-			context.getSource().sendFeedback(() -> feedback, false);
-		}
-		catch(CommandException | CommandSyntaxException e) { handleError(context, e); }
-		return 1;
-	}
-	// --------------------------------------------------
 	private static int execute_clear(CommandContext<ServerCommandSource> context)
 	{
 		try
 		{
 			//get parameter values
 			final var targets = EntityArgumentType.getPlayers(context, "targets");
+			
 			//execute
-			for(var target : targets)
+			final AtomicInteger affected = new AtomicInteger();
+			for(final var target : targets)
 			{
 				//null check
 				if(target == null) continue;
-				//clear
+				
+				//clear badges
 				ServerPlayerBadgeHandler.getServerBadgeHandler(target).clearBadges();
-				//send feedback
-				final var feedback = translatable("commands.badge.clear.of_many",
-						Objects.toString(targets.size()));
-				context.getSource().sendFeedback(() -> feedback, false);
+				affected.incrementAndGet();
+				
+				//disconnect the player because that's the only way to update the client -- no longer an issue
+				/*target.networkHandler.disconnect(TextUtils.literal("")
+						.append(TEXT_CLEAR_KICK)
+						.append("\n\n[EN]: Your player badge statistics were cleared, which requires you to disconnect and re-join."));*/
 			}
+			
+			//send feedback
+			context.getSource().sendFeedback(() -> translatable(TEXT_CLEAR_OUTPUT, Integer.toString(affected.get())), false);
 		}
 		catch(CommandException | CommandSyntaxException e) { handleError(context, e); }
 		return 1;
@@ -143,15 +141,9 @@ public final class PlayerBadgeCommand
 	public static @Internal void handleError(CommandContext<ServerCommandSource> context, Throwable e)
 	{
 		//handle command syntax errors
-		if(e instanceof CommandSyntaxException)
-			context.getSource().sendError(
-					translatable("command.failed")
-					.append(":\n    " + e.getMessage()));
-		else if(e instanceof CommandException)
-			context.getSource().sendError(
-					translatable("command.failed")
-					.append(":\n    ")
-					.append(((CommandException)e).getTextMessage()));
+		context.getSource().sendError(
+				translatable("command.failed")
+				.append(":\n    " + e.getMessage()));
 	}
 	// ==================================================
 }

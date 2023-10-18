@@ -1,5 +1,7 @@
 {
 	"tcdcommons": "TCDCommons",
+	"modmenu.summaryTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов.",
+	"modmenu.descriptionTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов. Создана с целью улучшить быстродействие, избегая написания одного и того же кода, а также ускорить процесс разработки модов.",
 	
 	"tcdcommons.translators.title": "Translators",
 	"tcdcommons.translators.tutorial": "The translators section below is in CSV format. Just place a comma (,) and write your unique GitHub username. Example: 'TheCSDev, SomeOtherUser, AndSoOn'.",
@@ -28,13 +30,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Отказано в доступе",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Выберите...",
-
-	"commands.badge.grant.one.to_many.success": "Знак отличия «%s» выдан игроку %s.",
-	"commands.badge.revoke.one.to_many.success": "Отозван знак отличия «%s» у игроков: %s.",
-	"commands.badge.list.of_one": "%s обладает следующими знаками отличия: [%s].",
-	"commands.badge.clear.of_many": "Отозваны все знаки отличия у игроков: %s.",
-
-	"modmenu.summaryTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов.",
-	"modmenu.descriptionTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов. Создана с целью улучшить быстродействие, избегая написания одного и того же кода, а также ускорить процесс разработки модов."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Выберите..."
 }

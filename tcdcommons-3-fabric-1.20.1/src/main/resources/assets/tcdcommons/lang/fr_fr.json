@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Aucune permission pour lire ce répertoire...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Sélectionner une option...",
-
-	"commands.badge.grant.one.to_many.success": "Le badge '%s' a été accordé à %s joueur(s).",
-	"commands.badge.revoke.one.to_many.success": "Le badge '%s' a été révoqué de %s joueur(s).",
-	"commands.badge.list.of_one": "%s a les badges suivants : \"%s\".",
-	"commands.badge.clear.of_many": "Tous les badges ont été révoqués de %s joueur(s)."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Sélectionner une option..."
 }

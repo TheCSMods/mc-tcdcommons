@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "无权读取此目录...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "选择一个选项...",
-
-	"commands.badge.grant.one.to_many.success": "已授予 '%s' 徽章给 %s 名玩家。",
-	"commands.badge.revoke.one.to_many.success": "已从 %s 名玩家中撤销 '%s' 徽章。",
-	"commands.badge.list.of_one": "%s 拥有以下徽章: \"%s\"。",
-	"commands.badge.clear.of_many": "已从 %s 名玩家中撤销所有徽章。"
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "选择一个选项..."
 }

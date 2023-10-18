@@ -3,6 +3,7 @@ package io.github.thecsdev.tcdcommons.api.badge;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -87,7 +88,15 @@ public class PlayerBadgeHandler implements ObjectIterable<Entry<Identifier>>
 	/**
 	 * Clears all {@link PlayerBadge} stats from the {@link #statMap}.
 	 */
-	public final void clearBadges() { this.statMap.clear(); }
+	public final void clearBadges()
+	{
+		//has to be done this way, so the server stat handler can track changes...
+		final var keys = new HashSet<Identifier>(this.statMap.keySet());
+		for(final var key : keys) setValue(key, 0);
+		
+		//...and then after it tracks changes, we can safely clear
+		this.statMap.clear();
+	}
 	// ==================================================
 	/**
 	 * Creates a new {@link Map}, maps the {@link PlayerBadge} {@link Identifier}s

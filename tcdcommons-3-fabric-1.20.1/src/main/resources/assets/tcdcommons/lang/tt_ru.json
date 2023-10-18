@@ -25,10 +25,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Бу урынны укырга рөхсәт юк...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 	
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау...",
-	
-	"commands.badge.grant.one.to_many.success": "«%s» билгесе %s уенчыга бирелде.",
-	"commands.badge.revoke.one.to_many.success": "«%s» билгесе %s уенчыдан кире кайтарылды.",
-	"commands.badge.list.of_one": "%s уенчыда күрсәтелгән билгеләр бар: «%s».",
-	"commands.badge.clear.of_many": "Барлык билге %s уенчыдан кире кайтарылды."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау..."
 }

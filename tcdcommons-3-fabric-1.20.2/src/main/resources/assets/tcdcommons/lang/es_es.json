@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "No se tienen permisos para leer este directorio...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecciona una opción...",
-
-	"commands.badge.grant.one.to_many.success": "Concedida la insignia '%s' a %s jugador(es).",
-	"commands.badge.revoke.one.to_many.success": "Revocada la insignia '%s' a %s jugador(es).",
-	"commands.badge.list.of_one": "%s tiene las siguientes insignias: \"%s\".",
-	"commands.badge.clear.of_many": "Revocadas todas las insignias a %s jugador(es)."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecciona una opción..."
 }

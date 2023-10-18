@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Sem permissão para ler este diretório...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecione uma opção...",
-
-	"commands.badge.grant.one.to_many.success": "Concedido o crachá '%s' para %s jogador(es).",
-	"commands.badge.revoke.one.to_many.success": "Revogado o crachá '%s' de %s jogador(es).",
-	"commands.badge.list.of_one": "%s tem os seguintes crachás: \"%s\".",
-	"commands.badge.clear.of_many": "Revogados todos os crachás de %s jogador(es)."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecione uma opção..."
 }

@@ -16,7 +16,10 @@
 		"MixinServerPlayNetworkHandler",
 		"MixinMinecraftServer",
 		"MixinItemEntity",
-		"MixinLootableContainerBlockEntity"
+		"MixinLootableContainerBlockEntity",
+		"MixinLivingEntity",
+		"MixinPlayerEntity",
+		"MixinBlockItem"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

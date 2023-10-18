@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "このディレクトリを読む権限がありません...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "オプションを選択...",
-
-	"commands.badge.grant.one.to_many.success": "%s プレイヤーにバッジ '%s' を付与しました。",
-	"commands.badge.revoke.one.to_many.success": "%s プレイヤーからバッジ '%s' を剥奪しました。",
-	"commands.badge.list.of_one": "%s には次のバッジがあります：\"%s\"。",
-	"commands.badge.clear.of_many": "%s プレイヤーからすべてのバッジを剥奪しました。"
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "オプションを選択..."
 }

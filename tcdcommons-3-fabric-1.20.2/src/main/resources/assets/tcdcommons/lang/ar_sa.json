@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "لا يوجد إذن لقراءة هذا الدليل...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "اختر خيارا...",
-
-	"commands.badge.grant.one.to_many.success": "منح الشارة '%s' إلى %s لاعبين.",
-	"commands.badge.revoke.one.to_many.success": "تم سحب الشارة '%s' من %s لاعبين.",
-	"commands.badge.list.of_one": "لدى %s الشارات التالية: \"%s\".",
-	"commands.badge.clear.of_many": "تم سحب جميع الشارات من %s لاعبين."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "اختر خيارا..."
 }

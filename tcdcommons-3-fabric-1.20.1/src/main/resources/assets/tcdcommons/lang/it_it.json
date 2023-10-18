@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Nessun permesso per leggere questa directory...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Seleziona un'opzione...",
-
-	"commands.badge.grant.one.to_many.success": "Distintivo '%s' concesso a %s giocatore/i.",
-	"commands.badge.revoke.one.to_many.success": "Distintivo '%s' revocato da %s giocatore/i.",
-	"commands.badge.list.of_one": "%s ha i seguenti distintivi: \"%s\".",
-	"commands.badge.clear.of_many": "Revocati tutti i distintivi da %s giocatore/i."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Seleziona un'opzione..."
 }

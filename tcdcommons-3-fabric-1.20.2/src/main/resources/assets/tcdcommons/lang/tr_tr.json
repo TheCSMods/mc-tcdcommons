@@ -28,10 +28,5 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Bu dizini okuma yetkisi yok...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Bir seçenek seçin...",
-
-	"commands.badge.grant.one.to_many.success": "'%s' rozeti %s oyuncuya verildi.",
-	"commands.badge.revoke.one.to_many.success": "'%s' rozeti %s oyuncudan alındı.",
-	"commands.badge.list.of_one": "%s'in aşağıdaki rozetleri var: \"%s\".",
-	"commands.badge.clear.of_many": "Tüm rozetler %s oyuncudan alındı."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Bir seçenek seçin..."
 }

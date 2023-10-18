@@ -17,7 +17,9 @@
 		"MixinMinecraftServer",
 		"MixinItemEntity",
 		"MixinLootableContainerBlockEntity",
-		"MixinLivingEntity"
+		"MixinLivingEntity",
+		"MixinPlayerEntity",
+		"MixinBlockItem"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
