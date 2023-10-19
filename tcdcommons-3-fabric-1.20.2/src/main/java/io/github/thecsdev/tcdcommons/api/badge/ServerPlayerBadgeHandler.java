@@ -4,16 +4,21 @@ import static io.github.thecsdev.tcdcommons.TCDCommons.LOGGER;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.getCustomDataEntryG;
 import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.setCustomDataEntryG;
+import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.PLAYER_BADGE;
+import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
+import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 import static io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler.S2C_PLAYER_BADGES;
 
 import java.util.Collection;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Lists;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.TCDCommonsConfig;
 import io.github.thecsdev.tcdcommons.api.network.packet.TCustomPayload;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -24,6 +29,10 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.HoverEvent.Action;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 /**
@@ -32,6 +41,8 @@ import net.minecraft.util.Identifier;
  */
 public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 {
+	// ==================================================
+	private static final TCDCommonsConfig CONFIG = Objects.requireNonNull(TCDCommons.getInstance().getConfig());
 	// ==================================================
 	/**
 	 * The {@link ServerPlayerEntity} this {@link ServerPlayerBadgeHandler} is associated with.
@@ -57,8 +68,10 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	// --------------------------------------------------
 	public final @Override void setValue(Identifier badgeId, int value) throws NullPointerException
 	{
+		final var oldValue = this.statMap.getInt(badgeId);
 		super.setValue(badgeId, value);
 		this.pendingStatMap.put(badgeId, value);
+		if(value > oldValue) announceEarnedBadge(this.player, badgeId);
 	}
 	// --------------------------------------------------
 	/**
@@ -216,6 +229,59 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 					new ServerPlayerBadgeHandler(player));
 		//return
 		return pbh;
+	}
+	// --------------------------------------------------
+	/**
+	 * Broadcasts a server-wide message announcing a {@link ServerPlayerEntity} earning a {@link PlayerBadge}.
+	 * @param player The player in question.
+	 * @param badgeId The {@link Identifier} of the {@link PlayerBadge} they earned.
+	 * @return {@code true} if the {@link #CONFIG} does not block the broadcast.
+	 */
+	public static boolean announceEarnedBadge(ServerPlayerEntity player, Identifier badgeId)
+	{
+		//check config
+		if(!CONFIG.enablePlayerBadges || !CONFIG.broadcastEarningPlayerBadges)
+			return false;
+		
+		//obtain and format badge name
+		final var badge = PLAYER_BADGE.getValue(badgeId).orElse(null);
+		var badgeName = (badge != null) ? literal("").append(badge.getName()) : literal(Objects.toString(badgeId));
+		badgeName = __formatBadgeName(badgeName, badgeId, badge);
+		
+		//construct message, and broadcast it
+		final var message = translatable("commands.badges.chat_grant", player.getName(), badgeName);
+		player.getServer().getPlayerManager().broadcast(message, false);
+		
+		//return
+		return true;
+	}
+	private static final MutableText __formatBadgeName(
+			MutableText badgeName,
+			@Nullable Identifier badgeId, @Nullable PlayerBadge badge)
+	{
+		//define the root message
+		final var root = literal("");
+		root.append(literal("[")).formatted(Formatting.YELLOW);
+		root.append(badgeName).formatted(Formatting.YELLOW);
+		root.append(literal("]")).formatted(Formatting.YELLOW);
+		
+		//define the hover text
+		final var hover = literal("");
+		hover.append(((badge != null) ? badge.getName() : literal(Objects.toString(badgeId)).formatted(Formatting.YELLOW)));
+		hover.append("\n");
+		hover.append(literal(Objects.toString(badgeId)).formatted(Formatting.GRAY));
+		if(badge != null)
+		{
+			hover.append("\n\n");
+			hover.append(badge.getDescription());
+		}
+		
+		//assign the hover text
+		final var hoverEvent = new HoverEvent(Action.SHOW_TEXT, hover);
+		root.setStyle(root.getStyle().withHoverEvent(hoverEvent));
+		
+		//return the root message
+		return root;
 	}
 	// ==================================================
 }

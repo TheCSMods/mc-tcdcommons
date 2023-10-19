@@ -139,6 +139,10 @@ public final class PlayerBadgeCommand
 	// ==================================================
 	public static @Internal void handleError(CommandContext<ServerCommandSource> context, Throwable e)
 	{
+		//handle errors
+		if(e instanceof Error)
+			throw new Error("Unable to handle errors.", e);
+		
 		//handle command syntax errors
 		context.getSource().sendError(
 				translatable("command.failed")

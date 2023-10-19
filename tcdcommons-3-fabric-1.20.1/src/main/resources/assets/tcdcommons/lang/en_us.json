@@ -31,5 +31,6 @@
 	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Select an option...",
 
 	"commands.badges.edit.output": "Edited the player badge stat '%s' for %s player(s).",
-	"commands.badges.clear.output": "Cleared all player badge stats for %s player(s)."
+	"commands.badges.clear.output": "Cleared all player badge stats for %s player(s).",
+	"commands.badges.chat_grant": "%s has earned the player badge %s."
 }
