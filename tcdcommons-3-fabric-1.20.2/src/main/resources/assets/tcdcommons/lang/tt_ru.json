@@ -30,5 +30,9 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Бу урынны укырга рөхсәт юк...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 	
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау..."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау...",
+
+	"commands.badges.edit.output": "%2$s уенчы өчен «‎%1$s»‎ уенчы билгесенең статистикасын үзгәртелде.",
+	"commands.badges.clear.output": "%s уенчы өчен барлык уенчы билгесе чистартылды.",
+	"commands.badges.chat_grant": "%s %s уенчы билгесен алынды."
 }
