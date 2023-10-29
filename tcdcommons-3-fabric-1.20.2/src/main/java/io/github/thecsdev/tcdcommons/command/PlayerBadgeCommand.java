@@ -29,6 +29,7 @@ public final class PlayerBadgeCommand
 	//public static final Text TEXT_CLEAR_KICK = translatable("commands.badges.clear.kick"); -- unused
 	public static final String TEXT_EDIT_OUTPUT = "commands.badges.edit.output";
 	public static final String TEXT_CLEAR_OUTPUT = "commands.badges.clear.output";
+	public static final String TEXT_QUERY_OUTPUT = "commands.badges.query.output";
 	// ==================================================
 	private PlayerBadgeCommand() {}
 	// ==================================================
@@ -41,6 +42,7 @@ public final class PlayerBadgeCommand
 		//arguments
 		command.then(badges_edit());
 		command.then(badges_clear());
+		command.then(badges_query());
 		
 		//finally, register the command
 		dispatcher.register(command);
@@ -69,6 +71,15 @@ public final class PlayerBadgeCommand
 		return literal("clear")
 				.then(argument("targets", EntityArgumentType.players())
 						.executes(ctx -> execute_clear(ctx)));
+	}
+	private static ArgumentBuilder<ServerCommandSource, ?> badges_query()
+	{
+		return literal("query")
+				.then(argument("target", EntityArgumentType.player())
+						.then(argument("badge", PlayerBadgeIdentifierArgumentType.pbId())
+								.executes(ctx -> execute_query(ctx))
+								)
+						);
 	}
 	// ==================================================
 	private static int execute_edit(CommandContext<ServerCommandSource> context, boolean setOrIncrease)
@@ -103,9 +114,15 @@ public final class PlayerBadgeCommand
 					Objects.toString(arg_badge),
 					Integer.toString(affected.get())
 				), false);
+			
+			//return the number of affected players, so command blocks and data-packs can read it
+			return affected.get();
 		}
-		catch(CommandException | CommandSyntaxException | IllegalStateException | NullPointerException e) { handleError(context, e); }
-		return 1;
+		catch(CommandException | CommandSyntaxException | IllegalStateException | NullPointerException e)
+		{
+			handleError(context, e);
+			return -1;
+		}
 	}
 	private static int execute_clear(CommandContext<ServerCommandSource> context)
 	{
@@ -133,9 +150,41 @@ public final class PlayerBadgeCommand
 			
 			//send feedback
 			context.getSource().sendFeedback(() -> translatable(TEXT_CLEAR_OUTPUT, Integer.toString(affected.get())), false);
+			
+			//return the number of affected players, so command blocks and data-packs can read it
+			return affected.get();
 		}
-		catch(CommandException | CommandSyntaxException e) { handleError(context, e); }
-		return 1;
+		catch(CommandException | CommandSyntaxException e)
+		{
+			handleError(context, e);
+			return -1;
+		}
+	}
+	private static int execute_query(CommandContext<ServerCommandSource> context)
+	{
+		try
+		{
+			//get parameter values
+			final var arg_target = EntityArgumentType.getPlayer(context, "target");
+			final var arg_badge = IdentifierArgumentType.getIdentifier(context, "badge");
+			
+			final var spbh = ServerPlayerBadgeHandler.getServerBadgeHandler(arg_target);
+			final var value = spbh.getValue(arg_badge);
+			
+			//execute
+			context.getSource().sendFeedback(() -> translatable(
+					TEXT_QUERY_OUTPUT,
+					arg_target.getDisplayName(),
+					Objects.toString(arg_badge),
+					Integer.toString(value)
+					), false);
+			return value;
+		}
+		catch(CommandException | CommandSyntaxException e)
+		{
+			handleError(context, e);
+			return -1;
+		}
 	}
 	// ==================================================
 	public static @Internal void handleError(CommandContext<ServerCommandSource> context, Throwable e)

@@ -32,5 +32,6 @@
 
 	"commands.badges.edit.output": "Edited the player badge stat '%s' for %s player(s).",
 	"commands.badges.clear.output": "Cleared all player badge stats for %s player(s).",
-	"commands.badges.chat_grant": "%s has earned the player badge %s."
+	"commands.badges.chat_grant": "%s has earned the player badge %s.",
+	"commands.badges.query.output": "%s's player badge stat value for '%s' is %s."
 }
