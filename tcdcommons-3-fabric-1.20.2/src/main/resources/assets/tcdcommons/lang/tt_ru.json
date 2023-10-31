@@ -4,7 +4,7 @@
 	"modmenu.descriptionTranslation.tcdcommons": "Минем модлар өчен минем шәхси API китапханәсе. Ул, бер үк кодны күчереп язудан качып, эшчәнлекне арттыруга һәм модларны эшкәртү процессын тизләтүгә юнәлдерелгән.",
 	
 	"tcdcommons.translators.title": "Тәрҗемәчеләр",
-	"tcdcommons.translators.tutorial": "Түбәндәге тәрҗемәчеләр бүлеге CSV форматында бар. Өтерне (,) куегыз гына һәм Сезнең уникаль Github-ның кулланучы исеме язагыз. Үрнәк: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators.tutorial": "Түбәндәге тәрҗемәчеләр бүлеге CSV форматында бар. Өтерне (,) куегыз гына һәм Сезнең уникаль Github-ның кулланучы исеме язагыз. Үрнәк: «TheCSDev, SomeOtherUser, AndSoOn».",
 	"tcdcommons.translators": "Amirhan-Taipovjan-Greatest-I",
 
 	"tcdcommons.client_side": "Клиент тарафыннан",
@@ -30,5 +30,10 @@
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Бу урынны укырга рөхсәт юк...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
 	
-	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау..."
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Төрне сайлау...",
+
+	"commands.badges.edit.output": "E%1$s уенчы өчен уенчы билгесенең «‎%2$s» статистикасы үзгәртелде.",
+	"commands.badges.clear.output": "%s уенчы өчен барлык уенчы билгесенең статистика кыйммәте чистартылды.",
+	"commands.badges.chat_grant": "%s «‎%s» уенчы билгесен алынды.",
+	"commands.badges.query.output": "%s уенчының «‎%s» өчен уенчы билгесенең статистика кыйммәте — %s."
 }
