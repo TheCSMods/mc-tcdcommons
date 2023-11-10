@@ -4,21 +4,15 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPa
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
-import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.other.TFillColorElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.layout.UITableLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
-import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectEnumWidget;
-import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget;
-import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectWidget.SimpleEntry;
-import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSliderWidget;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.EntityType;
 import net.minecraft.text.Text;
 
 public final class TestTScreen extends TScreenPlus
@@ -116,38 +110,12 @@ public final class TestTScreen extends TScreenPlus
 		addChild(scroll_y);*/
 		
 		//create some test elements
-		final var btn_select = new TSelectWidget<SimpleEntry>(10, 10, 160, 20);
-		btn_select.addEntry(new SimpleEntry(literal("Option 1")));
-		btn_select.addEntry(new SimpleEntry(literal("Option 2")));
-		btn_select.addEntry(new SimpleEntry(literal("Option 3")));
-		btn_select.addEntry(new SimpleEntry(literal("4 noitpO")));
-		btn_select.addEntry(new SimpleEntry(literal("Super duper long option 5 because why not...")));
-		panel.addChild(btn_select, true);
+		UITableLayout layout;
+		panel.addChild(layout = new UITableLayout(3));
 		
-		final var btn_selectEnum = new TSelectEnumWidget<>(10, 40, 160, 20, TestEnum.class);
-		panel.addChild(btn_selectEnum, true);
-		
-		//create a test entity renderer
-		final var ent = new TEntityRendererElement(10, 70, 100, 100, EntityType.ARMOR_STAND);
-		ent.setFollowsCursor(true);
-		panel.addChild(ent, true);
-		
-		final var entOverlay = new TFillColorElement(ent.getX(), ent.getY(), ent.getWidth(), ent.getHeight());
-		entOverlay.setColor(-922746881);
-		panel.addChild(entOverlay, false);
-		
-		final var entOverlayZSlider = new TSliderWidget(ent.getX(), ent.getEndY(), ent.getWidth(), 10, 0);
-		entOverlayZSlider.setOnClick(__ -> entOverlay.setZOffset((float) (entOverlayZSlider.getValue() * 100)));
-		panel.addChild(entOverlayZSlider, false);
-		
-		final var btn_hud = new TButtonWidget(10, 190, 160, 20, literal("Test in-game-hud screen"));
-		btn_hud.setEnabled(!TestTWidgetHudScreen.isShown());
-		btn_hud.setOnClick(__ ->
-		{
-			TestTWidgetHudScreen.show();
-			btn_hud.setEnabled(false);
-		});
-		panel.addChild(btn_hud, true);
+		int cellW = (int) (layout.getCellColumnSize() * 1);
+		for(int i = 0; i < 14; i++)
+			panel.addChild(new TButtonWidget(0, 0, cellW, 20, literal("Test")));
 		
 		//return the panel
 		return panel;
