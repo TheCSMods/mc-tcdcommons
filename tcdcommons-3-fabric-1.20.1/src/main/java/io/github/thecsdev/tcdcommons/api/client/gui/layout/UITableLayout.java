@@ -16,8 +16,8 @@ public @Virtual class UITableLayout extends UILayout
 	public UITableLayout(int columns) { this(columns, 5); }
 	public UITableLayout(int columns, int padding)
 	{
-		setColumnCount(columns);
-		setCellPadding(padding);
+		this.columnCount = Math.max(Math.abs(columns), 1);
+		this.cellPadding = Math.abs(padding);
 	}
 	// ==================================================
 	/**
@@ -36,12 +36,6 @@ public @Virtual class UITableLayout extends UILayout
 		res /= Math.max(this.columnCount, 1);             //4. Divide remainder by cell count
 		return  res;
 	}
-	// --------------------------------------------------
-	public final int getColumnCount() { return this.columnCount; }
-	public final void setColumnCount(int columns) { this.columnCount = Math.max(Math.abs(columns), 1); }
-	// --------------------------------------------------
-	public final int getCellPadding() { return this.cellPadding; }
-	public final void setCellPadding(int padding) { this.cellPadding = Math.abs(padding); }
 	// ==================================================
 	//TODO - Handle vertical UITableLayout columns if they ever get added
 	public @Virtual void apply()
