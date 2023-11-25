@@ -4,16 +4,13 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPa
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
-import io.github.thecsdev.tcdcommons.api.client.gui.layout.UIListLayout;
+import io.github.thecsdev.tcdcommons.api.client.gui.layout.UITableLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
-import io.github.thecsdev.tcdcommons.api.util.enumerations.Axis2D;
-import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
-import io.github.thecsdev.tcdcommons.api.util.enumerations.VerticalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -113,10 +110,9 @@ public final class TestTScreen extends TScreenPlus
 		addChild(scroll_y);*/
 		
 		//create some test elements
-		panel.addChild(new UIListLayout(Axis2D.Y, VerticalAlignment.CENTER, HorizontalAlignment.CENTER));
-		
-		for(int i = 0; i < 7; i++)
-			panel.addChild(new TButtonWidget(0, 0, 150, 20, literal("Test " + i)));
+		for(int i = 0; i < 14; i++)
+			panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test " + i)));
+		new UITableLayout(4).apply(panel);
 		
 		//return the panel
 		return panel;

@@ -2,7 +2,7 @@ package io.github.thecsdev.tcdcommons.api.client.gui.layout;
 
 import java.util.Objects;
 
-import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.Axis2D;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
@@ -41,25 +41,19 @@ public @Virtual class UIListLayout extends UILayout
 	}
 	// ==================================================
 	@SuppressWarnings("removal")
-	public @Virtual void apply()
+	public @Virtual @Override void apply(TParentElement parent)
 	{
 		//prepare
-		final var parent = getParent();
 		final var direction = this.direction;
 		if(parent == null || direction == null) return;
 		
-		final int sPadding = getParentScrollPadding(), cPadding = this.childPadding;
+		final int sPadding = getElementScrollPadding(parent), cPadding = this.childPadding;
 		int nextX = parent.getX() + sPadding;
 		int nextY = parent.getY() + sPadding;
 		
 		//iterate children, and position them; staring off with TOP-LEFT
-		int validChildCount = 0;
 		for(final var child : parent.getChildren())
 		{
-			//skip UI layouts
-			if(child instanceof UILayout) continue;
-			validChildCount++;
-			
 			//position child
 			child.setPosition(nextX, nextY, false);
 			
@@ -69,7 +63,7 @@ public @Virtual class UIListLayout extends UILayout
 		}
 		
 		// ---------- align children based on alignments
-		if(validChildCount <= 0) return;
+		if(parent.getChildren().size() < 1) return;
 		parent.getChildren().updateTopmostChildren();
 		
 		// ----- "global" alignment
@@ -119,7 +113,6 @@ public @Virtual class UIListLayout extends UILayout
 		// ----- "local" alignment of individual elements
 		for(final var child : parent.getChildren())
 		{
-			if(child instanceof UILayout) continue;
 			if(direction == Axis2D.X) switch(this.verticalAlignment)
 			{
 				case CENTER:
@@ -154,8 +147,5 @@ public @Virtual class UIListLayout extends UILayout
 			}
 		}
 	}
-	// --------------------------------------------------
-	protected @Virtual @Override void onSiblingAdded(TElement sibling, boolean repositioned) { apply(); }
-	protected @Virtual @Override void onSiblingRemoved(TElement sibling, boolean repositioned) { apply(); }
 	// ==================================================
 }

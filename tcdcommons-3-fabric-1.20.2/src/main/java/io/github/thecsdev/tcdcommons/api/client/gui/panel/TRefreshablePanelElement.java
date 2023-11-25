@@ -1,5 +1,9 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.panel;
 
+import io.github.thecsdev.tcdcommons.api.client.gui.util.event.handler.TElementEvent_Runnable;
+import io.github.thecsdev.tcdcommons.api.event.TEvent;
+import io.github.thecsdev.tcdcommons.api.event.TEventFactory;
+
 /**
  * A {@link TPanelElement} that features {@link #refresh()} and {@link #init()}.<p>
  * Use {@link #refresh()} to "refresh" this {@link TPanelElement}.
@@ -9,6 +13,8 @@ package io.github.thecsdev.tcdcommons.api.client.gui.panel;
 public abstract class TRefreshablePanelElement extends TPanelElement
 {
 	// ==================================================
+	public final TEvent<TElementEvent_Runnable<TRefreshablePanelElement>> eRefreshed = TEventFactory.createLoop();
+	// --------------------------------------------------
 	private final TElementEvent_ParentChanged ehParentChanged = (self, oldP, newP) ->
 	{
 		//when this element is added to a non-null parent that isn't a refreshable panel...
@@ -53,6 +59,8 @@ public abstract class TRefreshablePanelElement extends TPanelElement
 		for(final var child : getChildren())
 			if(child instanceof TRefreshablePanelElement)
 				((TRefreshablePanelElement)child).refresh();
+		//invoke the 'refreshed' event
+		eRefreshed.invoker().invoke(this);
 	}
 	// ---------------------------------------------------
 	/**
