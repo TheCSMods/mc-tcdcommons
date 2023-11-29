@@ -17,6 +17,7 @@ public class TCDCommons extends Object
 	// --------------------------------------------------
 	protected final ModContainer modInfo;
 	private final TCDCommonsConfig config;
+	public final String userAgent;
 	// ==================================================
 	public TCDCommons()
 	{
@@ -29,6 +30,7 @@ public class TCDCommons extends Object
 		//assign instance
 		Instance = this;
 		modInfo = FabricLoader.getInstance().getModContainer(getModID()).get();
+		this.userAgent = this.modInfo.getMetadata().getContact().get("sources").orElse(getModID());
 		
 		//log stuff
 		LOGGER.info("Initializing '" + getModName() + "' " + modInfo.getMetadata().getVersion() +

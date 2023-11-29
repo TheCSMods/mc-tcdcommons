@@ -21,7 +21,7 @@ import net.minecraft.util.thread.ReentrantThreadExecutor;
 public final class TaskScheduler
 {
 	// ==================================================
-	private static final String THREAD_NAME = getModID() + " task scheduler";
+	private static final String THREAD_NAME = getModID() + ":task_scheduler";
 	private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(
 			1,
 			runnable -> new Thread(runnable, THREAD_NAME));

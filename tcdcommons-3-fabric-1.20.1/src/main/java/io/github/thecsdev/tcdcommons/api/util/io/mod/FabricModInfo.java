@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.api.util.info.mod;
+package io.github.thecsdev.tcdcommons.api.util.io.mod;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.fLiteral;
 
@@ -32,8 +32,7 @@ final class FabricModInfo extends ModInfo
 		this.modDescription = fLiteral(meta.getDescription());
 		this.authors = meta.getAuthors().stream().map(person -> fLiteral(person.getName())).toArray(Text[]::new);
 		
-		final String icon = "icon.png"; //TODO - idrc now, fix later
-		this.modIconId = icon != null ? new Identifier(modId, icon) : null;
+		this.modIconId = new Identifier(modId, "icon.png"); //FIXME - Obtain mod icon path properly
 		
 		final var contact = meta.getContact();
 		this.modHomePageUrl = contact.get("homepage").orElse(null);

@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.api.util.info.mod;
+package io.github.thecsdev.tcdcommons.api.util.io.mod;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,10 +14,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 
 /**
- * A "wrapper" utility used by {@link BugTracker} when obtaining
+ * A "wrapper" utility used by {@link TCDCommons} when obtaining
  * information about currently installed mods.
  */
 public abstract class ModInfoProvider

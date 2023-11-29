@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.registry;
 
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
 
 public final class TRegistries
 {
@@ -12,4 +13,9 @@ public final class TRegistries
 	 * @apiNote To self: Has to be a {@link TSimpleRegistry}, otherwise {@link PlayerBadge#getId()} would break.
 	 */
 	public static final TSimpleRegistry<PlayerBadge> PLAYER_BADGE = new TSimpleRegistry<>();
+	
+	/**
+	 * Contains {@link RepositoryInfoProvider}s that were registered for this session.
+	 */
+	public static final TMutableRegistry<RepositoryInfoProvider> REPO_INFO_PROVIDER = new TMutableRegistry<>();
 }

@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.api.util.info.mod;
+package io.github.thecsdev.tcdcommons.api.util.io.mod;
 
 import java.util.Objects;
 
