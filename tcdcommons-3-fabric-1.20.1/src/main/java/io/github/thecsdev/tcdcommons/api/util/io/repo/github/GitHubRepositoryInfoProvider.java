@@ -11,7 +11,7 @@ import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
  */
 public final class GitHubRepositoryInfoProvider extends RepositoryInfoProvider
 {
-	public final @Override RepositoryInfo fetchRepositoryInfo(String repoUrl)
+	public final @Override RepositoryInfo fetchRepositoryInfoSync(String repoUrl)
 	{
 		try
 		{

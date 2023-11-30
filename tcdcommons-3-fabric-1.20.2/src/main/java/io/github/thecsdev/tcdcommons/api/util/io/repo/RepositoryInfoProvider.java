@@ -3,6 +3,9 @@ package io.github.thecsdev.tcdcommons.api.util.io.repo;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.REPO_INFO_PROVIDER;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,8 +13,17 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
+import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.github.GitHubRepositoryInfoProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
@@ -35,7 +47,7 @@ public abstract class RepositoryInfoProvider extends Object
 	// ==================================================
 	/**
 	 * Asynchronously obtains information about a given remote repository.
-	 * @param minecraftClientOrServer An instance on the MinecraftClient or the MinecraftServer.
+	 * @param minecraftClientOrServer An instance of the current MinecraftClient or the MinecraftServer.
 	 * @param repoUrl The remote Git repository web URL.
 	 * @param onReady A {@link Consumer} that is invoked once the info is successfully obtained.
 	 * @param onError A {@link Consumer} that is invoked in the event fetching the info fails.
@@ -51,6 +63,8 @@ public abstract class RepositoryInfoProvider extends Object
 		//prepare
 		Objects.requireNonNull(minecraftClientOrServer);
 		Objects.requireNonNull(repoUrl);
+		Objects.requireNonNull(onReady);
+		Objects.requireNonNull(onError);
 		final AtomicReference<RepositoryInfo> result = new AtomicReference<>(null);
 		final AtomicReference<Exception> raisedException = new AtomicReference<Exception>(null);
 		
@@ -64,7 +78,7 @@ public abstract class RepositoryInfoProvider extends Object
 				for(final var rip : REPO_INFO_PROVIDER)
 				{
 					//attempt to obtain repository info using the next provider
-					try { result.set(rip.getValue().fetchRepositoryInfo(repoUrl)); }
+					try { result.set(rip.getValue().fetchRepositoryInfoSync(repoUrl)); }
 					//skip UnsupportedRepositoryHostException-s
 					catch(UnsupportedRepositoryHostException exc) { continue; }
 					//if a value was obtained, break the loop
@@ -82,9 +96,48 @@ public abstract class RepositoryInfoProvider extends Object
 			});
 		});
 	}
+	// --------------------------------------------------
+	/**
+	 * Performs a synchronous HTTP GET request to an API endpoint.
+	 * @param apiEndpoint The URL of the API endpoint, to which the request will be sent.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 * @throws URISyntaxException If an argument is not a valid URL component.
+	 * @throws HttpResponseException If the API's response status code is not 200.
+	 */
+	@Experimental
+	public static final @Internal String httpGetSync(String apiEndpoint)
+			throws NullPointerException, URISyntaxException, ClientProtocolException, IOException
+	{
+		//prepare http get
+		final var httpGet = new HttpGet(new URI(Objects.requireNonNull(apiEndpoint)));
+		httpGet.addHeader("User-Agent", TCDCommons.getInstance().userAgent);
+		
+		final var reqConfig = RequestConfig.custom()
+				.setSocketTimeout(3000)
+				.setConnectTimeout(3000)
+				.setConnectionRequestTimeout(3000)
+				.build();
+		final var httpClient = HttpClients.custom()
+				.setDefaultRequestConfig(reqConfig)
+				.build();
+		
+		//execute
+		try
+		{
+			final var response = httpClient.execute(httpGet);
+			final var responseEntity = response.getEntity();
+			
+			final var responseSL = response.getStatusLine();
+			if(responseSL.getStatusCode() != 200)
+				throw new HttpResponseException(responseSL.getStatusCode(), responseSL.getReasonPhrase());
+			
+			return EntityUtils.toString(responseEntity);
+		}
+		finally { httpClient.close(); }
+	}
 	// ==================================================
 	/**
-	 * Fetches {@link RepositoryInfo} about a given remote repository.
+	 * Fetches {@link RepositoryInfo} about a given remote repository, synchronously.
 	 * @param repoUrl The remote Git repository web URL.
 	 * @return {@link RepositoryInfo} if all goes well, or {@code null} if this
 	 * {@link RepositoryInfoProvider} does not support the given repository host.
@@ -95,6 +148,6 @@ public abstract class RepositoryInfoProvider extends Object
 	 * or {@code throw} {@link UnsupportedRepositoryHostException} instead.
 	 * @apiNote Do not take too long to execute (few seconds), or else a {@link TimeoutException} may be raised.
 	 */
-	public abstract RepositoryInfo fetchRepositoryInfo(String repoUrl) throws UnsupportedRepositoryHostException;
+	public abstract RepositoryInfo fetchRepositoryInfoSync(String repoUrl) throws UnsupportedRepositoryHostException;
 	// ==================================================
 }

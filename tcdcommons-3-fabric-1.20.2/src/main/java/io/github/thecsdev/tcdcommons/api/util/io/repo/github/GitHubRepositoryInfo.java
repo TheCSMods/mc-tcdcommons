@@ -1,32 +1,30 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 
+import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetSync;
+
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfo;
 import net.minecraft.text.Text;
 
 public final class GitHubRepositoryInfo extends RepositoryInfo
 {
 	// ==================================================
+	private GitHubUserInfo owner;
+	// ---------------------------------------------------
 	private String id;
 	private String owner_id;
 	private Text full_name, description;
@@ -34,7 +32,25 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 	private boolean has_issues, allow_forking;
 	private @Nullable Integer open_issues_count, forks;
 	// ==================================================
-	GitHubRepositoryInfo() {}
+	GitHubRepositoryInfo(JsonObject json)
+	{
+		this.owner = new GitHubUserInfo(json.get("owner").getAsJsonObject());
+		
+		this.id = Integer.toString(json.get("id").getAsInt());
+		this.owner_id = this.owner.getID();
+		this.full_name = literal(json.get("full_name").getAsString());
+		this.description = literal(json.get("description").getAsString());
+		List<Text> topics = new ArrayList<>();
+		if(json.has("topics") && !json.get("topics").isJsonNull())
+			json.get("topics").getAsJsonArray().forEach(topic -> topics.add(literal(topic.getAsString())));
+		this.topics = topics.toArray(new Text[] {});
+		this.has_issues = json.get("has_issues").getAsBoolean(); 
+		this.allow_forking = json.get("allow_forking").getAsBoolean();
+		if(this.has_issues)
+			this.open_issues_count = json.get("open_issues_count").getAsInt();
+		if(this.allow_forking)
+			this.forks = json.get("forks").getAsInt();
+	}
 	// ==================================================
 	public final @Override String getID() { return this.id; }
 	public final @Override String getAuthorUserID() { return this.owner_id; }
@@ -44,66 +60,33 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 	// --------------------------------------------------
 	public final @Override Text[] getTags() { return this.topics; }
 	// --------------------------------------------------
-	public boolean hasIssues() { return this.has_issues; }
-	public boolean hasForks() { return this.allow_forking; }
+	public final @Override boolean hasIssues() { return this.has_issues; }
+	public final @Override boolean hasForks() { return this.allow_forking; }
 	public final @Override @Nullable Integer getOpenIssuesCount() { return this.open_issues_count; }
 	public final @Override Integer getForkCount() { return this.forks; }
+	// --------------------------------------------------
+	protected final @Override GitHubUserInfo fetchAuthorUserInfoSync() { return this.owner; }
 	// ==================================================
+	/**
+	 * Synchronously obtains information about a given GitHub repository, using GitHub's APIs.
+	 * @param username The repository owner's unique username.
+	 * @param repository The repository's unique name.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 * @throws URISyntaxException If an argument is not a valid URL component.
+	 * @throws HttpResponseException If the API's response status code is not 200.
+	 */
 	public static final GitHubRepositoryInfo getRepositoryInfoSync(String username, String repository)
 			throws NullPointerException, URISyntaxException, ClientProtocolException, IOException
 	{
-		//prepare http get
+		//http get
 		final var apiEndpoint = String.format(
 				"https://api.github.com/repos/%s/%s",
 				Objects.requireNonNull(username),
 				Objects.requireNonNull(repository));
-		final var httpGet = new HttpGet(new URI(apiEndpoint));
-		httpGet.addHeader("User-Agent", TCDCommons.getInstance().userAgent);
-		
-		final var reqConfig = RequestConfig.custom()
-				.setSocketTimeout(3000)
-				.setConnectTimeout(3000)
-				.setConnectionRequestTimeout(3000)
-				.build();
-		final var httpClient = HttpClients.custom()
-				.setDefaultRequestConfig(reqConfig)
-				.build();
-		
-		//execute
-		final var response = httpClient.execute(httpGet);
-		final var responseEntity = response.getEntity();
-		
-		final var responseSL = response.getStatusLine();
-		if(responseSL.getStatusCode() != 200)
-			throw new HttpResponseException(responseSL.getStatusCode(), responseSL.getReasonPhrase());
-		final String content = EntityUtils.toString(responseEntity);
-		
-		httpClient.close();
+		final var content = httpGetSync(apiEndpoint);
 		
 		//parse JSON
-		try
-		{
-			//parse json
-			final JsonObject json = new Gson().fromJson(content, JsonObject.class);
-			
-			//create, construct, and return repository info
-			final var result = new GitHubRepositoryInfo();
-			result.id = Integer.toString(json.get("id").getAsInt());
-			result.owner_id = Integer.toString(json.get("owner").getAsJsonObject().get("id").getAsInt());
-			result.full_name = literal(json.get("full_name").getAsString());
-			result.description = literal(json.get("description").getAsString());
-			List<Text> topics = new ArrayList<>();
-			if(json.has("topics"))
-				json.get("topics").getAsJsonArray().forEach(topic -> topics.add(literal(topic.getAsString())));
-			result.topics = topics.toArray(new Text[] {});
-			result.has_issues = json.get("has_issues").getAsBoolean(); 
-			result.allow_forking = json.get("allow_forking").getAsBoolean();
-			if(result.has_issues)
-				result.open_issues_count = json.get("open_issues_count").getAsInt();
-			if(result.allow_forking)
-				result.forks = json.get("forks").getAsInt(); 
-			return result;
-		}
+		try { return new GitHubRepositoryInfo(new Gson().fromJson(content, JsonObject.class)); }
 		catch(JsonSyntaxException jse) { throw new IOException("Failed to parse HTTP response JSON.", jse); }
 	}
 	// ==================================================
