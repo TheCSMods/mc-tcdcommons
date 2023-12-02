@@ -4,12 +4,16 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPa
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
+import java.io.File;
+
 import io.github.thecsdev.tcdcommons.api.client.gui.layout.UITableLayout;
+import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.UIExternalTexture;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import net.minecraft.client.gui.screen.Screen;
@@ -110,8 +114,15 @@ public final class TestTScreen extends TScreenPlus
 		addChild(scroll_y);*/
 		
 		//create some test elements
-		for(int i = 0; i < 14; i++)
-			panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test " + i)));
+		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 1:" + i)));
+		try
+		{
+			final var pngFile = new File(System.getProperty("user.home") + "/Desktop/test.png");
+			panel.addChild(new TTextureElement(0, 0, 70, 70, new UIExternalTexture(pngFile)));
+		}
+		catch(Exception exc) {}
+		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 2: " + i)));
+		
 		new UITableLayout(4).apply(panel);
 		
 		//return the panel

@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.ClientProtocolException;
 import org.jetbrains.annotations.Nullable;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -24,11 +27,19 @@ import net.minecraft.text.Text;
 public final class GitHubUserInfo extends RepositoryUserInfo
 {
 	// ==================================================
-	private String id;
-	private String login;
-	private Text name;
-	private @Nullable Text bio;
-	private @Nullable String avatar_url;
+	/**
+	 * Caching is used to optimize network bandwidth usage as well as
+	 * minimizing the effects of any rate limits that may apply.
+	 */
+	private static final Cache<String, GitHubUserInfo> CACHE = CacheBuilder.newBuilder()
+			.expireAfterWrite(30, TimeUnit.MINUTES)
+			.build();
+	// ==================================================
+	private final String id;
+	private final String login;
+	private final Text name;
+	private final @Nullable Text bio;
+	private final @Nullable String avatar_url;
 	// ==================================================
 	GitHubUserInfo(JsonObject json) throws NullPointerException
 	{
@@ -37,7 +48,9 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 		if(!json.get("name").isJsonNull()) this.name = literal(json.get("name").getAsString());
 		else this.name = literal(this.login);
 		if(!json.get("bio").isJsonNull()) this.bio = literal(json.get("bio").getAsString());
+		else this.bio = null;
 		if(!json.get("avatar_url").isJsonNull()) this.avatar_url = json.get("avatar_url").getAsString();
+		else this.avatar_url = null;
 	}
 	// ==================================================
 	public final @Override String getID() { return this.id; }
@@ -56,14 +69,23 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 	public static final GitHubUserInfo getUserInfoSync(BigInteger userId)
 			throws NullPointerException, ClientProtocolException, URISyntaxException, IOException
 	{
-		//http get
+		//prepare and handle cache
 		final var apiEndpoint = String.format(
 				"https://api.github.com/user/%s",
 				Objects.requireNonNull(userId).toString());
+		final var cached = CACHE.getIfPresent(apiEndpoint);
+		if(cached != null) return cached;
+		
+		//perform HTTP GET
 		final var content = httpGetSync(apiEndpoint);
 		
 		//parse JSON
-		try { return new GitHubUserInfo(new Gson().fromJson(content, JsonObject.class)); }
+		try
+		{
+			final var result = new GitHubUserInfo(new Gson().fromJson(content, JsonObject.class));
+			CACHE.put(apiEndpoint, result);
+			return result;
+		}
 		catch(JsonSyntaxException jse) { throw new IOException("Failed to parse HTTP response JSON.", jse); }
 	}
 	
@@ -75,14 +97,23 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 	public static final GitHubUserInfo getUserInfoSync(String accountName)
 			throws NullPointerException, ClientProtocolException, URISyntaxException, IOException
 	{
-		//http get
+		//prepare and handle cache
 		final var apiEndpoint = String.format(
 				"https://api.github.com/users/%s",
 				Objects.requireNonNull(accountName));
+		final var cached = CACHE.getIfPresent(apiEndpoint);
+		if(cached != null) return cached;
+		
+		//perform HTTP GET
 		final var content = httpGetSync(apiEndpoint);
 		
 		//parse JSON
-		try { return new GitHubUserInfo(new Gson().fromJson(content, JsonObject.class)); }
+		try
+		{
+			final var result = new GitHubUserInfo(new Gson().fromJson(content, JsonObject.class));
+			CACHE.put(apiEndpoint, result);
+			return result;
+		}
 		catch(JsonSyntaxException jse) { throw new IOException("Failed to parse HTTP response JSON.", jse); }
 	}
 	// ==================================================

@@ -9,13 +9,14 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
+import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 /**
  * An immutable {@link Object} representing a GUI texture that can be drawn on the screen.
  */
-public final class UITexture extends Object
+public @Virtual class UITexture extends Object
 {
 	// ==================================================
 	public static final Identifier TEXTURE_UV_DEBUG = new Identifier(getModID(), "textures/gui/uv_debug.png");
@@ -64,9 +65,16 @@ public final class UITexture extends Object
 	}
 	// ==================================================
 	/**
-	 * Returns the texture rendered by this {@link TTextureElement}.
+	 * Deprecated. Please use {@link #getTextureID()} instead.
+	 * @see #getTextureID()
 	 */
+	@Deprecated(since = "3.6", forRemoval = true)
 	public final Identifier getTexture() { return this.textureId; }
+	
+	/**
+	 * Returns the texture's resource {@link Identifier}.
+	 */
+	public final Identifier getTextureID() { return this.textureId; }
 	// --------------------------------------------------
 	/**
 	 * Returns the width and height of the texture.
