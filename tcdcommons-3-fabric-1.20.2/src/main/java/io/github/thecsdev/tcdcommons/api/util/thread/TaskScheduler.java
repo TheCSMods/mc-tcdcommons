@@ -24,7 +24,12 @@ public final class TaskScheduler
 	private static final String THREAD_NAME = getModID() + ":task_scheduler";
 	private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(
 			1,
-			runnable -> new Thread(runnable, THREAD_NAME));
+			runnable ->
+			{
+				final var thread = new Thread(runnable, THREAD_NAME);
+				thread.setDaemon(true);
+				return thread;
+			});
 	//
 	private static final Queue<Map.Entry<Runnable, BooleanSupplier>> CONDITIONAL_TASK_QUEUE =
 			Queues.newConcurrentLinkedQueue();

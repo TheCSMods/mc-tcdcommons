@@ -32,7 +32,7 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 	 * minimizing the effects of any rate limits that may apply.
 	 */
 	private static final Cache<String, GitHubUserInfo> CACHE = CacheBuilder.newBuilder()
-			.expireAfterWrite(30, TimeUnit.MINUTES)
+			.expireAfterWrite(12, TimeUnit.HOURS)
 			.build();
 	// ==================================================
 	private final String id;

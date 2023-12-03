@@ -11,7 +11,7 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import net.minecraft.text.Text;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
-public abstract class RepositoryInfo
+public abstract class RepositoryInfo extends RepositoryUGC
 {
 	// ==================================================
 	protected static final ExecutorService SCHEDULER = RepositoryInfoProvider.SCHEDULER;
@@ -21,24 +21,17 @@ public abstract class RepositoryInfo
 	 * May be {@code null} if the repository does not have a unique ID.
 	 */
 	public abstract @Nullable String getID();
-	
-	/**
-	 * A {@link String} representation of the unique identifier of the user that
-	 * owns this repository, if there is one.
-	 * @apiNote Not to be confused with the user's unique username or account name!
-	 * On platforms like GitHub, this is usually an {@link Integer}.
-	 */
-	public abstract @Nullable String getAuthorUserID();
 	// --------------------------------------------------
 	public abstract @Nullable Text getName();
 	public abstract @Nullable Text getDescription();
 	// --------------------------------------------------
 	/**
 	 * Represents an array of "tags" or "labels" or "topics" assigned to this repository.
-	 * Intended to be a user-friendly/readable array of {@link Text} representing those "tags".<br/>
-	 * May be {@code null} if the repository does not have those assigned to it.
+	 * Intended to be a user-friendly/readable array of {@link Text}s representing those "tags".
+	 * @apiNote If the repository host does not support "tags", or the repository itself does
+	 * not have any "tags" assigned to it, then return an empty array.
 	 */
-	public abstract @Nullable Text[] getTags();
+	public abstract Text[] getTags();
 	// --------------------------------------------------
 	/**
 	 * Returns {@code true} if this repository supports and allows "issues" aka posting bug reports.
@@ -54,45 +47,54 @@ public abstract class RepositoryInfo
 	public abstract @Nullable Integer getForkCount();
 	// ==================================================
 	/**
-	 * Asynchronously fetches {@link RepositoryUserInfo} about the repository's author.
+	 * Asynchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
+	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
+	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
 	 * @param minecraftClientOrServer An instance of the current MinecraftClient or the MinecraftServer.
 	 * @param onReady A {@link Consumer} that is invoked once the info is successfully obtained.
 	 * @param onError A {@link Consumer} that is invoked in the event fetching the info fails.
 	 */
-	public final void getAutherUserInfoAsync(
+	public final void getIssuesAsync(
+			int perPage, int page,
 			final ReentrantThreadExecutor<?> minecraftClientOrServer,
-			final @Nullable Consumer<RepositoryUserInfo> onReady,
+			final @Nullable Consumer<RepositoryIssueInfo[]> onReady,
 			final @Nullable Consumer<Exception> onError)
 	{
 		//prepare
 		Objects.requireNonNull(minecraftClientOrServer);
 		Objects.requireNonNull(onReady);
 		Objects.requireNonNull(onError);
-		final AtomicReference<RepositoryUserInfo> result = new AtomicReference<>(null);
+		final AtomicReference<RepositoryIssueInfo[]> result = new AtomicReference<>(null);
 		final AtomicReference<Exception> raisedException = new AtomicReference<Exception>(null);
 		
 		//execute thread task and perform the fetch
 		SCHEDULER.submit(() ->
 		{
+			//handle fetching
+			try { result.set(fetchIssuesSync(perPage, page)); }
+			catch(Exception exc) { raisedException.set(exc); }
+			
 			//handle the results - must be done on the main thread
 			minecraftClientOrServer.executeSync(() ->
 			{
-				if(result.get() == null) raisedException.set(new UnsupportedOperationException());
-				if(raisedException.get() != null) onError.accept(raisedException.get());
+				//handle unsupported operation
+				if(result.get() == null && raisedException.get() == null)
+					raisedException.set(new UnsupportedOperationException());
+				//handle any raised exceptions
+				if(raisedException.get() != null)
+					onError.accept(raisedException.get());
+				//and finally, handle "on ready"
 				else onReady.accept(result.get());
 			});
 		});
 	}
-	// --------------------------------------------------
+	
 	/**
-	 * Synchronously fetches {@link RepositoryUserInfo} about the repository's author.
-	 * @throws Exception A "catch-all" clause for any {@link Exception}s that may get raised in the process.
-	 * @throws NullPointerException If {@link #getAuthorUserID()} returns {@code null}.
-	 * @throws UnsupportedOperationException If this method is not implemented or the repository host does not support it.
-	 * @see #getAuthorUserID()
+	 * Synchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
+	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
+	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
 	 */
-	protected @Virtual RepositoryUserInfo fetchAuthorUserInfoSync()
-			throws Exception, NullPointerException, UnsupportedOperationException
+	protected @Virtual RepositoryIssueInfo[] fetchIssuesSync(int perPage, int page) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}

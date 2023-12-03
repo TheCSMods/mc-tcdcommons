@@ -46,6 +46,7 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 	GitHubRepositoryInfo(JsonObject json)
 	{
 		this.owner = new GitHubUserInfo(json.get("owner").getAsJsonObject());
+		this.cachedAuthorUserInfo = this.owner;
 		
 		this.id = Integer.toString(json.get("id").getAsInt());
 		this.owner_id = this.owner.getID();

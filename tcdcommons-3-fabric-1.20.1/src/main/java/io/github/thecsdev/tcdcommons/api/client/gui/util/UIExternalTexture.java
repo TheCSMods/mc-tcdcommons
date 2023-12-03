@@ -37,12 +37,15 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	public UIExternalTexture(InputStream pngStream, boolean closeStream) throws NullPointerException, IOException
 	{
 		super(generateTextureIdentifier());
-		
-		this.nativeImage = NativeImage.read(pngStream);
-		this.nativeImageBackedTexture = new NativeImageBackedTexture(this.nativeImage);
-		
-		this.textureManager = MC_CLIENT.getTextureManager();
-		this.textureManager.registerTexture(getTextureID(), this.nativeImageBackedTexture);
+		try
+		{
+			this.nativeImage = NativeImage.read(Objects.requireNonNull(pngStream));
+			this.nativeImageBackedTexture = new NativeImageBackedTexture(this.nativeImage);
+			
+			this.textureManager = MC_CLIENT.getTextureManager();
+			this.textureManager.registerTexture(getTextureID(), this.nativeImageBackedTexture);
+		}
+		finally { if(closeStream) pngStream.close(); }
 	}
 	// --------------------------------------------------
 	public final @Override void close()

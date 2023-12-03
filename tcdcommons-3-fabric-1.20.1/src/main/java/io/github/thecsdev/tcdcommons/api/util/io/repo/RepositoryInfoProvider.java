@@ -35,9 +35,14 @@ import net.minecraft.util.thread.ReentrantThreadExecutor;
 public abstract class RepositoryInfoProvider extends Object
 {
 	// ==================================================
-	protected static final String THREAD_NAME = getModID() + ":repo_info_provider";
+	protected static final String THREAD_NAME = getModID() + ":repository_info_provider";
 	protected static final ExecutorService SCHEDULER = Executors.newCachedThreadPool(
-			runnable -> new Thread(runnable, THREAD_NAME));
+			runnable ->
+			{
+				final var thread = new Thread(runnable, THREAD_NAME);
+				thread.setDaemon(true);
+				return thread;
+			});
 	// --------------------------------------------------
 	static
 	{
@@ -90,8 +95,13 @@ public abstract class RepositoryInfoProvider extends Object
 			//handle the results - must be done on the main thread
 			minecraftClientOrServer.executeSync(() ->
 			{
-				if(result.get() == null) raisedException.set(new UnsupportedRepositoryHostException(repoUrl));
-				if(raisedException.get() != null) onError.accept(raisedException.get());
+				//handle unsupported operation
+				if(result.get() == null && raisedException.get() == null)
+					raisedException.set(new UnsupportedOperationException());
+				//handle any raised exceptions
+				if(raisedException.get() != null)
+					onError.accept(raisedException.get());
+				//and finally, handle "on ready"
 				else onReady.accept(result.get());
 			});
 		});

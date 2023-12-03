@@ -30,8 +30,13 @@ public final class GitHubRepositoryInfoProvider extends RepositoryInfoProvider
 			//create and return the repository info
 			return GitHubRepositoryInfo.getRepositoryInfoSync(owner_login, repo_name);
 		}
-		catch(MalformedURLException mue) {}
-		catch(Exception exc) { throw new RuntimeException("Failed to obtain repository info.", exc); }
+		catch(MalformedURLException mue) {/*malformed URLs are just unsupported non-GitHub repositories*/}
+		catch(Exception exc)
+		{
+			throw new RuntimeException(
+					String.format("Failed to fetch repository info for '%s'.", repoUrl),
+					exc);
+		}
 		return null;
 	}
 }

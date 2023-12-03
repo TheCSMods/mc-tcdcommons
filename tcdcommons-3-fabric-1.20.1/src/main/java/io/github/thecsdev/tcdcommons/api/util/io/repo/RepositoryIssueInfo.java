@@ -11,67 +11,65 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import net.minecraft.text.Text;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
-public abstract class RepositoryInfo extends RepositoryUGC
+public abstract class RepositoryIssueInfo extends RepositoryUGC
 {
 	// ==================================================
 	protected static final ExecutorService SCHEDULER = RepositoryInfoProvider.SCHEDULER;
 	// ==================================================
 	/**
-	 * A {@link String} representation of the unique ID assigned to the repository.<br/>
-	 * May be {@code null} if the repository does not have a unique ID.
+	 * A {@link String} representation of the unique ID assigned to the issue.<br/>
+	 * May be {@code null} if the issue does not have a unique ID.
 	 */
 	public abstract @Nullable String getID();
 	// --------------------------------------------------
+	/**
+	 * Returns the name of the issue, if there is one.
+	 */
 	public abstract @Nullable Text getName();
-	public abstract @Nullable Text getDescription();
-	// --------------------------------------------------
-	/**
-	 * Represents an array of "tags" or "labels" or "topics" assigned to this repository.
-	 * Intended to be a user-friendly/readable array of {@link Text}s representing those "tags".
-	 * @apiNote If the repository host does not support "tags", or the repository itself does
-	 * not have any "tags" assigned to it, then return an empty array.
-	 */
-	public abstract Text[] getTags();
-	// --------------------------------------------------
-	/**
-	 * Returns {@code true} if this repository supports and allows "issues" aka posting bug reports.
-	 */
-	public abstract boolean hasIssues();
 	
 	/**
-	 * Returns {@code true} if this repository supports and allows being "forked".
+	 * Returns a {@link Comment} instance representing the "initial comment"/"description" of the issue.
 	 */
-	public abstract boolean hasForks();
+	public abstract @Nullable Comment getBody();
 	
-	public abstract @Nullable Integer getOpenIssuesCount();
-	public abstract @Nullable Integer getForkCount();
+	/**
+	 * Returns an array of people that have been assigned to this issue,
+	 * or an empty array if no people have been assigned.
+	 */
+	public abstract RepositoryUserInfo[] getAssignees();
+	
+	/**
+	 * Returns {@code true} if this issue has been "closed"/"resolved".
+	 */
+	public abstract boolean isClosed();
 	// ==================================================
 	/**
-	 * Asynchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
-	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
-	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
+	 * Asynchronously obtains an array of {@link Comment}s posted on this "repository issue".
+	 * @param perPage How many {@link Comment}s will be fetched "per page".
+	 * @param page The current "page" of {@link Comment}s that will be fetched.
 	 * @param minecraftClientOrServer An instance of the current MinecraftClient or the MinecraftServer.
 	 * @param onReady A {@link Consumer} that is invoked once the info is successfully obtained.
 	 * @param onError A {@link Consumer} that is invoked in the event fetching the info fails.
+	 * @see #fetchCommentsSync(int, int)
 	 */
-	public final void getIssuesAsync(
+	public final void getCommentsAsync(
 			int perPage, int page,
 			final ReentrantThreadExecutor<?> minecraftClientOrServer,
-			final @Nullable Consumer<RepositoryIssueInfo[]> onReady,
+			final @Nullable Consumer<Comment[]> onReady,
 			final @Nullable Consumer<Exception> onError)
 	{
 		//prepare
 		Objects.requireNonNull(minecraftClientOrServer);
 		Objects.requireNonNull(onReady);
 		Objects.requireNonNull(onError);
-		final AtomicReference<RepositoryIssueInfo[]> result = new AtomicReference<>(null);
+		final AtomicReference<Comment[]> result = new AtomicReference<>(null);
 		final AtomicReference<Exception> raisedException = new AtomicReference<Exception>(null);
 		
 		//execute thread task and perform the fetch
 		SCHEDULER.submit(() ->
 		{
 			//handle fetching
-			try { result.set(fetchIssuesSync(perPage, page)); }
+			try { result.set(fetchCommentsSync(perPage, page)); }
 			catch(Exception exc) { raisedException.set(exc); }
 			
 			//handle the results - must be done on the main thread
@@ -90,13 +88,30 @@ public abstract class RepositoryInfo extends RepositoryUGC
 	}
 	
 	/**
-	 * Synchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
-	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
-	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
+	 * Synchronously obtains an array of {@link Comment}s posted on this "repository issue".
+	 * @param perPage How many {@link Comment}s will be fetched "per page".
+	 * @param page The current "page" of {@link Comment}s that will be fetched.
 	 */
-	protected @Virtual RepositoryIssueInfo[] fetchIssuesSync(int perPage, int page) throws UnsupportedOperationException
+	protected @Virtual Comment[] fetchCommentsSync(int perPage, int page) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
+	}
+	// ==================================================
+	/**
+	 * Refers to a "comment" posted to a repository's issue.
+	 */
+	public abstract class Comment extends RepositoryUGC
+	{
+		/**
+		 * A {@link String} representation of the unique ID assigned to the comment.<br/>
+		 * May be {@code null} if the comment does not have a unique ID.
+		 */
+		public abstract @Nullable String getID();
+		
+		/**
+		 * Returns a "raw" {@link String} representation of the {@link Comment}'s contents.
+		 */
+		public abstract String getRawBody();
 	}
 	// ==================================================
 }
