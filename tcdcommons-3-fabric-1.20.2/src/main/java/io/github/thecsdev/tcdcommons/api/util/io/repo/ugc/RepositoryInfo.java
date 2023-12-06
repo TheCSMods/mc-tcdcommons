@@ -1,27 +1,22 @@
-package io.github.thecsdev.tcdcommons.api.util.io.repo;
+package io.github.thecsdev.tcdcommons.api.util.io.repo.ugc;
+
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.SCHEDULER;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import net.minecraft.text.Text;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
+/**
+ * Holds information about a given repository.
+ */
 public abstract class RepositoryInfo extends RepositoryUGC
 {
 	// ==================================================
-	protected static final ExecutorService SCHEDULER = RepositoryInfoProvider.SCHEDULER;
-	// ==================================================
-	/**
-	 * A {@link String} representation of the unique ID assigned to the repository.<br/>
-	 * May be {@code null} if the repository does not have a unique ID.
-	 */
-	public abstract @Nullable String getID();
-	// --------------------------------------------------
 	public abstract @Nullable Text getName();
 	public abstract @Nullable Text getDescription();
 	// --------------------------------------------------
@@ -43,7 +38,7 @@ public abstract class RepositoryInfo extends RepositoryUGC
 	 */
 	public abstract boolean hasForks();
 	
-	public abstract @Nullable Integer getOpenIssuesCount();
+	public abstract @Nullable Integer getOpenIssueCount();
 	public abstract @Nullable Integer getForkCount();
 	// ==================================================
 	/**
@@ -93,10 +88,10 @@ public abstract class RepositoryInfo extends RepositoryUGC
 	 * Synchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
 	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
 	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
+	 * @throws UnsupportedOperationException If this repository does not support fetching issues.
+	 * @throws Exception If some other {@link Exception} takes place while fetching issues.
 	 */
-	protected @Virtual RepositoryIssueInfo[] fetchIssuesSync(int perPage, int page) throws UnsupportedOperationException
-	{
-		throw new UnsupportedOperationException();
-	}
+	protected abstract RepositoryIssueInfo[] fetchIssuesSync(int perPage, int page)
+			throws UnsupportedOperationException, Exception;
 	// ==================================================
 }

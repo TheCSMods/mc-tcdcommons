@@ -4,12 +4,11 @@ import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -19,6 +18,7 @@ import net.minecraft.util.Identifier;
 /**
  * A {@link UITexture} that is loaded from an external
  * source outside of the vanilla game's resource manager.
+ * @see {@link UIExternalTexture#UIExternalTexture(NativeImage)}
  */
 public final class UIExternalTexture extends UITexture implements Closeable
 {
@@ -29,23 +29,28 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	private final NativeImage nativeImage;
 	private final NativeImageBackedTexture nativeImageBackedTexture;
 	// ==================================================
-	public UIExternalTexture(File pngFile) throws NullPointerException, IOException
-	{
-		this(new FileInputStream(Objects.requireNonNull(pngFile)), true);
-	}
-	
-	public UIExternalTexture(InputStream pngStream, boolean closeStream) throws NullPointerException, IOException
+	/**
+	 * Creates a {@link UIExternalTexture} instance using a {@link NativeImage} that
+	 * has been loaded from an external source.
+	 * @throws NullPointerException When the argument is {@code null}.
+	 * @throws IllegalStateException If this constructor is executed "off-thread".
+	 * @see NativeImage#read(InputStream)
+	 * @apiNote This operation is synchronous, and must be performed on the main thread.
+	 * The game will raise an {@link Exception} if done "off-thread".
+	 * @apiNote For performance reasons, it is recommended that the {@link NativeImage}
+	 * be loaded "off-thread", and then this constructor be called on the main thread.
+	 * @apiNote {@link NativeImage}s currently only support the "png" format (as of `1.20.2`).
+	 */
+	public UIExternalTexture(NativeImage image) throws NullPointerException, IllegalStateException
 	{
 		super(generateTextureIdentifier());
-		try
-		{
-			this.nativeImage = NativeImage.read(Objects.requireNonNull(pngStream));
-			this.nativeImageBackedTexture = new NativeImageBackedTexture(this.nativeImage);
-			
-			this.textureManager = MC_CLIENT.getTextureManager();
-			this.textureManager.registerTexture(getTextureID(), this.nativeImageBackedTexture);
-		}
-		finally { if(closeStream) pngStream.close(); }
+		RenderSystem.assertOnGameThreadOrInit(); //enforced by the game anyways...
+		
+		this.nativeImage = Objects.requireNonNull(image);
+		this.nativeImageBackedTexture = new NativeImageBackedTexture(this.nativeImage);
+		
+		this.textureManager = MC_CLIENT.getTextureManager();
+		this.textureManager.registerTexture(getTextureID(), this.nativeImageBackedTexture);
 	}
 	// --------------------------------------------------
 	public final @Override void close()
@@ -65,6 +70,29 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	 * Returns {@code true} if {@link #close()} was called on this {@link UIExternalTexture}.
 	 */
 	public final boolean isClosed() { return this.isClosed; }
+	
+	/**
+	 * Returns the width of the texture, in pixels.
+	 * @see NativeImage#getWidth()
+	 */
+	public final int getWidth() { return this.nativeImage.getWidth(); }
+	
+	/**
+	 * Returns the height of the texture, in pixels.
+	 * @see NativeImage#getHeight()
+	 */
+	public final int getHeight() { return this.nativeImage.getHeight(); }
+	
+	/**
+	 * Returns the color of a given pixel on the image.
+	 * @param x The X coordinate of the target pixel.
+	 * @param y The Y coordinate of the target pixel.
+	 * @throws IllegalArgumentException If the pixel coordinates are "out of bounds".
+	 * @see NativeImage#getColor(int, int)
+	 * @see #getWidth()
+	 * @see #getHeight()
+	 */
+	public final int getColor(int x, int y) throws IllegalArgumentException { return this.nativeImage.getColor(x, y); }
 	// ==================================================
 	private static long nextTexId = 0;
 	/**

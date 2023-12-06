@@ -1,6 +1,8 @@
-package io.github.thecsdev.tcdcommons.api.util.io.repo;
+package io.github.thecsdev.tcdcommons.api.util.io.repo.ugc;
 
 import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.SCHEDULER;
+
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -8,6 +10,8 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryUserInfo;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryIssueInfo.Comment;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
 /**
@@ -24,6 +28,30 @@ public abstract class RepositoryUGC
 	 */
 	protected @Nullable RepositoryUserInfo cachedAuthorUserInfo;
 	// ==================================================
+	public @Virtual @Override int hashCode()
+	{
+		return Objects.hash(
+				getClass().getName(),
+				getAuthorUserID(),
+				getCreatedTime(),
+				getLastEditedTime());
+	}
+	public @Virtual @Override boolean equals(Object obj)
+	{
+		if(obj == null || !Objects.equals(getClass(), obj.getClass())) return false;
+		else if(obj == this) return true;
+		final var ugc = (RepositoryUGC)obj;
+		return Objects.equals(getAuthorUserID(), ugc.getAuthorUserID()) &&
+				Objects.equals(getCreatedTime(), ugc.getCreatedTime()) &&
+				Objects.equals(getLastEditedTime(), ugc.getLastEditedTime());
+	}
+	// ==================================================
+	/**
+	 * A {@link String} representation of the unique ID assigned to this component.<br/>
+	 * May be {@code null} if this component does not have a unique ID.
+	 */
+	public abstract @Nullable String getID();
+	
 	/**
 	 * A {@link String} representation of the unique identifier of the user that owns this component, if there is one.
 	 * @apiNote Not to be confused with the user's unique username or account name!
@@ -31,6 +59,19 @@ public abstract class RepositoryUGC
 	 */
 	public abstract @Nullable String getAuthorUserID();
 	// --------------------------------------------------
+	/**
+	 * Returns an {@link Instant} representing the time at which
+	 * this {@link Comment} was first posted.
+	 */
+	public abstract @Nullable Instant getCreatedTime();
+	
+	/**
+	 * Returns an {@link Instant} representing the time at which
+	 * this {@link Comment} was last "edited"/"changed"/"updated".
+	 * @apiNote If this comment was never "edited", return {@link #getCreatedTime()}.
+	 */
+	public abstract @Nullable Instant getLastEditedTime();
+	// ==================================================
 	/**
 	 * Asynchronously fetches {@link RepositoryUserInfo} about this component's author.
 	 * @param minecraftClientOrServer An instance of the current MinecraftClient or the MinecraftServer.
@@ -80,10 +121,7 @@ public abstract class RepositoryUGC
 	 * @throws UnsupportedOperationException If this method is not implemented or the repository host does not support it.
 	 * @see #getAuthorUserID()
 	 */
-	protected @Virtual RepositoryUserInfo fetchAuthorUserInfoSync()
-			throws Exception, NullPointerException, UnsupportedOperationException
-	{
-		throw new UnsupportedOperationException();
-	}
+	protected abstract RepositoryUserInfo fetchAuthorUserInfoSync()
+			throws Exception, NullPointerException, UnsupportedOperationException;
 	// ==================================================
 }

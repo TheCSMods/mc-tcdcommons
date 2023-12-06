@@ -1,26 +1,24 @@
-package io.github.thecsdev.tcdcommons.api.util.io.repo;
+package io.github.thecsdev.tcdcommons.api.util.io.repo.ugc;
+
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.SCHEDULER;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryUserInfo;
 import net.minecraft.text.Text;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
 public abstract class RepositoryIssueInfo extends RepositoryUGC
 {
 	// ==================================================
-	protected static final ExecutorService SCHEDULER = RepositoryInfoProvider.SCHEDULER;
-	// ==================================================
 	/**
-	 * A {@link String} representation of the unique ID assigned to the issue.<br/>
-	 * May be {@code null} if the issue does not have a unique ID.
+	 * Returns information about the repository this issue belongs to.
 	 */
-	public abstract @Nullable String getID();
+	public abstract RepositoryInfo getRepository();
 	// --------------------------------------------------
 	/**
 	 * Returns the name of the issue, if there is one.
@@ -42,6 +40,13 @@ public abstract class RepositoryIssueInfo extends RepositoryUGC
 	 * Returns {@code true} if this issue has been "closed"/"resolved".
 	 */
 	public abstract boolean isClosed();
+	// --------------------------------------------------
+	/**
+	 * Returns {@code true} if this repository issue supports and allows "comments".
+	 */
+	public abstract boolean hasComments();
+	
+	public abstract @Nullable Integer getCommentCount();
 	// ==================================================
 	/**
 	 * Asynchronously obtains an array of {@link Comment}s posted on this "repository issue".
@@ -91,23 +96,17 @@ public abstract class RepositoryIssueInfo extends RepositoryUGC
 	 * Synchronously obtains an array of {@link Comment}s posted on this "repository issue".
 	 * @param perPage How many {@link Comment}s will be fetched "per page".
 	 * @param page The current "page" of {@link Comment}s that will be fetched.
+	 * @throws UnsupportedOperationException If this repository issue does not support fetching comments.
+	 * @throws Exception If some other {@link Exception} takes place while fetching comments.
 	 */
-	protected @Virtual Comment[] fetchCommentsSync(int perPage, int page) throws UnsupportedOperationException
-	{
-		throw new UnsupportedOperationException();
-	}
+	protected abstract Comment[] fetchCommentsSync(int perPage, int page)
+			throws UnsupportedOperationException, Exception;
 	// ==================================================
 	/**
 	 * Refers to a "comment" posted to a repository's issue.
 	 */
-	public abstract class Comment extends RepositoryUGC
+	public static abstract class Comment extends RepositoryUGC
 	{
-		/**
-		 * A {@link String} representation of the unique ID assigned to the comment.<br/>
-		 * May be {@code null} if the comment does not have a unique ID.
-		 */
-		public abstract @Nullable String getID();
-		
 		/**
 		 * Returns a "raw" {@link String} representation of the {@link Comment}'s contents.
 		 */

@@ -43,13 +43,16 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 	// ==================================================
 	GitHubUserInfo(JsonObject json) throws NullPointerException
 	{
-		this.id = Integer.toString(json.get("id").getAsInt());
+		this.id = Long.toString(json.get("id").getAsLong());
 		this.login = json.get("login").getAsString();
-		if(!json.get("name").isJsonNull()) this.name = literal(json.get("name").getAsString());
+		if(json.has("name") && !json.get("name").isJsonNull())
+			this.name = literal(json.get("name").getAsString());
 		else this.name = literal(this.login);
-		if(!json.get("bio").isJsonNull()) this.bio = literal(json.get("bio").getAsString());
+		if(json.has("bio") && !json.get("bio").isJsonNull())
+			this.bio = literal(json.get("bio").getAsString());
 		else this.bio = null;
-		if(!json.get("avatar_url").isJsonNull()) this.avatar_url = json.get("avatar_url").getAsString();
+		if(json.has("avatar_url") && !json.get("avatar_url").isJsonNull())
+			this.avatar_url = json.get("avatar_url").getAsString();
 		else this.avatar_url = null;
 	}
 	// ==================================================

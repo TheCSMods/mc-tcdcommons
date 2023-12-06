@@ -18,6 +18,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus.Experimental;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.github.GitHubRepositoryInfoProvider;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
@@ -36,7 +38,13 @@ public abstract class RepositoryInfoProvider extends Object
 {
 	// ==================================================
 	protected static final String THREAD_NAME = getModID() + ":repository_info_provider";
-	protected static final ExecutorService SCHEDULER = Executors.newCachedThreadPool(
+	
+	/**
+	 * An {@link ExecutorService} whose sole purpose is to perform {@link RepositoryInfo}
+	 * fetching on separate {@link Thread}s, so as to avoid lag-spikes.
+	 * @apiNote {@link Internal} use only. Do not use this yourself!
+	 */
+	public static final @Internal ExecutorService SCHEDULER = Executors.newCachedThreadPool(
 			runnable ->
 			{
 				final var thread = new Thread(runnable, THREAD_NAME);
@@ -108,6 +116,20 @@ public abstract class RepositoryInfoProvider extends Object
 	}
 	// --------------------------------------------------
 	/**
+	 * Fetches {@link RepositoryInfo} about a given remote repository, synchronously.
+	 * @param repoUrl The remote Git repository web URL.
+	 * @return {@link RepositoryInfo} if all goes well, or {@code null} if this
+	 * {@link RepositoryInfoProvider} does not support the given repository host.
+	 * @throws UnsupportedRepositoryHostException If the repository URL is not supported.
+	 * @apiNote This method is invoked asynchronously, on a separate {@link Thread}.
+	 * @apiNote It is your responsibility to handle {@link Exception}s and avoid raising them.
+	 * If your {@link RepositoryInfoProvider} does not support the URL, either return {@code null},
+	 * or {@code throw} {@link UnsupportedRepositoryHostException} instead.
+	 * @apiNote Do not take too long to execute (few seconds), or else a {@link TimeoutException} may be raised.
+	 */
+	public abstract RepositoryInfo fetchRepositoryInfoSync(String repoUrl) throws UnsupportedRepositoryHostException;
+	// ==================================================
+	/**
 	 * Performs a synchronous HTTP GET request to an API endpoint.
 	 * @param apiEndpoint The URL of the API endpoint, to which the request will be sent.
 	 * @throws NullPointerException If an argument is {@code null}.
@@ -129,6 +151,7 @@ public abstract class RepositoryInfoProvider extends Object
 				.build();
 		final var httpClient = HttpClients.custom()
 				.setDefaultRequestConfig(reqConfig)
+				.setRedirectStrategy(new LaxRedirectStrategy())
 				.build();
 		
 		//execute
@@ -145,19 +168,5 @@ public abstract class RepositoryInfoProvider extends Object
 		}
 		finally { httpClient.close(); }
 	}
-	// ==================================================
-	/**
-	 * Fetches {@link RepositoryInfo} about a given remote repository, synchronously.
-	 * @param repoUrl The remote Git repository web URL.
-	 * @return {@link RepositoryInfo} if all goes well, or {@code null} if this
-	 * {@link RepositoryInfoProvider} does not support the given repository host.
-	 * @throws UnsupportedRepositoryHostException If the repository URL is not supported.
-	 * @apiNote This method is invoked asynchronously, on a separate {@link Thread}.
-	 * @apiNote It is your responsibility to handle {@link Exception}s and avoid raising them.
-	 * If your {@link RepositoryInfoProvider} does not support the URL, either return {@code null},
-	 * or {@code throw} {@link UnsupportedRepositoryHostException} instead.
-	 * @apiNote Do not take too long to execute (few seconds), or else a {@link TimeoutException} may be raised.
-	 */
-	public abstract RepositoryInfo fetchRepositoryInfoSync(String repoUrl) throws UnsupportedRepositoryHostException;
 	// ==================================================
 }

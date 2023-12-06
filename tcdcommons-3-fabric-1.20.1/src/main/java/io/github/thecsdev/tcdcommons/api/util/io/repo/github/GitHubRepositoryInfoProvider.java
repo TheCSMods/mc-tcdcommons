@@ -3,8 +3,8 @@ package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfo;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
 
 /**
  * A {@link RepositoryInfoProvider} for repositories hosted on GitHub.

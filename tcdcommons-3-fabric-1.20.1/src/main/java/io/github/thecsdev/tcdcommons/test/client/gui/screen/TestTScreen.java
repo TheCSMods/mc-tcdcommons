@@ -5,6 +5,7 @@ import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.layout.UITableLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
@@ -17,6 +18,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.util.UIExternalTexture;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.text.Text;
 
 public final class TestTScreen extends TScreenPlus
@@ -118,7 +120,8 @@ public final class TestTScreen extends TScreenPlus
 		try
 		{
 			final var pngFile = new File(System.getProperty("user.home") + "/Desktop/test.png");
-			panel.addChild(new TTextureElement(0, 0, 70, 70, new UIExternalTexture(pngFile)));
+			final var png = NativeImage.read(new FileInputStream(pngFile));
+			panel.addChild(new TTextureElement(0, 0, 70, 70, new UIExternalTexture(png)));
 		}
 		catch(Exception exc) {}
 		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 2: " + i)));
