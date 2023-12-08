@@ -1,7 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetSync;
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetStringSync;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -99,7 +99,7 @@ public final class GitHubIssueInfo extends RepositoryIssueInfo
 				this.number,
 				perPage,
 				page);
-		final var content = httpGetSync(apiEndpoint);
+		final String content = httpGetStringSync(apiEndpoint);
 		
 		//parse JSON
 		try

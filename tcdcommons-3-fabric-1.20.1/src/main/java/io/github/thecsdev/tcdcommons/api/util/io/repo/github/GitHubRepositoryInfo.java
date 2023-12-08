@@ -1,7 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.getInfoAsync;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetSync;
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetStringSync;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
@@ -22,8 +24,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
+import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
 import net.minecraft.text.Text;
+import net.minecraft.util.thread.ReentrantThreadExecutor;
 
 public final class GitHubRepositoryInfo extends RepositoryInfo
 {
@@ -33,8 +38,9 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 	 * minimizing the effects of any rate limits that may apply.
 	 */
 	private static final Cache<String, GitHubRepositoryInfo> CACHE = CacheBuilder.newBuilder()
-			.expireAfterWrite(30, TimeUnit.MINUTES)
+			.expireAfterWrite(1, TimeUnit.HOURS)
 			.build();
+	static { TaskScheduler.schedulePeriodicCacheCleanup(CACHE); }
 	// ==================================================
 	private final GitHubUserInfo owner;
 	// ---------------------------------------------------
@@ -101,7 +107,7 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 				this.full_name,
 				perPage,
 				page);
-		final var content = httpGetSync(apiEndpoint);
+		final String content = httpGetStringSync(apiEndpoint);
 		
 		//parse JSON
 		try
@@ -115,26 +121,47 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 	}
 	// ==================================================
 	/**
+	 * Asynchronously obtains information about a given GitHub repository, using GitHub's APIs.
+	 * @param accountName The repository owner's unique username.
+	 * @param repository The repository's unique name.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 * @see RepositoryInfoProvider#getInfoAsync(ReentrantThreadExecutor, Consumer, Consumer, java.util.concurrent.Callable)
+	 */
+	public static final void getRepositoryInfoAsync(
+			final String accountName, final String repository,
+			final ReentrantThreadExecutor<?> minecraftClientOrServer,
+			final Consumer<RepositoryInfo> onReady,
+			final Consumer<Exception> onError) throws NullPointerException
+	{
+		Objects.requireNonNull(accountName);
+		Objects.requireNonNull(repository);
+		getInfoAsync(
+				minecraftClientOrServer,
+				onReady, onError,
+				() -> fetchRepositoryInfoSync(accountName, repository));
+	}
+	
+	/**
 	 * Synchronously obtains information about a given GitHub repository, using GitHub's APIs.
-	 * @param username The repository owner's unique username.
+	 * @param accountName The repository owner's unique username.
 	 * @param repository The repository's unique name.
 	 * @throws NullPointerException If an argument is {@code null}.
 	 * @throws URISyntaxException If an argument is not a valid URL component.
 	 * @throws HttpResponseException If the API's response status code is not 200.
 	 */
-	public static final GitHubRepositoryInfo getRepositoryInfoSync(String username, String repository)
+	public static final GitHubRepositoryInfo fetchRepositoryInfoSync(String accountName, String repository)
 			throws NullPointerException, URISyntaxException, ClientProtocolException, IOException
 	{
 		//prepare and handle cache
 		final var apiEndpoint = String.format(
 				"https://api.github.com/repos/%s/%s",
-				Objects.requireNonNull(username),
+				Objects.requireNonNull(accountName),
 				Objects.requireNonNull(repository));
 		final var cached = CACHE.getIfPresent(apiEndpoint);
 		if(cached != null) return cached;
 		
 		//perform HTTP GET
-		final var content = httpGetSync(apiEndpoint);
+		final String content = httpGetStringSync(apiEndpoint);
 		
 		//parse JSON
 		try

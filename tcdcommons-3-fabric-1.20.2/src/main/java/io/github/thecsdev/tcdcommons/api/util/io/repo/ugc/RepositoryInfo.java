@@ -1,9 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.ugc;
 
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.SCHEDULER;
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.getInfoAsync;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
@@ -52,36 +50,10 @@ public abstract class RepositoryInfo extends RepositoryUGC
 	public final void getIssuesAsync(
 			int perPage, int page,
 			final ReentrantThreadExecutor<?> minecraftClientOrServer,
-			final @Nullable Consumer<RepositoryIssueInfo[]> onReady,
-			final @Nullable Consumer<Exception> onError)
+			final Consumer<RepositoryIssueInfo[]> onReady,
+			final Consumer<Exception> onError)
 	{
-		//prepare
-		Objects.requireNonNull(minecraftClientOrServer);
-		Objects.requireNonNull(onReady);
-		Objects.requireNonNull(onError);
-		final AtomicReference<RepositoryIssueInfo[]> result = new AtomicReference<>(null);
-		final AtomicReference<Exception> raisedException = new AtomicReference<Exception>(null);
-		
-		//execute thread task and perform the fetch
-		SCHEDULER.submit(() ->
-		{
-			//handle fetching
-			try { result.set(fetchIssuesSync(perPage, page)); }
-			catch(Exception exc) { raisedException.set(exc); }
-			
-			//handle the results - must be done on the main thread
-			minecraftClientOrServer.executeSync(() ->
-			{
-				//handle unsupported operation
-				if(result.get() == null && raisedException.get() == null)
-					raisedException.set(new UnsupportedOperationException());
-				//handle any raised exceptions
-				if(raisedException.get() != null)
-					onError.accept(raisedException.get());
-				//and finally, handle "on ready"
-				else onReady.accept(result.get());
-			});
-		});
+		getInfoAsync(minecraftClientOrServer, onReady, onError, () -> fetchIssuesSync(perPage, page));
 	}
 	
 	/**

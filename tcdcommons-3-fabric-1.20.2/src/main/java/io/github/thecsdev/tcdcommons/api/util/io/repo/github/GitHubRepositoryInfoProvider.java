@@ -28,7 +28,7 @@ public final class GitHubRepositoryInfoProvider extends RepositoryInfoProvider
 			final String repo_name = pathSegments[2];
 			
 			//create and return the repository info
-			return GitHubRepositoryInfo.getRepositoryInfoSync(owner_login, repo_name);
+			return GitHubRepositoryInfo.fetchRepositoryInfoSync(owner_login, repo_name);
 		}
 		catch(MalformedURLException mue) {/*malformed URLs are just unsupported non-GitHub repositories*/}
 		catch(Exception exc)

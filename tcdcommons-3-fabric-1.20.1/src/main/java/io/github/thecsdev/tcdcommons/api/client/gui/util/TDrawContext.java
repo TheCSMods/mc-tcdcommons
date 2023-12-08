@@ -1,5 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.util;
 
+import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.client.gui.widget.TClickableWidget.BUTTON_TEXTURE_SLICE_SIZE;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
@@ -52,7 +53,8 @@ public final class TDrawContext extends DrawContext
 	public static final @Beta int DEFAULT_TEXT_SIDE_OFFSET = 5;
 	public static final @Beta int DEFAULT_TEXT_COLOR = 16777215;
 	public static final @Beta int DEFAULT_ERROR_COLOR = Color.MAGENTA.getRGB();
-	public static final @Beta Identifier TEXTURE_FILL = new Identifier(TCDCommons.getModID(), "textures/gui/fill.png");
+	public static final @Beta Identifier TEXTURE_FILL = new Identifier(getModID(), "textures/gui/fill.png");
+	public static final @Beta Identifier TEXTURE_ICONS = new Identifier(getModID(), "textures/gui/icons.png");
 	// ==================================================
 	protected final ColorStack colorStack = new ColorStack();
 	protected final TextScaleStack textScaleStack = new TextScaleStack();

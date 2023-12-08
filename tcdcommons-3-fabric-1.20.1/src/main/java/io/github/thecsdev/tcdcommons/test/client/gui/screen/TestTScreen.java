@@ -4,8 +4,9 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPa
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.net.URL;
+
+import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.layout.UITableLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
@@ -15,15 +16,30 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.UIExternalTexture;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.UITexture;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.text.Text;
 
 public final class TestTScreen extends TScreenPlus
 {
 	// ==================================================
+	private static @Nullable TTextureElement tex;
+	private static @Nullable UIExternalTexture cacheTex; //always respect the bandwidth, even when testing
+	static
+	{
+		try
+		{
+			UIExternalTexture.loadTextureAsync(
+					new URL("https://avatars.githubusercontent.com/u/120978613?v=4"),
+					MC_CLIENT,
+					res -> { cacheTex = res; if(tex != null) tex.setTexture(res); },
+					exc -> exc.printStackTrace());
+		}
+		catch(Exception e) {}
+	}
+	// --------------------------------------------------
 	public final Screen parent;
 	// ==================================================
 	public TestTScreen(Screen parent)
@@ -117,15 +133,9 @@ public final class TestTScreen extends TScreenPlus
 		
 		//create some test elements
 		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 1:" + i)));
-		try
-		{
-			final var pngFile = new File(System.getProperty("user.home") + "/Desktop/test.png");
-			final var png = NativeImage.read(new FileInputStream(pngFile));
-			panel.addChild(new TTextureElement(0, 0, 70, 70, new UIExternalTexture(png)));
-		}
-		catch(Exception exc) {}
+		panel.addChild(tex = new TTextureElement(0, 0, 70, 70, new UITexture()));
+		if(cacheTex != null) tex.setTexture(cacheTex);
 		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 2: " + i)));
-		
 		new UITableLayout(4).apply(panel);
 		
 		//return the panel

@@ -13,6 +13,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalNotification;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
+import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
 import io.github.thecsdev.tcdcommons.client.world.ClientSandboxWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -38,6 +39,7 @@ public final @Internal class ClientEntitySandbox
 					try { entity.discard(); } catch(Exception e) {}
 			})
 			.build();
+	static { TaskScheduler.schedulePeriodicCacheCleanup(ENTITY_CACHE); }
 	// ==================================================
 	public static @Nullable Entity getCachedEntityFromType(EntityType<?> entityType)
 	{
