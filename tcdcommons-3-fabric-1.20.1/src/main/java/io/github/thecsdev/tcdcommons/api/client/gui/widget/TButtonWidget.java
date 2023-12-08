@@ -17,6 +17,7 @@ public @Virtual class TButtonWidget extends TClickableWidget implements ITextPro
 	protected @Nullable Text text;
 	protected @Nullable Consumer<TButtonWidget> onClick;
 	protected @Nullable UITexture icon;
+	protected final float[] iconColor = new float[] { 1, 1, 1, 1 };
 	// ==================================================
 	public TButtonWidget(int x, int y, int width, int height) { this(x, y, width, height, null); }
 	public TButtonWidget(int x, int y, int width, int height, Text text) { this(x, y, width, height, text, null); }
@@ -35,6 +36,16 @@ public @Virtual class TButtonWidget extends TClickableWidget implements ITextPro
 	// --------------------------------------------------
 	public final @Nullable UITexture getIcon() { return this.icon; }
 	public @Virtual void setIcon(@Nullable UITexture icon) { this.icon = icon; }
+	// --------------------------------------------------
+	public final float[] getIconColor() { return this.iconColor; }
+	public final void setIconColor(float r, float g, float b) { setIconColor(r, g, b, this.iconColor[3]); }
+	public @Virtual void setIconColor(float r, float g, float b, float a)
+	{
+		this.iconColor[0] = r;
+		this.iconColor[1] = g;
+		this.iconColor[2] = b;
+		this.iconColor[3] = a;
+	}
 	// ==================================================
 	protected @Virtual @Override void onClick()
 	{
@@ -53,7 +64,11 @@ public @Virtual class TButtonWidget extends TClickableWidget implements ITextPro
 	protected @Virtual void renderBackground(TDrawContext pencil)
 	{
 		if(this.icon != null)
+		{
+			pencil.pushTShaderColor(this.iconColor[0], this.iconColor[1], this.iconColor[2], this.iconColor[3]);
 			this.icon.drawTexture(pencil, getX() + 2, getY() + 2, getWidth() - 4, getHeight() - 4);
+			pencil.popTShaderColor();
+		}
 	}
 	// ==================================================
 }
