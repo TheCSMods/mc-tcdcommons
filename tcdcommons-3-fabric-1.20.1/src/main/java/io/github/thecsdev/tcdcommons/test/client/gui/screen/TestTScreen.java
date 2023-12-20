@@ -4,11 +4,13 @@ import static io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPa
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.Instant;
 
 import org.jetbrains.annotations.Nullable;
 
-import io.github.thecsdev.tcdcommons.api.client.gui.layout.UITableLayout;
+import io.github.thecsdev.tcdcommons.api.client.gui.layout.UIListLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
@@ -16,11 +18,16 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.UIExternalTexture;
-import io.github.thecsdev.tcdcommons.api.client.gui.util.UITexture;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
+import io.github.thecsdev.tcdcommons.api.util.enumerations.Axis2D;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
+import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResource;
+import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
+import io.github.thecsdev.tcdcommons.api.util.io.cache.IResourceFetchTask;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.ThreadExecutor;
 
 public final class TestTScreen extends TScreenPlus
 {
@@ -132,11 +139,33 @@ public final class TestTScreen extends TScreenPlus
 		addChild(scroll_y);*/
 		
 		//create some test elements
-		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 1:" + i)));
-		panel.addChild(tex = new TTextureElement(0, 0, 70, 70, new UITexture()));
-		if(cacheTex != null) tex.setTexture(cacheTex);
-		for(int i = 0; i < 14; i++) panel.addChild(new TButtonWidget(0, 0, 70, 20, literal("Test 2: " + i)));
-		new UITableLayout(4).apply(panel);
+		final var btn = new TButtonWidget(0, 0, 250, 20, literal("Test resource loader (check console)"));
+		panel.addChild(btn, false);
+		new UIListLayout(Axis2D.Y).apply(panel);
+		btn.setOnClick(__ ->
+		{
+			CachedResourceManager.getResourceAsync(
+					new Identifier("tcdcommons", "test_string"),
+					new IResourceFetchTask<String>()
+			{
+				public Class<String> getResourceType() { return String.class; }
+				public ThreadExecutor<?> getMinecraftClientOrServer() { return MC_CLIENT; }
+				public CachedResource<String> fetchResourceSync() throws IOException
+				{
+					System.out.println("[Test] Fetching test string resource...");
+					try { Thread.sleep(3000); } catch(InterruptedException ie) {}
+					return CachedResource.ofString(
+							"Hello world! This is a test fetched string resource.",
+							Instant.now().plusSeconds(60 * 5));
+				}
+				public void onReady(String resource) { System.out.println("[Test] Fetched a test string: " + resource); }
+				public void onError(Exception exception)
+				{
+					System.err.println("[Test] Error while fetching test string resource");
+					exception.printStackTrace();
+				}
+			});
+		});
 		
 		//return the panel
 		return panel;
