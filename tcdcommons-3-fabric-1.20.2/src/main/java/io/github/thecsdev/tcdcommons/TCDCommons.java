@@ -29,8 +29,8 @@ public class TCDCommons extends Object
 		
 		//assign instance
 		Instance = this;
-		modInfo = FabricLoader.getInstance().getModContainer(getModID()).get();
-		this.userAgent = this.modInfo.getMetadata().getContact().get("sources").orElse(getModID());
+		this.modInfo = FabricLoader.getInstance().getModContainer(getModID()).get();
+		this.userAgent = this.modInfo.getMetadata().getContact().get("user_agent").orElse(getModID());
 		
 		//log stuff
 		LOGGER.info("Initializing '" + getModName() + "' " + modInfo.getMetadata().getVersion() +

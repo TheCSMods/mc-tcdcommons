@@ -53,6 +53,7 @@ public final class CachedResourceManager
 	 */
 	private static final Cache<Identifier, LinkedBlockingDeque<IResourceFetchTask<?>>> CURRENT_TASKS;
 	// ==================================================
+	private CachedResourceManager() {}
 	static
 	{
 		//prepare threading

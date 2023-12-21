@@ -6,10 +6,10 @@ import io.github.thecsdev.tcdcommons.api.config.annotation.SerializedAs;
 public class TCDCommonsConfig extends AutoConfig
 {
 	// ==================================================
-	@SerializedAs("enablePlayerBadges") //mitigate side-effects of field renaming
-	public boolean enablePlayerBadges = true;
-	@SerializedAs("broadcastEarningPlayerBadges")
-	public boolean broadcastEarningPlayerBadges = true;
+	//mitigate side-effects of field renaming by using `@SerializedAs`
+	public @SerializedAs("enablePlayerBadges") boolean enablePlayerBadges = true;
+	public @SerializedAs("broadcastEarningPlayerBadges") boolean broadcastEarningPlayerBadges = true;
+	public @SerializedAs("enableHttpUtils") boolean enableHttpUtils = true;
 	// ==================================================
 	public TCDCommonsConfig(String name) { super(name); }
 	// ==================================================

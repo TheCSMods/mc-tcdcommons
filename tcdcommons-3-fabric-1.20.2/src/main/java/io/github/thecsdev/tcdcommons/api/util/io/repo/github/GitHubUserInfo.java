@@ -2,10 +2,10 @@ package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.getInfoAsync;
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetStringSync;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import io.github.thecsdev.tcdcommons.api.util.io.HttpUtils;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryUserInfo;
 import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
@@ -119,7 +120,7 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 		if(cached != null) return cached;
 		
 		//perform HTTP GET
-		final String content = httpGetStringSync(apiEndpoint);
+		final String content = HttpUtils.httpGetSyncS(new URI(apiEndpoint));
 		
 		//parse JSON
 		try { return new GitHubUserInfo(new Gson().fromJson(content, JsonObject.class)); }
@@ -142,7 +143,7 @@ public final class GitHubUserInfo extends RepositoryUserInfo
 		if(cached != null) return cached;
 		
 		//perform HTTP GET
-		final String content = httpGetStringSync(apiEndpoint);
+		final String content = HttpUtils.httpGetSyncS(new URI(apiEndpoint));
 		
 		//parse JSON
 		try { return new GitHubUserInfo(new Gson().fromJson(content, JsonObject.class)); }

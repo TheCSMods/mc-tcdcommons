@@ -2,12 +2,12 @@ package io.github.thecsdev.tcdcommons.api.client.gui.util;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext.TEXTURE_ICONS;
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetBytesSync;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import java.awt.Rectangle;
 import java.io.Closeable;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import io.github.thecsdev.tcdcommons.api.util.io.HttpUtils;
 import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -196,8 +197,8 @@ public final class UIExternalTexture extends UITexture implements Closeable
 		final Callable<NativeImage> nis = () ->
 		{
 			//perform the http get request
-			final byte[] pngEntity = httpGetBytesSync(
-					textureUrl.toString(),
+			final byte[] pngEntity = HttpUtils.httpGetSyncB(
+					new URI(textureUrl.toString()),
 					new BasicHeader("Accept", "image/png"));
 			return NativeImage.read(pngEntity);
 		};

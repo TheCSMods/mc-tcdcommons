@@ -1,9 +1,9 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetStringSync;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import io.github.thecsdev.tcdcommons.api.util.io.HttpUtils;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryIssueInfo;
 import net.minecraft.text.Text;
 
@@ -99,7 +100,7 @@ public final class GitHubIssueInfo extends RepositoryIssueInfo
 				this.number,
 				perPage,
 				page);
-		final String content = httpGetStringSync(apiEndpoint);
+		final String content = HttpUtils.httpGetSyncS(new URI(apiEndpoint));
 		
 		//parse JSON
 		try

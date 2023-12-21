@@ -3,9 +3,6 @@ package io.github.thecsdev.tcdcommons.api.util.io.repo;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.REPO_INFO_PROVIDER;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -14,22 +11,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import org.apache.http.Header;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.util.EntityUtils;
-import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
-import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.github.GitHubRepositoryInfoProvider;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
-import io.netty.util.internal.UnstableApi;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
@@ -160,67 +146,5 @@ public abstract class RepositoryInfoProvider extends Object
 	 * @apiNote Do not take too long to execute (few seconds), or else a {@link TimeoutException} may be raised.
 	 */
 	public abstract RepositoryInfo fetchRepositoryInfoSync(String repoUrl) throws UnsupportedRepositoryHostException;
-	// ==================================================
-	@UnstableApi
-	public static final @Experimental @Internal String httpGetStringSync(
-			final String apiEndpoint,
-			final Header... headers)
-			throws NullPointerException, URISyntaxException, ClientProtocolException, IOException
-	{
-		return (String)httpGetSync(true, apiEndpoint, headers);
-	}
-	@UnstableApi
-	public static final @Experimental @Internal byte[] httpGetBytesSync(
-			final String apiEndpoint,
-			final Header... headers)
-			throws NullPointerException, URISyntaxException, ClientProtocolException, IOException
-	{
-		return (byte[])httpGetSync(false, apiEndpoint, headers);
-	}
-	/**
-	 * Performs a synchronous HTTP GET request to an API endpoint.
-	 * @param apiEndpoint The URL of the API endpoint, to which the request will be sent.
-	 * @param headers An array of {@link Header}s that will be included in the {@link HttpGet} request.
-	 * @throws NullPointerException If an argument is {@code null}.
-	 * @throws URISyntaxException If an argument is not a valid URL component.
-	 * @throws HttpResponseException If the API's response status code is not 200.
-	 */
-	@UnstableApi
-	private static final @Experimental @Internal Object httpGetSync(
-			final boolean returnAsString,
-			final String apiEndpoint,
-			final Header... headers)
-			throws NullPointerException, URISyntaxException, ClientProtocolException, IOException
-	{
-		//prepare http get
-		final var httpGet = new HttpGet(new URI(Objects.requireNonNull(apiEndpoint)));
-		httpGet.addHeader("User-Agent", TCDCommons.getInstance().userAgent);
-		for(final var header : headers) httpGet.addHeader(header);
-		
-		final var reqConfig = RequestConfig.custom()
-				.setSocketTimeout(3000)
-				.setConnectTimeout(3000)
-				.setConnectionRequestTimeout(3000)
-				.build();
-		final var httpClient = HttpClients.custom()
-				.setDefaultRequestConfig(reqConfig)
-				.setRedirectStrategy(new LaxRedirectStrategy())
-				.build();
-		
-		//execute
-		try
-		{
-			final var response = httpClient.execute(httpGet);
-			final var responseEntity = response.getEntity();
-			
-			final var responseSL = response.getStatusLine();
-			if(responseSL.getStatusCode() != 200)
-				throw new HttpResponseException(responseSL.getStatusCode(), responseSL.getReasonPhrase());
-			
-			if(returnAsString) return EntityUtils.toString(responseEntity);
-			else return EntityUtils.toByteArray(responseEntity);
-		}
-		finally { httpClient.close(); }
-	}
 	// ==================================================
 }

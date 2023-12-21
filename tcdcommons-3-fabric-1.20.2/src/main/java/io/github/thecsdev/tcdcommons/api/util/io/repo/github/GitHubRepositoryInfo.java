@@ -1,10 +1,10 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.github;
 
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.getInfoAsync;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.httpGetStringSync;
+import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.getInfoAsync;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import io.github.thecsdev.tcdcommons.api.util.io.HttpUtils;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
 import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
@@ -107,7 +108,7 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 				this.full_name,
 				perPage,
 				page);
-		final String content = httpGetStringSync(apiEndpoint);
+		final String content = HttpUtils.httpGetSyncS(new URI(apiEndpoint));
 		
 		//parse JSON
 		try
@@ -161,7 +162,7 @@ public final class GitHubRepositoryInfo extends RepositoryInfo
 		if(cached != null) return cached;
 		
 		//perform HTTP GET
-		final String content = httpGetStringSync(apiEndpoint);
+		final String content = HttpUtils.httpGetSyncS(new URI(apiEndpoint));
 		
 		//parse JSON
 		try
