@@ -171,7 +171,9 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	 * @param onError A {@link Consumer} that is invoked in the event fetching the image fails.
 	 * @throws NullPointerException If a non-{@link Nullable} argument is null.
 	 * @apiNote For obvious reasons, requires internet connection.
+	 * @apiNote {@link Deprecated} because it does not handle caching properly!
 	 */
+	@Deprecated(since = "3.7", forRemoval = true)
 	public static final void loadTextureAsync(
 			final URL textureUrl,
 			final ReentrantThreadExecutor<?> minecraftClientOrServer,
@@ -217,7 +219,9 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	 * @param onError A {@link Consumer} that is invoked in the event fetching the image fails.
 	 * @throws NullPointerException If a non-{@link Nullable} argument is null.
 	 * @apiNote This method does not automatically cache {@link UIExternalTexture}s!
+	 * @apiNote {@link Deprecated} because it does not handle caching properly!
 	 */
+	@Deprecated(since = "3.7", forRemoval = true)
 	public static final void loadTextureAsync(
 			final Callable<NativeImage> nativeImageSupplier,
 			final ReentrantThreadExecutor<?> minecraftClientOrServer,

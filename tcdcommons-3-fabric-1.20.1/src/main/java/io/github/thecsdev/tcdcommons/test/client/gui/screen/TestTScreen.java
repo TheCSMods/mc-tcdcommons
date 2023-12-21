@@ -5,7 +5,6 @@ import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.Instant;
 
 import org.jetbrains.annotations.Nullable;
@@ -38,11 +37,11 @@ public final class TestTScreen extends TScreenPlus
 	{
 		try
 		{
-			UIExternalTexture.loadTextureAsync(
+			/*UIExternalTexture.loadTextureAsync(
 					new URL("https://avatars.githubusercontent.com/u/120978613?v=4"),
 					MC_CLIENT,
 					res -> { cacheTex = res; if(tex != null) tex.setTexture(res); },
-					exc -> exc.printStackTrace());
+					exc -> exc.printStackTrace());*/
 		}
 		catch(Exception e) {}
 	}

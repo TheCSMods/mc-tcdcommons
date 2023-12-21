@@ -104,9 +104,31 @@ public final class CachedResourceManager
 	 * @throws NullPointerException If an argument is {@code null}, or a method in
 	 * {@link IResourceFetchTask} returns {@code null}.
 	 */
-	public static final synchronized <R> void getResourceAsync(
+	public static final <R> void getResourceAsync(
 			final Identifier resourceId,
 			final IResourceFetchTask<R> task) throws NullPointerException
+	{ getResource(resourceId, task, true); }
+	
+	/**
+	 * Same as {@link #getResourceAsync(Identifier, IResourceFetchTask)}, except all
+	 * tasks are performed on the current {@link Thread}, including the fetching and
+	 * caching and handling of the {@link CachedResource}.
+	 * @param <R> The type of the resource being obtained.
+	 * @param resourceId The unique {@link Identifier} of the resource being obtained.
+	 * @param task The {@link IResourceFetchTask} that will be used to obtain and handle the resource.
+	 * @throws NullPointerException If an argument is {@code null}, or a method in
+	 * {@link IResourceFetchTask} returns {@code null}.
+	 * @apiNote Not recommended to call on the main {@link Thread}.
+	 */
+	public static final <R> void getResourceSync(
+			final Identifier resourceId,
+			final IResourceFetchTask<R> task) throws NullPointerException
+	{ getResource(resourceId, task, false); }
+	
+	private static final @Internal <R> void getResource(
+			final Identifier resourceId,
+			final IResourceFetchTask<R> task,
+			final boolean isAsync) throws NullPointerException
 	{
 		//null checks and variable obtaining
 		Objects.requireNonNull(resourceId);
@@ -122,7 +144,8 @@ public final class CachedResourceManager
 			{
 				//if there was a recent error, avoid spamming more requests to
 				//try and load the resource, by executing the error handler instead
-				mc.executeSync(() -> task.onError(recentException));
+				final Runnable r = () -> task.onError(recentException);
+				if(isAsync) mc.executeSync(r); else r.run();
 				return;
 			}
 			
@@ -133,25 +156,30 @@ public final class CachedResourceManager
 					Instant.now().isBefore(cachedResource.getExpirationDate())) //expiration checks
 			{
 				final @SuppressWarnings("unchecked") R castedRs = (R)cachedResource.getResource();
-				mc.executeSync(() -> task.onReady(castedRs));
+				final Runnable r = () -> task.onReady(castedRs);
+				if(isAsync) mc.executeSync(r); else r.run();
 				return;
 			}
 		}
 		
-		//handle tasks
+		// ----- prepare to do the fetch; handle tasks - no Exception-s allowed beyond this point
 		// - this is done to prevent "concurrent spam fetching" of the same resource
-		final var currentTaskQueue = new AtomicReference<>(CURRENT_TASKS.getIfPresent(resourceId));
-		if(currentTaskQueue.get() == null)
+		final var currentTaskQueue = new AtomicReference<LinkedBlockingDeque<IResourceFetchTask<?>>>(null);
+		synchronized(CURRENT_TASKS)
 		{
-			final var newTask = new LinkedBlockingDeque<IResourceFetchTask<?>>(Integer.MAX_VALUE);
-			CURRENT_TASKS.put(resourceId, newTask);
-			currentTaskQueue.set(newTask);
-			newTask.add(task);
+			currentTaskQueue.set(CURRENT_TASKS.getIfPresent(resourceId));
+			if(currentTaskQueue.get() == null)
+			{
+				final var newTask = new LinkedBlockingDeque<IResourceFetchTask<?>>(Integer.MAX_VALUE);
+				CURRENT_TASKS.put(resourceId, newTask);
+				currentTaskQueue.set(newTask);
+				newTask.add(task);
+			}
+			else { currentTaskQueue.get().add(task); return; }
 		}
-		else { currentTaskQueue.get().add(task); return; }
 		
 		//do the fetch (the hardest part; gone wrong; exceptions raised; must see; watch till the end to see crazy results;)
-		THREAD_SCHEDULER.execute(() ->
+		final Runnable asyncFetchTask = () ->
 		{
 			//prepare to fetch
 			final AtomicReference<CachedResource<R>> result = new AtomicReference<>(null);
@@ -199,8 +227,11 @@ public final class CachedResourceManager
 			CURRENT_TASKS.invalidate(resourceId); //must invalidate before iterating
 			
 			//notify listeners, on the main thread
-			__broadcastResult(currentTaskQueue.get().stream().toList(), result.get(), error.get());
-		});
+			__broadcastResult(currentTaskQueue.get().stream().toList(), result.get(), error.get(), isAsync);
+		};
+		
+		if(isAsync) THREAD_SCHEDULER.execute(asyncFetchTask);
+		else asyncFetchTask.run();
 	}
 	
 	/**
@@ -211,7 +242,8 @@ public final class CachedResourceManager
 	private static final @Internal void __broadcastResult(
 			final Collection<IResourceFetchTask<?>> listeners,
 			final @Nullable CachedResource<?> result,
-			final @Nullable Exception error)
+			final @Nullable Exception error,
+			final boolean isAsync)
 	{
 		//safe null checks, just in case
 		if(result == null && error == null) return;
@@ -224,7 +256,7 @@ public final class CachedResourceManager
 			if(mc == null) return;
 			
 			//execute task results
-			mc.executeSync(() ->
+			final Runnable r = () ->
 			{
 				//broadcast any errors
 				if(error != null) task.onError(error);
@@ -233,7 +265,8 @@ public final class CachedResourceManager
 					task.onError(new ClassCastException("Fetching returned an illegal resource type."));
 				//finally, broadcast successful results
 				else ((IResourceFetchTask)task).onReady(result.getResource());
-			});
+			};
+			if(isAsync) mc.executeSync(r); else r.run();
 		});
 	}
 	// --------------------------------------------------
