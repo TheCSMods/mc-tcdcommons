@@ -1,69 +1,51 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo.ugc;
 
-import static io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider.getInfoAsync;
-
-import java.util.function.Consumer;
+import java.math.BigInteger;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.thread.ReentrantThreadExecutor;
+import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryHostInfo;
 
-/**
- * Holds information about a given repository.
- */
 public abstract class RepositoryInfo extends RepositoryUGC
 {
 	// ==================================================
-	public abstract @Nullable Text getName();
-	public abstract @Nullable Text getDescription();
+	/**
+	 * Returns the {@link RepositoryHostInfo} about the host that hosts this repository.
+	 */
+	public abstract RepositoryHostInfo getHost();
+	
+	/**
+	 * Returns a {@link String} representation of this repository's unique identifier.
+	 */
+	public abstract String getID();
 	// --------------------------------------------------
 	/**
-	 * Represents an array of "tags" or "labels" or "topics" assigned to this repository.
-	 * Intended to be a user-friendly/readable array of {@link Text}s representing those "tags".
-	 * @apiNote If the repository host does not support "tags", or the repository itself does
-	 * not have any "tags" assigned to it, then return an empty array.
+	 * Returns the name of this repository.
 	 */
-	public abstract Text[] getTags();
+	public abstract String getName();
+	
+	/**
+	 * Returns the description of this repository.
+	 */
+	public abstract @Nullable String getDescription();
 	// --------------------------------------------------
 	/**
-	 * Returns {@code true} if this repository supports and allows "issues" aka posting bug reports.
+	 * Returns the number of issues or bug reports that are
+	 * currently "open" for this repository.
+	 * @apiNote Returns {@code null} if unsupported.
 	 */
-	public abstract boolean hasIssues();
+	public abstract @Nullable BigInteger getOpenIssuesCount();
 	
 	/**
-	 * Returns {@code true} if this repository supports and allows being "forked".
+	 * Returns the number of times this repository had been forked.
+	 * @apiNote Returns {@code null} if unsupported.
 	 */
-	public abstract boolean hasForks();
-	
-	public abstract @Nullable Integer getOpenIssueCount();
-	public abstract @Nullable Integer getForkCount();
-	// ==================================================
-	/**
-	 * Asynchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
-	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
-	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
-	 * @param minecraftClientOrServer An instance of the current MinecraftClient or the MinecraftServer.
-	 * @param onReady A {@link Consumer} that is invoked once the info is successfully obtained.
-	 * @param onError A {@link Consumer} that is invoked in the event fetching the info fails.
-	 */
-	public final void getIssuesAsync(
-			int perPage, int page,
-			final ReentrantThreadExecutor<?> minecraftClientOrServer,
-			final Consumer<RepositoryIssueInfo[]> onReady,
-			final Consumer<Exception> onError)
-	{
-		getInfoAsync(minecraftClientOrServer, onReady, onError, () -> fetchIssuesSync(perPage, page));
-	}
+	public abstract @Nullable BigInteger getForkCount();
 	
 	/**
-	 * Synchronously obtains an array of {@link RepositoryIssueInfo}s posted on this "repository".
-	 * @param perPage How many {@link RepositoryIssueInfo}s will be fetched "per page".
-	 * @param page The current "page" of {@link RepositoryIssueInfo}s that will be fetched.
-	 * @throws UnsupportedOperationException If this repository does not support fetching issues.
-	 * @throws Exception If some other {@link Exception} takes place while fetching issues.
+	 * Returns the number of times this repository had been liked/starred/favorited.
+	 * @apiNote Returns {@code null} if unsupported.
 	 */
-	protected abstract RepositoryIssueInfo[] fetchIssuesSync(int perPage, int page)
-			throws UnsupportedOperationException, Exception;
+	public abstract @Nullable BigInteger getLikeCount();
 	// ==================================================
 }

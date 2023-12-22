@@ -1,45 +1,80 @@
 package io.github.thecsdev.tcdcommons.api.util.io.repo;
 
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.Objects;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.text.Text;
+import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 
 /**
- * Represents information about a user that is registered on a repository hosting service.
+ * Provides information about a given user whose account is registered on a repository hosting platform.
+ * @see RepositoryHostInfo
  */
 public abstract class RepositoryUserInfo
 {
 	// ==================================================
 	/**
-	 * A {@link String} representation of the unique ID assigned to the user.<br/>
-	 * May be {@code null} if the user does not have a unique ID.
-	 * @apiNote Not to be confused with the user's "unique account name"!
+	 * Returns the {@link RepositoryHostInfo} about the host that hosts this user's account.
 	 */
-	public abstract @Nullable String getID();
-	// --------------------------------------------------
-	/**
-	 * The "unique account name" of the user. If the hosting platform does not
-	 * support or have a feature where accounts can have "unique" names, then
-	 * return {@code null}.
-	 */
-	public abstract @Nullable String getName();
+	public abstract RepositoryHostInfo getHost();
 	
 	/**
-	 * The "display" name of the user's account, for example a username. This
-	 * type of name does not have to be "unique" like how {@link #getName()} does.
+	 * Returns a {@link String} representation of the user's unique account identifier.
+	 * @apiNote Not to be confused with the account's unique username.
 	 */
-	public abstract @Nullable Text getDisplayName();
-	
-	/**
-	 * Typically the user's "biography"/"about me", if one is defined.
-	 */
-	public abstract @Nullable Text getDescription();
+	public abstract String getID();
 	// --------------------------------------------------
 	/**
-	 * If the hosting platform supports accounts having "profile pictures",
-	 * then this should point to the URL endpoint where a copy of the
-	 * user's "profile picture" may be obtained.
+	 * Returns the unique username of the account. This username has to
+	 * be unique to this account on the entire repository platform.
 	 */
-	public abstract @Nullable String getAvatarURL();
+	public abstract String getAccountName();
+	
+	/**
+	 * Returns the "display name" for this account. Does not have to be "unique".
+	 */
+	public abstract String getDisplayName();
+	
+	/**
+	 * Returns the user's "biography"/"about me" text, if there is one.
+	 * May return {@code null} if the user doesn't have one.
+	 */
+	public abstract @Nullable String getBiography();
+	// --------------------------------------------------
+	/**
+	 * Returns the {@link URI} that points to the resource that
+	 * holds the user's avatar image. Could be a WWW URL or a file.
+	 * May also be {@code null} if the user does not have an avatar image.
+	 */
+	public @Virtual @Nullable URI getAvatarImageURI() { return null; }
+	
+	/**
+	 * Returns the number of "followers" this user has, or {@code null} if unsupported.
+	 */
+	public @Virtual @Nullable BigInteger getFollowerCount() { return null; }
+	
+	/**
+	 * Returns the number of users this user "follows", or {@code null} if unsupported.
+	 */
+	public @Virtual @Nullable BigInteger getFollowingCount() { return null; }
+	
+	/**
+	 * Returns the number of public repositories this user has, or {@code null} if unsupported.
+	 */
+	public @Virtual @Nullable BigInteger getRepositoryCount() { return null; }
+	// ==================================================
+	public @Override int hashCode() { return Objects.hash(getHost(), getID()); }
+	public @Override boolean equals(Object obj)
+	{
+		if(obj == null || !Objects.equals(getClass(), obj.getClass()))
+			return false;
+		else if(obj == this) return true;
+		
+		final RepositoryUserInfo cObj = (RepositoryUserInfo)obj;
+		return Objects.equals(getHost(), cObj.getHost()) &&
+				Objects.equals(getID(), cObj.getID());
+	}
 	// ==================================================
 }

@@ -30,10 +30,10 @@ public interface IResourceFetchTask<R>
 	// ==================================================
 	/**
 	 * Synchronously fetches the resource.
-	 * @throws IOException If an {@link IOException} is raised while fetching the resource.
+	 * @throws IOException If an {@link Exception} is raised while fetching the resource.
 	 * @apiNote This method is invoked in a separate and unique {@link Thread}.
 	 */
-	public CachedResource<R> fetchResourceSync() throws IOException;
+	public CachedResource<R> fetchResourceSync() throws Exception;
 	// --------------------------------------------------
 	/**
 	 * Called when the resource is successfully fetched.

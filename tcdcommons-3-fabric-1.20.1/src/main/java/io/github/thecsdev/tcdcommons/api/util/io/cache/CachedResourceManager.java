@@ -134,7 +134,8 @@ public final class CachedResourceManager
 		Objects.requireNonNull(resourceId);
 		Objects.requireNonNull(task);
 		final var rt = Objects.requireNonNull(task.getResourceType());
-		final var mc = Objects.requireNonNull(task.getMinecraftClientOrServer());
+		final var mc = task.getMinecraftClientOrServer();
+		if(isAsync) Objects.requireNonNull(mc);
 		
 		//check for any recent exceptions or cached resources related to this request
 		{
@@ -213,7 +214,8 @@ public final class CachedResourceManager
 			catch(Exception exc) { error.set(exc); }
 			catch(Error err)
 			{
-				mc.executeSync(() -> { throw err; });
+				final Runnable r = () -> { throw err; };
+				if(isAsync) mc.executeSync(r); else r.run();
 				CURRENT_TASKS.invalidate(resourceId);
 				return;
 			}
@@ -253,7 +255,7 @@ public final class CachedResourceManager
 		{
 			//null check, just in case
 			final var mc = task.getMinecraftClientOrServer();
-			if(mc == null) return;
+			if(isAsync && mc == null) return;
 			
 			//execute task results
 			final Runnable r = () ->
