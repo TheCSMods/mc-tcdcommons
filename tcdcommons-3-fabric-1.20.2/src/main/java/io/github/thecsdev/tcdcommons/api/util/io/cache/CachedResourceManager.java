@@ -289,10 +289,35 @@ public final class CachedResourceManager
 	public static final void forceCache(Identifier resourceId, CachedResource<?> cachedResource)
 		throws NullPointerException
 	{
+		forceCache(resourceId, cachedResource, true);
+	}
+	
+	/**
+	 * Forcefully caches a {@link CachedResource}. Although not recommended,
+	 * use this to manually cache {@link CachedResource}s on your own.
+	 * @param resourceId The unique {@link Identifier} of the resource being cached.
+	 * @param cachedResource The {@link CachedResource} being added to the {@link #RESOURCE_CACHE}.
+	 * @param overrideExisting When {@code true}, any existing {@link CachedResource}s with the same
+	 * {@link Identifier} will be ignored and overridden.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 */
+	public static final void forceCache(Identifier resourceId, CachedResource<?> cachedResource, boolean overrideExisting)
+			throws NullPointerException
+	{
 		Objects.requireNonNull(resourceId);
 		Objects.requireNonNull(cachedResource);
-		RESOURCE_CACHE.put(resourceId, cachedResource);
-		THREAD_SCHEDULER.execute(() -> CacheFileUtils.trySaveCachedResource(resourceId, cachedResource));
+		synchronized (RESOURCE_CACHE)
+		{
+			//do not override existing if requested not to
+			if(!overrideExisting &&
+					(RESOURCE_CACHE.getIfPresent(resourceId) != null ||
+					CacheFileUtils.cacheFileExistsForResource(resourceId)))
+				return;
+			
+			//put and try to save
+			RESOURCE_CACHE.put(resourceId, cachedResource);
+			THREAD_SCHEDULER.execute(() -> CacheFileUtils.trySaveCachedResource(resourceId, cachedResource));
+		}
 	}
 	
 	/**

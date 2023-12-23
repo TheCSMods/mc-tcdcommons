@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.api.util.annotations.CallerSensitive;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
 
 /**
@@ -48,6 +49,7 @@ public final class HttpUtils
 	 * @see #isEnabled()
 	 * @apiNote No caching is performed here. It is advised to use the {@link CachedResourceManager} alongside this.
 	 */
+	@CallerSensitive
 	public static final String httpGetSyncS(final URI endpoint, final Header... httpHeaders)
 			throws UnsupportedOperationException, NullPointerException, IOException
 	{
@@ -66,6 +68,7 @@ public final class HttpUtils
 	 * @see #isEnabled()
 	 * @apiNote No caching is performed here. It is advised to use the {@link CachedResourceManager} alongside this.
 	 */
+	@CallerSensitive
 	public static final byte[] httpGetSyncB(final URI endpoint, final Header... httpHeaders)
 			throws UnsupportedOperationException, NullPointerException, IOException
 	{

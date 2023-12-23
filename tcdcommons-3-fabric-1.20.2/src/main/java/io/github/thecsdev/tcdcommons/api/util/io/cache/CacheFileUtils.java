@@ -91,6 +91,16 @@ import net.minecraft.util.Identifier;
 		final String fileName = UD + FS + "cache" + FS + resourceId.getNamespace() + FS + resourceId.getPath();
 		return new Tuple2<File, File>(new File(fileName), new File(fileName + ".meta"));
 	}
+	
+	/**
+	 * Returns true if the cache {@link File}s that should correspond to a given
+	 * {@link CachedResource} exist on the user's drive.
+	 */
+	public static final boolean cacheFileExistsForResource(Identifier resourceId) throws NullPointerException
+	{
+		final var files = getCacheFileForResource(resourceId);
+		return files.Item1.exists() && files.Item2.exists();
+	}
 	// ==================================================
 	/**
 	 * Attempts to delete the cache {@link File}s that correspond to a given

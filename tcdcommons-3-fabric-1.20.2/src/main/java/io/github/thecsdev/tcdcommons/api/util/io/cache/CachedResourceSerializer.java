@@ -106,6 +106,20 @@ public abstract class CachedResourceSerializer<T>
 					return new String(stream.readAllBytes(), StandardCharsets.UTF_16);
 				}
 			});
+		
+		//byte[]
+		CACHED_RESOURCE_SERIALIZER.register(
+				new Identifier(modId, "byte_array"),
+				new CachedResourceSerializer<byte[]>(byte[].class)
+				{
+					protected final @Override void onSerialize(byte[] value, OutputStream stream) throws IOException {
+						if(value == null) value = new byte[] {};
+						stream.write(value);
+					}
+					protected final @Override byte[] onDeserialize(InputStream stream) throws IOException {
+						return stream.readAllBytes();
+					}
+				});
 	}
 	// ==================================================
 }
