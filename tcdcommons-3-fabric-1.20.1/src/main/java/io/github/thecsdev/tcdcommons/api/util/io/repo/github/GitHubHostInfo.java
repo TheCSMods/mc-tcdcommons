@@ -66,7 +66,7 @@ public final class GitHubHostInfo extends RepositoryHostInfo
 		final AtomicReference<String> jsonStr = new AtomicReference<>();
 		final AtomicReference<Exception> fetchErr = new AtomicReference<>();
 		CachedResourceManager.getResourceSync(
-			new Identifier(CACHE_ID_BASE + "user/" + userId),
+			new Identifier(CACHE_ID_BASE + "user/" + userId + ".json"),
 			new IResourceFetchTask<String>()
 			{
 				public Class<String> getResourceType() { return String.class; }
@@ -102,7 +102,7 @@ public final class GitHubHostInfo extends RepositoryHostInfo
 		final AtomicReference<String> jsonStr = new AtomicReference<>();
 		final AtomicReference<Exception> fetchErr = new AtomicReference<>();
 		CachedResourceManager.getResourceSync(
-			new Identifier(CACHE_ID_BASE + "repositories/" + repoId),
+			new Identifier(CACHE_ID_BASE + "repositories/" + repoId + ".json"),
 			new IResourceFetchTask<String>()
 			{
 				public Class<String> getResourceType() { return String.class; }

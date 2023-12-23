@@ -37,21 +37,21 @@ public final class CachedResourceManager
 	 * Holds {@link CachedResource}s that are currently cached in RAM.
 	 * Used to prevent having to fetch the resource every time you need it.
 	 */
-	private static final Cache<Identifier, CachedResource<?>> RESOURCE_CACHE;
+	@Internal static final Cache<Identifier, CachedResource<?>> RESOURCE_CACHE;
 	
 	/**
 	 * Holds information about any recently raised {@link Exception}s
 	 * while resources were being fetched. Used to prevent "spamming"
 	 * of fetching resources that cannot be fetched.
 	 */
-	private static final Cache<Identifier, Exception> RECENT_EXCEPTIONS;
+	@Internal static final Cache<Identifier, Exception> RECENT_EXCEPTIONS;
 	
 	/**
 	 * Holds information about currently ongoing {@link IResourceFetchTask}s.
 	 * Prevents concurrent attempts to fetch the same resource by putting
 	 * {@link IResourceFetchTask}s into a {@link LinkedBlockingDeque}.
 	 */
-	private static final Cache<Identifier, LinkedBlockingDeque<IResourceFetchTask<?>>> CURRENT_TASKS;
+	@Internal static final Cache<Identifier, LinkedBlockingDeque<IResourceFetchTask<?>>> CURRENT_TASKS;
 	// ==================================================
 	private CachedResourceManager() {}
 	static
@@ -80,6 +80,7 @@ public final class CachedResourceManager
 				.expireAfterWrite(1, TimeUnit.HOURS) //in RAM, can last up to an hour
 				.weigher((Weigher<Identifier, CachedResource<?>>)
 						(k, v) -> (int) Math.min(v.getResourceSizeB(), Integer.MAX_VALUE))
+				.removalListener(notif -> CacheFileUtils.resourceCacheRemovalListener(notif))
 				.build();
 		RECENT_EXCEPTIONS = CacheBuilder.newBuilder()
 				.maximumSize(256)
@@ -183,12 +184,15 @@ public final class CachedResourceManager
 		final Runnable asyncFetchTask = () ->
 		{
 			//prepare to fetch
-			final AtomicReference<CachedResource<R>> result = new AtomicReference<>(null);
+			final AtomicReference<CachedResource<R>> result = new AtomicReference<>(
+					//try to load the cached data from the drive, so fetching can be avoided if possible
+					CacheFileUtils.tryLoadCachedResource(resourceId, rt));
 			final AtomicReference<Exception> error = new AtomicReference<>(null);
 			
 			//try to fetch the resource
 			// - exceptions are handled as usual
 			// - errors are handled by throwing them at the game's main thread
+			if(result.get() == null)
 			try
 			{
 				//ensure the resource type is supported and has a serializer
@@ -205,11 +209,14 @@ public final class CachedResourceManager
 				
 				//fetch
 				final var fetched = Objects.requireNonNull(task.fetchResourceSync());
+				
 				//enforce type-check
 				if(!Objects.equals(rt, fetched.getResourceType()))
 					throw new ClassCastException("Resource fetching returned an illegal type.");
-				//assign result
+				
+				//assign result, and try to save it to the drive
 				result.set((CachedResource<R>)fetched);
+				CacheFileUtils.trySaveCachedResource(resourceId, fetched);
 			}
 			catch(Exception exc) { error.set(exc); }
 			catch(Error err)
@@ -270,6 +277,38 @@ public final class CachedResourceManager
 			};
 			if(isAsync) mc.executeSync(r); else r.run();
 		});
+	}
+	// --------------------------------------------------
+	/**
+	 * Forcefully caches a {@link CachedResource}. Although not recommended,
+	 * use this to manually cache {@link CachedResource}s on your own.
+	 * @param resourceId The unique {@link Identifier} of the resource being cached.
+	 * @param cachedResource The {@link CachedResource} being added to the {@link #RESOURCE_CACHE}.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 */
+	public static final void forceCache(Identifier resourceId, CachedResource<?> cachedResource)
+		throws NullPointerException
+	{
+		Objects.requireNonNull(resourceId);
+		Objects.requireNonNull(cachedResource);
+		RESOURCE_CACHE.put(resourceId, cachedResource);
+		THREAD_SCHEDULER.execute(() -> CacheFileUtils.trySaveCachedResource(resourceId, cachedResource));
+	}
+	
+	/**
+	 * Forcefully invalidates a {@link CachedResource}. Although not recommended,
+	 * use this to manually invalidate {@link CachedResource} entries on your own.
+	 * @param resourceId The unique {@link Identifier} of the resource being invalidated.
+	 * @param deleteCacheFiles If {@code true}, an attempt will be made to delete any
+	 * cache files associated with the {@link CachedResource}. Not guaranteed to work!
+	 * @throws NullPointerException If an argument is {@code null}.
+	 */
+	public static final void forceInvalidate(Identifier resourceId, boolean deleteCacheFiles) throws NullPointerException
+	{
+		Objects.requireNonNull(resourceId);
+		RESOURCE_CACHE.invalidate(resourceId);
+		if(deleteCacheFiles)
+			THREAD_SCHEDULER.execute(() -> CacheFileUtils.tryDeleteCacheFile(resourceId));
 	}
 	// --------------------------------------------------
 	/**

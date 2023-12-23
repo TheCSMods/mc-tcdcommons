@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.StackWalker.Option;
 import java.net.URI;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpResponseException;
@@ -16,6 +17,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
@@ -27,6 +30,8 @@ import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
 public final class HttpUtils
 {
 	// ==================================================
+	private static final Logger LOGGER = LoggerFactory.getLogger(
+			getModID() + ":" + HttpUtils.class.getSimpleName().toLowerCase());
 	private static final StackWalker STACK_WALKER = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
 	// --------------------------------------------------
 	private HttpUtils() {}
@@ -46,7 +51,7 @@ public final class HttpUtils
 	public static final String httpGetSyncS(final URI endpoint, final Header... httpHeaders)
 			throws UnsupportedOperationException, NullPointerException, IOException
 	{
-		return httpGetSync(String.class, endpoint, httpHeaders);
+		return httpGetSync(String.class, STACK_WALKER.getCallerClass(), endpoint, httpHeaders);
 	}
 	
 	/**
@@ -64,30 +69,33 @@ public final class HttpUtils
 	public static final byte[] httpGetSyncB(final URI endpoint, final Header... httpHeaders)
 			throws UnsupportedOperationException, NullPointerException, IOException
 	{
-		return httpGetSync(byte[].class, endpoint, httpHeaders);
+		return httpGetSync(byte[].class, STACK_WALKER.getCallerClass(), endpoint, httpHeaders);
 	}
 	
 	/**
 	 * An {@link Internal} method for performing HTTP GET requests.
 	 * @param requestedType The requested response format. Either a {@link String} or a {@link Byte} array.
+	 * @param requestee The {@link Class} that made this request.
 	 * @param endpoint The {@link URI} endpoint to send the request to.
 	 * @param httpHeaders The HTTP {@link Header}s to use in the request.
 	 */
 	@SuppressWarnings("unchecked")
 	private static final @Internal <T> T httpGetSync(
 			Class<T> requestedType,
+			Class<?> requestee,
 			final URI endpoint,
 			final Header... httpHeaders) throws UnsupportedOperationException, NullPointerException, IOException
 	{
 		//check if allowed to make http requests
 		assertEnabled();
+		final String requesteeName = requestee.getName();
 		
 		//prepare http get
 		final var httpGet = new HttpGet(Objects.requireNonNull(endpoint));
 		for(final var header : Objects.requireNonNull(httpHeaders))
 			httpGet.addHeader(Objects.requireNonNull(header));
 		httpGet.addHeader("User-Agent", TCDCommons.getInstance().userAgent);
-		httpGet.addHeader("x-" + getModID() + "-requestee", STACK_WALKER.getCallerClass().getName());
+		httpGet.addHeader("x-" + getModID() + "-requestee", requesteeName);
 		
 		final var reqConfig = RequestConfig.custom()
 				.setConnectionRequestTimeout(3000)
@@ -100,6 +108,7 @@ public final class HttpUtils
 				.build();
 		
 		//execute
+		final AtomicBoolean success = new AtomicBoolean(false);
 		try
 		{
 			final var response = httpClient.execute(httpGet);
@@ -108,6 +117,7 @@ public final class HttpUtils
 			final var responseSL = response.getStatusLine();
 			if(responseSL.getStatusCode() != 200)
 				throw new HttpResponseException(responseSL.getStatusCode(), responseSL.getReasonPhrase());
+			success.set(true);
 			
 			if(Objects.equals(requestedType, String.class))
 				return (T) EntityUtils.toString(responseEntity);
@@ -117,7 +127,14 @@ public final class HttpUtils
 					"Unsupported resource type '" + requestedType +
 					"'; Also you're wasting bandwidth and RAM because of this!");
 		}
-		finally { HttpClientUtils.closeQuietly(httpClient); }
+		finally
+		{
+			LOGGER.info(String.format("HTTP GET '%s'; Requested by '%s'; Success '%s'.",
+					endpoint.toString(),
+					requesteeName,
+					Boolean.toString(success.get())));
+			HttpClientUtils.closeQuietly(httpClient);
+		}
 	}
 	// ==================================================
 	/**
