@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.apache.http.message.BasicHeader;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,7 @@ import com.google.common.cache.CacheBuilder;
 
 import io.github.thecsdev.tcdcommons.api.util.io.HttpUtils;
 import io.github.thecsdev.tcdcommons.api.util.thread.TaskScheduler;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.texture.TextureManager;
@@ -41,7 +43,7 @@ import net.minecraft.util.thread.ReentrantThreadExecutor;
 public final class UIExternalTexture extends UITexture implements Closeable
 {
 	// ==================================================
-	static final String THREAD_NAME = getModID() + ":" + UIExternalTexture.class.getSimpleName();
+	static final String THREAD_NAME = getModID() + ":" + UIExternalTexture.class.getSimpleName().toLowerCase();
 	static final @Internal ExecutorService SCHEDULER = Executors.newCachedThreadPool(
 			runnable ->
 			{
@@ -60,6 +62,7 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	 * Holds cached {@link UIExternalTexture}s obtained from
 	 * remote resources such as the world-wide-web.
 	 */
+	@Deprecated(since = "3.7", forRemoval = true)
 	public static final Cache<Object, UIExternalTexture> TEXTURE_CACHE;
 	// ==================================================
 	private boolean isClosed = false;
@@ -72,7 +75,8 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	{
 		FALLBACK_TEXTURE = new UITexture(TEXTURE_ICONS, new Rectangle(0, 0, 64, 64));
 		TEXTURE_CACHE = CacheBuilder.newBuilder()
-				.expireAfterWrite(30, TimeUnit.MINUTES) //minimize bandwidth usage
+				.expireAfterWrite(10, TimeUnit.MINUTES) //minimize bandwidth and ram usage
+				.expireAfterAccess(10, TimeUnit.MINUTES) //minimize bandwidth and ram usage
 				.maximumSize(32) //minimize memory usage
 				.build();
 		TaskScheduler.schedulePeriodicCacheCleanup(TEXTURE_CACHE);
@@ -163,6 +167,51 @@ public final class UIExternalTexture extends UITexture implements Closeable
 		return new Identifier(getModID(), UIExternalTexture.class.getSimpleName().toLowerCase() + "/" + uid);
 	}
 	// --------------------------------------------------
+	/**
+	 * Asynchronously loads a {@link UIExternalTexture} using a {@link Byte} array.
+	 * @param pngBytes The image's byte data. Must be in "png" format.
+	 * @param onReady A {@link Consumer} that is invoked on successful load.
+	 * @param onError A {@link Consumer} that is invoked if an {@link Exception} is raised.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 * @apiNote The {@link Consumer}s are invoked on the {@link MinecraftClient}'s main {@link Thread}.
+	 */
+	@Experimental
+	public static final void loadTextureAsync(
+			final byte[] pngBytes,
+			final Consumer<UIExternalTexture> onReady,
+			final Consumer<Exception> onError) throws NullPointerException
+	{
+		//prepare
+		Objects.requireNonNull(pngBytes);
+		Objects.requireNonNull(onReady);
+		Objects.requireNonNull(onError);
+		
+		//execute
+		SCHEDULER.submit(() ->
+		{
+			//check if there are existing cached versions
+			final @Nullable var existing = TEXTURE_CACHE.getIfPresent(pngBytes);
+			if(existing != null)
+			{
+				MC_CLIENT.executeSync(() -> onReady.accept(existing));
+				return;
+			}
+			
+			//try to load a new version if no cached one exists
+			try
+			{
+				final var nImage = NativeImage.read(pngBytes);
+				MC_CLIENT.executeSync(() ->
+				{
+					final var eTex = new UIExternalTexture(nImage);
+					TEXTURE_CACHE.put(pngBytes, eTex);
+					onReady.accept(eTex);
+				});
+			}
+			catch(Exception e) { MC_CLIENT.executeSync(() -> onError.accept(e)); }
+		});
+	}
+	
 	/**
 	 * Asynchronously loads a "png" image hosted on the WWW.
 	 * @param textureUrl The {@link URL} that points to the "png" image.

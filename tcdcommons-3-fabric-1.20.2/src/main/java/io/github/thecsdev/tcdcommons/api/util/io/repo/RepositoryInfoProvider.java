@@ -48,7 +48,7 @@ public abstract class RepositoryInfoProvider
 		REPO_INFO_PROVIDER.register(new Identifier(getModID(), "github"), GitHubRepositoryInfoProvider.getInstance());
 	}
 	// ==================================================
-	private static final @Internal <T> void getInfoAsync(
+	static final @Internal <T> void getInfoAsync(
 			ThreadExecutor<?> minecraftClientOrServer,
 			Consumer<T> onReady,
 			Consumer<Exception> onError,

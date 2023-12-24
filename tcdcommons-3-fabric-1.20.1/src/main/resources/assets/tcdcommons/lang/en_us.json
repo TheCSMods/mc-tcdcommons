@@ -7,6 +7,10 @@
 	
 	"tcdcommons.github.sponsors": "GitHub Sponsors",
 	"tcdcommons.github.sponsors.no_sponsors": "No one is sponsoring this project at the moment.",
+	"tcdcommons.special_thanks": "Special thanks",
+	"tcdcommons.featured": "Featured",
+	"tcdcommons.featured.no_one": "No one is on this list at the moment.",
+	"tcdcommons.fetch_fail": "Failed to fetch information.",
 	
 	"tcdcommons.client_side": "Client-side",
 	"tcdcommons.server_side": "Server-side",

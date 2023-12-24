@@ -31,8 +31,9 @@ import net.minecraft.util.Identifier;
 @Internal final class CacheFileUtils
 {
 	// ==================================================
-	private static final String FS = System.getProperty("file.separator");
-	private static final String UD = System.getProperty("user.dir");
+	private static final String FS = System.getProperty("file.separator"); //file separator
+	private static final String CR = System.getProperty("user.home") + //cache root
+			String.format("%1$s.cache%1$sthecsdev%1$smc-tcdcommons", FS);
 	// --------------------------------------------------
 	private static final String META_KEY_EXPIRATION = "expiration_date";
 	// --------------------------------------------------
@@ -88,7 +89,7 @@ import net.minecraft.util.Identifier;
 	 */
 	public static final Tuple2<File, File> getCacheFileForResource(Identifier resourceId) throws NullPointerException
 	{
-		final String fileName = UD + FS + "cache" + FS + resourceId.getNamespace() + FS + resourceId.getPath();
+		final String fileName = CR + FS + resourceId.getNamespace() + FS + resourceId.getPath();
 		return new Tuple2<File, File>(new File(fileName), new File(fileName + ".meta"));
 	}
 	
@@ -99,7 +100,7 @@ import net.minecraft.util.Identifier;
 	public static final boolean cacheFileExistsForResource(Identifier resourceId) throws NullPointerException
 	{
 		final var files = getCacheFileForResource(resourceId);
-		return files.Item1.exists() && files.Item2.exists();
+		try { return files.Item1.exists() && files.Item2.exists(); } catch(Exception e) { return false; }
 	}
 	// ==================================================
 	/**

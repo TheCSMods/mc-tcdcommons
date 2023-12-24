@@ -337,6 +337,18 @@ public final class CachedResourceManager
 	}
 	// --------------------------------------------------
 	/**
+	 * Returns {@code true} if a {@link CachedResource} exists for a given
+	 * resource {@link Identifier}, either on the RAM or on the user's drive.
+	 * @param resourceId The {@link CachedResource}'s unique {@link Identifier}.
+	 * @throws NullPointerException If an argument is {@code null}.
+	 */
+	public static final boolean cachedResourceExists(Identifier resourceId) throws NullPointerException
+	{
+		return CacheFileUtils.cacheFileExistsForResource(resourceId) ||
+				(RESOURCE_CACHE.getIfPresent(Objects.requireNonNull(resourceId)) != null);
+	}
+	// --------------------------------------------------
+	/**
 	 * Obtains the {@link CachedResourceSerializer} for a given {@link CachedResource} type.
 	 * @param resourceType A {@link Class} instance representing the type of resource.
 	 * @throws NullPointerException If an argument is {@code null}.
