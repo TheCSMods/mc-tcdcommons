@@ -127,7 +127,7 @@ public abstract class RepositoryInfoProvider
 	
 	/**
 	 * Attempts to obtain {@link RepositoryUserInfo} about a given user using their {@link URI}.
-	 * @param repoUri The {@link URI} representing the user.
+	 * @param userUri The {@link URI} representing the user.
 	 * @param minecraftClientOrServer An instance of the {@code MinecraftClient} or the {@code MinecraftServer}.
 	 * @param onReady A {@link Consumer} that is invoked if the fetching is successful.
 	 * @param onError A {@link Consumer} that is invoked if the fetching fails.
