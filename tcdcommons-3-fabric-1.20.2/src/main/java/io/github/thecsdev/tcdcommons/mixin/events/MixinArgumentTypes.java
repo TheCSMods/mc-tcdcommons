@@ -20,6 +20,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
+@Deprecated //moved to another mod
 @Mixin(ArgumentTypes.class)
 public abstract class MixinArgumentTypes
 {
