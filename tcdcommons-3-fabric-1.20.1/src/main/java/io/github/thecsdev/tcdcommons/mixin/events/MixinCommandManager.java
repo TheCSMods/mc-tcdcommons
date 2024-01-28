@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.brigadier.CommandDispatcher;
 
 import io.github.thecsdev.tcdcommons.api.events.server.command.CommandManagerEvent;
-import io.github.thecsdev.tcdcommons.command.PlayerBadgeCommand;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -46,7 +45,7 @@ public abstract class MixinCommandManager
 	private void fabric_addCommands(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess registryAccess, CallbackInfo ci)
 	{
 		//register the player badge command
-		PlayerBadgeCommand.register(dispatcher);
+		//PlayerBadgeCommand.register(dispatcher); -- moved to another mod
 		
 		//invoke the event
 		CommandManagerEvent.COMMAND_REGISTRATION_CALLBACK.invoker().invoke(dispatcher, registryAccess, environment);

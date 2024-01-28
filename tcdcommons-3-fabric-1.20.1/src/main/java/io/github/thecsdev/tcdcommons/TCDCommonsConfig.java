@@ -7,7 +7,7 @@ public class TCDCommonsConfig extends AutoConfig
 {
 	// ==================================================
 	//mitigate side-effects of field renaming by using `@SerializedAs`
-	public @SerializedAs("enablePlayerBadges") boolean enablePlayerBadges = true;
+	public @SerializedAs("enablePlayerBadges") boolean enablePlayerBadges = false;
 	public @SerializedAs("broadcastEarningPlayerBadges") boolean broadcastEarningPlayerBadges = true;
 	public @SerializedAs("enableHttpUtils") boolean enableHttpUtils = true;
 	// ==================================================
