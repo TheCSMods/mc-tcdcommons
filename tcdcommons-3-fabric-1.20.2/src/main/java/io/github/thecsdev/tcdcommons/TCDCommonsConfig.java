@@ -7,9 +7,9 @@ public class TCDCommonsConfig extends AutoConfig
 {
 	// ==================================================
 	//mitigate side-effects of field renaming by using `@SerializedAs`
-	public @SerializedAs("enablePlayerBadges") boolean enablePlayerBadges = false;
-	public @SerializedAs("broadcastEarningPlayerBadges") boolean broadcastEarningPlayerBadges = true;
-	public @SerializedAs("enableHttpUtils") boolean enableHttpUtils = true;
+	public @SerializedAs("server-enablePlayerBadges") boolean enablePlayerBadges = false;
+	public @SerializedAs("server-broadcastEarningPlayerBadges") boolean broadcastEarningPlayerBadges = true;
+	public @SerializedAs("common-enableHttpUtils") boolean enableHttpUtils = true;
 	// ==================================================
 	public TCDCommonsConfig(String name) { super(name); }
 	// ==================================================
