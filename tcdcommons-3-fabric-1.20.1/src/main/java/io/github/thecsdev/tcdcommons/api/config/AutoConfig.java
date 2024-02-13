@@ -185,9 +185,8 @@ public @Virtual class AutoConfig implements ACJsonHandler<JsonObject>
 	{
 		JsonObject json = saveToJson();
 		String jsonStr = GSON.toJson(json);
-		Files.writeString(filePath, jsonStr,
-				StandardOpenOption.CREATE_NEW,
-				StandardOpenOption.TRUNCATE_EXISTING);
+		this.filePath.toFile().delete();
+		Files.writeString(filePath, jsonStr, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		if(log) LOGGER.info("Saved '" + getClass().getSimpleName() + "' config to '" + fileName + "'.");
 	}
 	
