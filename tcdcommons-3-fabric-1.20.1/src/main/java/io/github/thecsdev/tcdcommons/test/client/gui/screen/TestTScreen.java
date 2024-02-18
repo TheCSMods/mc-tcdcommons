@@ -14,6 +14,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
+import io.github.thecsdev.tcdcommons.api.client.gui.screen.TStackTraceScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.UIExternalTexture;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
@@ -149,6 +150,15 @@ public final class TestTScreen extends TScreenPlus
 			}
 			catch(Exception e) { e.printStackTrace(); }
 		});
+		
+		final var btn_st = new TButtonWidget(10, 30, 250, 20);
+		btn_st.setText(literal("Test GUI error handler"));
+		btn_st.setOnClick(__ ->
+		{
+			final var screen = new TStackTraceScreen(getAsScreen(), new Exception("Test exception"));
+			MC_CLIENT.setScreen(screen.getAsScreen());
+		});
+		panel.addChild(btn_st, true);
 		
 		//return the panel
 		return panel;
