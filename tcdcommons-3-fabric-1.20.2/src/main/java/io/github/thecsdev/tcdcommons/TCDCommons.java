@@ -3,6 +3,7 @@ package io.github.thecsdev.tcdcommons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
 import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
 import io.github.thecsdev.tcdcommons.util.io.TheCSDevSponsorsAPI;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,6 +46,7 @@ public class TCDCommons extends Object
 		//init stuff
 		TheCSDevSponsorsAPI.init();
 		TCDCommonsNetworkHandler.init();
+		CachedResourceManager.init();
 		
 		//FIXME - Important checklist that is MUST-VERIFY before porting to higher version:
 		//- Ensure mixin.events.MixinItemEntity is working as intended, as it uses @ModifyVariable

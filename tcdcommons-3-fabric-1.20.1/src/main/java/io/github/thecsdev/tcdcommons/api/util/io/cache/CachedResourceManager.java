@@ -96,6 +96,7 @@ public final class CachedResourceManager
 		//initialize serializer
 		CachedResourceSerializer.init();
 	}
+	public static final void init() {/*calls static*/}
 	// ==================================================
 	/**
 	 * Asynchronously retrieves or fetches a given external resource and loads it.
@@ -405,6 +406,9 @@ public final class CachedResourceManager
 					.toList()
 					.forEach(expiredId -> RESOURCE_CACHE.invalidate(expiredId));
 		}
+		
+		//clean up expired cache files
+		CacheFileUtils.cleanUpExpiredFiles(null);
 	}
 	// ==================================================
 }

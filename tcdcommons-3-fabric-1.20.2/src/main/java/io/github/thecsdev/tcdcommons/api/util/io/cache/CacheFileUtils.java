@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.util.io.cache;
 
+import static io.github.thecsdev.tcdcommons.TCDCommons.LOGGER;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,6 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
@@ -210,6 +213,76 @@ import net.minecraft.util.Identifier;
 			}
 		}
 		finally { lock.unlock(); }
+	}
+	// ==================================================
+	/**
+	 * Iterates through every cached {@link File} on the drive, reads their
+	 * metadata, and if a cached {@link File} expired, it gets deleted.
+	 * @param directory The directory where the cached files are is located.
+	 */
+	static final void cleanUpExpiredFiles(@Nullable File directory)
+	{
+		//initialize starting directory if one is not present
+		if(directory == null || !directory.isDirectory())
+			directory = new File(CR);
+		
+		try
+		{
+			//iterate all files and subdirectories
+			for(final var file : directory.listFiles())
+			{
+				//handle recursion on directories
+				if(file.isDirectory()) { cleanUpExpiredFiles(file); continue; }
+				
+				//for cache files, only handle ".meta" files, so they can
+				//be read as JSON later, and handled properly
+				if(!file.getName().endsWith(".meta")) continue;
+				
+				//---------- Next stage: Handling the cache file
+				final var cacheFile =  new File(StringUtils.removeEndIgnoreCase(file.getAbsolutePath(), ".meta"));
+				boolean pass = false;
+				do
+				{
+					//ensure both the cache file and the meta files exist, pass if not
+					if(!file.exists() || !cacheFile.exists()) { pass = true; break; }
+					
+					//enforce a maximum file size for metadata files
+					else if(file.length() > 3072) break;
+					
+					//read the metadata file's JSON
+					try
+					{
+						//read and load the metadata json
+						final var metaJson = new Gson().fromJson(
+								FileUtils.readFileToString(file, StandardCharsets.UTF_16),
+								JsonObject.class);
+						
+						//read the expiration date, and check if expired
+						final var exp_date = Instant.parse(metaJson.get("expiration_date").getAsString());
+						if(exp_date.isBefore(Instant.now())) break;
+					}
+					catch(Exception e) { break; }
+					
+					//if all checks passed...
+					pass = true;
+				}
+				while(false);
+				
+				//if the cache files didn't pass, delete them
+				if(!pass) { cacheFile.delete(); file.delete(); }
+			}
+			
+			//if this directory ends up being empty in the end, delete it
+			if(directory.list().length == 0)
+				directory.delete();
+		}
+		catch(Exception e)
+		{
+			//log any exceptions that come up
+			LOGGER.error("Failed to clean up cached files;",
+					e.getClass().getName(),
+					e.getMessage());
+		}
 	}
 	// ==================================================
 }
