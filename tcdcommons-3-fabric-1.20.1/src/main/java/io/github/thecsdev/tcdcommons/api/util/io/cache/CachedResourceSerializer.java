@@ -1,5 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.util.io.cache;
 
+import static io.github.thecsdev.tcdcommons.util.io.tcdapi.TcdApi.GSON;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.CACHED_RESOURCE_SERIALIZER;
 
@@ -8,6 +9,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.JsonObject;
 
 import io.github.thecsdev.tcdcommons.api.registry.TRegistries;
 import net.minecraft.util.Identifier;
@@ -109,17 +114,42 @@ public abstract class CachedResourceSerializer<T>
 		
 		//byte[]
 		CACHED_RESOURCE_SERIALIZER.register(
-				new Identifier(modId, "byte_array"),
-				new CachedResourceSerializer<byte[]>(byte[].class)
-				{
-					protected final @Override void onSerialize(byte[] value, OutputStream stream) throws IOException {
-						if(value == null) value = new byte[] {};
-						stream.write(value);
+			new Identifier(modId, "byte_array"),
+			new CachedResourceSerializer<byte[]>(byte[].class)
+			{
+				protected final @Override void onSerialize(byte[] value, OutputStream stream) throws IOException {
+					if(value == null) value = new byte[] {};
+					stream.write(value);
+				}
+				protected final @Override byte[] onDeserialize(InputStream stream) throws IOException {
+					return stream.readAllBytes();
+				}
+			});
+		
+		//JsonObject
+		CACHED_RESOURCE_SERIALIZER.register(
+			new Identifier(modId, JsonObject.class.getName().toLowerCase().replace('.', '/')),
+			new CachedResourceSerializer<JsonObject>(JsonObject.class)
+			{
+				protected final @Override void onSerialize(JsonObject value, OutputStream stream) throws IOException {
+					try
+					{
+						final String json = GSON.toJson(value);
+						stream.write(json.getBytes(StandardCharsets.UTF_16));
 					}
-					protected final @Override byte[] onDeserialize(InputStream stream) throws IOException {
-						return stream.readAllBytes();
+					catch(Exception e) { throw new IOException("Failed to serialize JsonObject.", e); }
+				}
+				
+				protected final @Override JsonObject onDeserialize(InputStream stream) throws IOException {
+					try
+					{
+						String json = new String(stream.readAllBytes(), StandardCharsets.UTF_16);
+						if(StringUtils.isBlank(json)) json = "{}";
+						return GSON.fromJson(json, JsonObject.class);
 					}
-				});
+					catch(Exception e) { throw new IOException("Failed to deserialize JsonObject.", e); }
+				}
+			});
 	}
 	// ==================================================
 }
