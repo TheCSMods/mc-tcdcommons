@@ -1,8 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.util.io.cache;
 
-import static io.github.thecsdev.tcdcommons.util.io.tcdapi.TcdApi.GSON;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.CACHED_RESOURCE_SERIALIZER;
+import static io.github.thecsdev.tcdcommons.util.io.http.TcdWebApi.GSON;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import io.github.thecsdev.tcdcommons.api.registry.TRegistries;
@@ -148,6 +149,31 @@ public abstract class CachedResourceSerializer<T>
 						return GSON.fromJson(json, JsonObject.class);
 					}
 					catch(Exception e) { throw new IOException("Failed to deserialize JsonObject.", e); }
+				}
+			});
+		
+		//JsonArray
+		CACHED_RESOURCE_SERIALIZER.register(
+			new Identifier(modId, JsonArray.class.getName().toLowerCase().replace('.', '/')),
+			new CachedResourceSerializer<JsonArray>(JsonArray.class)
+			{
+				protected final @Override void onSerialize(JsonArray value, OutputStream stream) throws IOException {
+					try
+					{
+						final String json = GSON.toJson(value);
+						stream.write(json.getBytes(StandardCharsets.UTF_16));
+					}
+					catch(Exception e) { throw new IOException("Failed to serialize JsonArray.", e); }
+				}
+				
+				protected final @Override JsonArray onDeserialize(InputStream stream) throws IOException {
+					try
+					{
+						String json = new String(stream.readAllBytes(), StandardCharsets.UTF_16);
+						if(StringUtils.isBlank(json)) json = "[]";
+						return GSON.fromJson(json, JsonArray.class);
+					}
+					catch(Exception e) { throw new IOException("Failed to deserialize JsonArray.", e); }
 				}
 			});
 	}

@@ -101,9 +101,9 @@ public final class HttpUtils
 		httpGet.addHeader("x-" + getModID() + "-requestee", requesteeName);
 		
 		final var reqConfig = RequestConfig.custom()
-				.setConnectionRequestTimeout(3000)
-				.setConnectTimeout(3000)
-				.setSocketTimeout(5000)
+				.setConnectionRequestTimeout(5000)  //waiting in the connection pool
+				.setConnectTimeout(3000)            //waiting for connection to the server
+				.setSocketTimeout(10000)            //waiting for a response from the server
 				.build();
 		final var httpClient = HttpClients.custom()
 				.setDefaultRequestConfig(reqConfig)

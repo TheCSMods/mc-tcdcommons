@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.util.io.tcdapi;
+package io.github.thecsdev.tcdcommons.util.io.http;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,8 +27,10 @@ import net.minecraft.util.thread.ThreadExecutor;
  * TheCSDev's utility methods for making HTTP requests to TheCSDev's API endpoints.
  * @author TheCSDev
  */
-public final @Internal class TcdApi
+public final @Internal class TcdWebApi
 {
+	// ==================================================
+	private TcdWebApi() {}
 	// ==================================================
 	public static final Gson GSON = new Gson();
 	
@@ -41,7 +43,7 @@ public final @Internal class TcdApi
 	 * The unique {@link Identifier} for the {@link CachedResource}
 	 * containing information about {@link #WEBHOOKS_URL}s.
 	 */
-	public static final Identifier WEBHOOKS_URL_RESOURCE_ID = getIdFromUrl(WEBHOOKS_URL);
+	public static final Identifier WEBHOOKS_URL_RESOURCE_ID = new Identifier("tcdcommons", "webhooks.json");
 	// ==================================================
 	/**
 	 * Asynchronously fetches and retrieves a {@link JsonObject}

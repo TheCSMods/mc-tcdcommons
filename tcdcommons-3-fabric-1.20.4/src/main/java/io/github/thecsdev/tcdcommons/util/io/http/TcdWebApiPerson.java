@@ -1,4 +1,4 @@
-package io.github.thecsdev.tcdcommons.util.io.tcdapi;
+package io.github.thecsdev.tcdcommons.util.io.http;
 
 import java.io.IOException;
 import java.net.URL;
@@ -13,7 +13,7 @@ import net.fabricmc.loader.api.metadata.Person;
 /**
  * Similar to Fabric loader's {@link Person}, but with extra features.
  */
-public final class TcdPerson
+public final class TcdWebApiPerson
 {
 	// ==================================================
 	private final JsonObject data;
@@ -21,14 +21,18 @@ public final class TcdPerson
 	private final @Nullable URL avatarUrl;
 	private final TcdContactInformation contact;
 	// ==================================================
-	public TcdPerson(JsonObject data) throws IOException
+	public TcdWebApiPerson(JsonObject data) throws IOException
 	{
 		this.data = Objects.requireNonNull(data).deepCopy();
 		try
 		{
-			this.name = data.get("name").getAsString();
-			this.avatarUrl = data.has("avatar_url") ? new URL(data.get("avatar_url").getAsString()) : null;
-			this.contact = new TcdContactInformation();
+			this.name      = this.data.get("name").getAsString();
+			this.contact   = new TcdContactInformation();
+			this.avatarUrl = this.data.has("avatar_url") ?
+					new URL(this.data.get("avatar_url").getAsString()) :
+					this.contact.getJson().has("avatar_url") ?
+							new URL(this.contact.getJson().get("avatar_url").getAsString()) :
+							null;
 		}
 		catch(Exception e) { throw new IOException("Failed to read JSON data.", e); }
 	}
@@ -56,7 +60,7 @@ public final class TcdPerson
 	public final TcdContactInformation getContact() { return this.contact; }
 	// ==================================================
 	/**
-	 * Represents the "contact information" of a given {@link TcdPerson}.
+	 * Represents the "contact information" of a given {@link TcdWebApiPerson}.
 	 */
 	public final class TcdContactInformation
 	{
@@ -69,7 +73,7 @@ public final class TcdPerson
 			try
 			{
 				//pre-define fields
-				this.data = Objects.requireNonNull(TcdPerson.this.data.get("contact").getAsJsonObject());
+				this.data = Objects.requireNonNull(TcdWebApiPerson.this.data.get("contact").getAsJsonObject());
 				URL homepage = null;
 				
 				//try to load fields

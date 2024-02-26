@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
 import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
-import io.github.thecsdev.tcdcommons.util.io.TheCSDevSponsorsAPI;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -44,7 +43,6 @@ public class TCDCommons extends Object
 		this.config.loadFromFileOrCrash(true); //important to crash on fail, as there are important config variables
 		
 		//init stuff
-		TheCSDevSponsorsAPI.init();
 		TCDCommonsNetworkHandler.init();
 		CachedResourceManager.init();
 
