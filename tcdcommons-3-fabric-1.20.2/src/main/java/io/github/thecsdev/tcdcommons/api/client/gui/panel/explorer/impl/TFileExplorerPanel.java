@@ -1,7 +1,5 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.impl;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -27,6 +25,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.widget.TScrollBarWidget;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.FileChooserDialogType;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 import io.github.thecsdev.tcdcommons.api.util.io.TExtensionFileFilter;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.text.Text;
 
 /**
@@ -43,8 +42,8 @@ public final class TFileExplorerPanel extends TRefreshablePanelElement
 	 */
 	public static final float TEXT_SCALE = 0.8f;
 	
-	public static final Text TXT_ACTION_SAVE = translatable("tcdcommons.api.client.gui.panel.explorer.actionbar.save_file");
-	public static final Text TXT_ACTION_OPEN = translatable("tcdcommons.api.client.gui.panel.explorer.actionbar.open_file");
+	public static final Text TXT_ACTION_SAVE = TCDCT.gui_explorer_actionBar_saveFile();
+	public static final Text TXT_ACTION_OPEN = TCDCT.gui_explorer_actionBar_openFile();
 	// --------------------------------------------------
 	protected final FileExplorerPanelProxy proxy;
 	protected final FileChooserDialogType type;

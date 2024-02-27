@@ -17,7 +17,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.ServerPlayerBadgeHandler;
+import io.github.thecsdev.tcdcommons.api.util.TextUtils;
 import io.github.thecsdev.tcdcommons.command.argument.PlayerBadgeIdentifierArgumentType;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
@@ -108,10 +110,9 @@ public final class PlayerBadgeCommand
 			}
 			
 			//send feedback
-			context.getSource().sendFeedback(() -> translatable(
-					TEXT_EDIT_OUTPUT,
-					Objects.toString(arg_badge),
-					Integer.toString(affected.get())
+			context.getSource().sendFeedback(() -> TCDCT.cmd_pb_edit_out(
+					TextUtils.literal(Objects.toString(arg_badge)),
+					TextUtils.literal(Integer.toString(affected.get()))
 				), false);
 			
 			//return the number of affected players, so command blocks and data-packs can read it
@@ -148,7 +149,7 @@ public final class PlayerBadgeCommand
 			}
 			
 			//send feedback
-			context.getSource().sendFeedback(() -> translatable(TEXT_CLEAR_OUTPUT, Integer.toString(affected.get())), false);
+			context.getSource().sendFeedback(() -> TCDCT.cmd_pb_clear_out(TextUtils.literal(Integer.toString(affected.get()))), false);
 			
 			//return the number of affected players, so command blocks and data-packs can read it
 			return affected.get();
@@ -171,12 +172,11 @@ public final class PlayerBadgeCommand
 			final var value = spbh.getValue(arg_badge);
 			
 			//execute
-			context.getSource().sendFeedback(() -> translatable(
-					TEXT_QUERY_OUTPUT,
+			context.getSource().sendFeedback(() -> TCDCT.cmd_pb_query_out(
 					arg_target.getDisplayName(),
-					Objects.toString(arg_badge),
-					Integer.toString(value)
-					), false);
+					TextUtils.literal(Objects.toString(arg_badge)),
+					TextUtils.literal(Integer.toString(value))
+				), false);
 			return value;
 		}
 		catch(CommandSyntaxException e)

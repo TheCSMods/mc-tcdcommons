@@ -18,6 +18,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.widget.TSelectFileFilterWidg
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TTextFieldWidget;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.text.Text;
 
 @ApiStatus.Experimental
@@ -88,11 +89,11 @@ public @Virtual class ActionBar extends TRefreshablePanelElement
 	{
 		//labels
 		final var lbl_filename = new TLabelElement(5, 5, getWidth() - 10, 15);
-		lbl_filename.setText(translatable("tcdcommons.api.client.gui.panel.explorer.actionbar.file_name"));
+		lbl_filename.setText(TCDCT.gui_explorer_actionBar_fileName());
 		addChild(lbl_filename, true);
 		
 		final var lbl_filetype = new TLabelElement(getX() + 5, lbl_filename.getEndY() + 5, lbl_filename.getWidth(), 15);
-		lbl_filetype.setText(translatable("tcdcommons.api.client.gui.panel.explorer.actionbar.file_type"));
+		lbl_filetype.setText(TCDCT.gui_explorer_actionBar_fileType());
 		addChild(lbl_filetype, false);
 		
 		//filters

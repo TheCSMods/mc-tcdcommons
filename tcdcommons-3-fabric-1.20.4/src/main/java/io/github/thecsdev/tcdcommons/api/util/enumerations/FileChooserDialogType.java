@@ -1,16 +1,15 @@
 package io.github.thecsdev.tcdcommons.api.util.enumerations;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
-
 import java.util.Objects;
 
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.text.Text;
 
 public enum FileChooserDialogType
 {
-	OPEN_FILE(translatable("tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open")),
-	SAVE_FILE(translatable("tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save")),
-	SELECT_DIRECTORY(translatable("tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir"));
+	OPEN_FILE(TCDCT.gui_explorer_title_open()),
+	SAVE_FILE(TCDCT.gui_explorer_title_save()),
+	SELECT_DIRECTORY(TCDCT.gui_explorer_title_selDir());
 	
 	private final Text dialogTitle;
 	FileChooserDialogType(Text dialogTitle) { this.dialogTitle = Objects.requireNonNull(dialogTitle); }

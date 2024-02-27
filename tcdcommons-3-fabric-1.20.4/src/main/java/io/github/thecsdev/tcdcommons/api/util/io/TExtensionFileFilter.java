@@ -1,13 +1,13 @@
 package io.github.thecsdev.tcdcommons.api.util.io;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
-
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.api.util.TextUtils;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.text.Text;
 
 /**
@@ -25,7 +25,7 @@ public final class TExtensionFileFilter implements TFileFilter
 		fileExtension = sanitizeExtension(fileExtension);
 		
 		//define description
-		this.description = translatable("tcdcommons.api.util.interfaces.tfilefilter.x_files", fileExtension);
+		this.description = TCDCT.gui_explorer_fileFilter_extFiles(TextUtils.literal(fileExtension));
 		
 		//define file extension (extensionless must be represented by null)
 		this.fileExtension = (fileExtension.endsWith(".") ? null : fileExtension);

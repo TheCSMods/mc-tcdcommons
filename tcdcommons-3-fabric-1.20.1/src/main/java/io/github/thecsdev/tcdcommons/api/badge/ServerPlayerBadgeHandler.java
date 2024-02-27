@@ -6,7 +6,6 @@ import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.getCust
 import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.setCustomDataEntryG;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.PLAYER_BADGE;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 import static io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler.S2C_PLAYER_BADGES;
 
 import java.util.Collection;
@@ -19,6 +18,7 @@ import com.google.common.collect.Lists;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.TCDCommonsConfig;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -249,7 +249,7 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 		badgeName = __formatBadgeName(badgeName, badgeId, badge);
 		
 		//construct message, and broadcast it
-		final var message = translatable("commands.badges.chat_grant", player.getName(), badgeName);
+		final var message = TCDCT.cmd_pb_chatGrant(player.getName(), badgeName);
 		player.getServer().getPlayerManager().broadcast(message, false);
 		
 		//return

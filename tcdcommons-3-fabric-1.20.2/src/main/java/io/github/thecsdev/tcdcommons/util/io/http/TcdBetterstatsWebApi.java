@@ -15,7 +15,6 @@ import io.github.thecsdev.tcdcommons.api.util.io.HttpUtils;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResource;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.IResourceFetchTask;
-import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
@@ -28,13 +27,13 @@ public final class TcdBetterstatsWebApi
 	// ==================================================
 	/**
 	 * Asynchronously fetches the {@link JsonObject} containing "phrase"
-	 * texts for a given {@link StatType} of {@link EntityType}.
+	 * texts for a given {@link StatType}.
 	 * @param statType The {@link StatType} in question.
 	 * @param minecraftClientOrServer The Minecraft client or server instance.
 	 * @param onReady Invoked when the retrieval succeeds.
 	 * @param onError Invoked when the retrieval fails.
 	 */
-	public static final void getMobStatPhrasesAsync(
+	public static final void getStatTypePhrasesAsync(
 			StatType<?> statType,
 			final ThreadExecutor<?> minecraftClientOrServer,
 			final Consumer<JsonObject> onReady,
@@ -53,7 +52,7 @@ public final class TcdBetterstatsWebApi
 			try
 			{
 				//obtain the url
-				final var stUrlStr = webhooks.get("betterstats:mob_stat_phrases").getAsString() +
+				final var stUrlStr = webhooks.get("betterstats:stattype_phrases").getAsString() +
 						"?id=" + statTypeId.toString();
 				final var stUrl = new URL(stUrlStr);
 				

@@ -1,11 +1,11 @@
 package io.github.thecsdev.tcdcommons.api.util.interfaces;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 import java.io.File;
 import java.io.FileFilter;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.text.Text;
 
 /**
@@ -30,6 +30,6 @@ public interface TFileFilter extends FileFilter
 	public static final TFileFilter ALL_FILES = new TFileFilter()
 	{
 		public final @Override boolean accept(File pathname) { return pathname != null; }
-		public final @Nullable @Override Text getDescription() { return translatable("tcdcommons.api.util.interfaces.tfilefilter.all_files"); }
+		public final @Nullable @Override Text getDescription() { return TCDCT.gui_explorer_fileFilter_allFiles(); }
 	};
 }

@@ -1,7 +1,6 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer;
 
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -19,6 +18,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.panel.explorer.item.FileList
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.text.Text;
 
 @ApiStatus.Experimental
@@ -74,7 +74,7 @@ public @Virtual class FileListPanel extends AbstractFileListPanel<AbstractFileLi
 				if(currentPathParent != null)
 					addGoBackFileListItem(currentPathParent.toFile());
 				//add a text indicating "no such directory"
-				addCenteredLabel(translatable("tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir"));
+				addCenteredLabel(TCDCT.gui_explorer_fileList_errNoSuchDir());
 				return;
 			}
 			
@@ -101,7 +101,7 @@ public @Virtual class FileListPanel extends AbstractFileListPanel<AbstractFileLi
 			if(currentPathParent != null)
 				addGoBackFileListItem(currentPathParent.toFile());
 			//add a text indicating "no such directory"
-			addCenteredLabel(translatable("tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess"));
+			addCenteredLabel(TCDCT.gui_explorer_fileList_errNoAccess());
 			return;
 		}
 	}

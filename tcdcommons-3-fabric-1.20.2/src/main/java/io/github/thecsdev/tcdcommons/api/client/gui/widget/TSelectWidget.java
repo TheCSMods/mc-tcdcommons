@@ -1,7 +1,5 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
-
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.Objects;
@@ -18,6 +16,7 @@ import io.github.thecsdev.tcdcommons.api.util.collections.IdealList;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProvider;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProviderSetter;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;
 
@@ -27,7 +26,7 @@ import net.minecraft.text.Text;
 public @Virtual class TSelectWidget<T extends TSelectWidget.Entry> extends TButtonWidget implements Iterable<T>
 {
 	// ==================================================
-	public static final Text DEFAULT_LABEL = translatable("tcdcommons.api.client.gui.widget.tselectwidget.default_label");
+	public static final Text DEFAULT_LABEL   = TCDCT.gui_wSelect_defLabel();
 	public static final UITexture TEX_OPENED = new UITexture(T_WIDGETS_TEXTURE, new Rectangle(20,0,20,20));
 	public static final UITexture TEX_CLOSED = new UITexture(T_WIDGETS_TEXTURE, new Rectangle(0,0,20,20));
 	// --------------------------------------------------
