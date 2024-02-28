@@ -104,10 +104,10 @@ public final class TcdBetterstatsWebApi
 			catch(Exception e) { onError.accept(e); }
 		};
 		
-		//begin the process: fetch webhooks, and then fetch special thanks people
+		//begin the process: fetch webhooks, and then everything else
 		getWebhookUrlsAsync(minecraftClientOrServer, webhooksHandler, onError);
 	}
-	// --------------------------------------------------
+	// ==================================================
 	/**
 	 * Returns a fetched {@link StatType} phrase from the
 	 * {@link #STP_CONTAINER}, if one exists.
