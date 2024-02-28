@@ -75,7 +75,7 @@ public final @Internal class TcdWebApi
 				{
 					final var response = HttpUtils.httpGetSyncS(WEBHOOKS_URL.toURI());
 					final var responseJson = GSON.fromJson(response, JsonObject.class);
-					final var expiration = Instant.now().plus(Duration.ofDays(1));
+					final var expiration = Instant.now().plus(Duration.ofHours(3));
 					return new CachedResource<JsonObject>(responseJson, 40 + response.length(), expiration);
 				}
 			});
