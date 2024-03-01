@@ -5,6 +5,7 @@ import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
@@ -24,6 +25,7 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 	protected String __text = "";
 	protected Text __displayText = literal("");
 	protected int __displayTextWidth = 0;
+	protected Text __placeholderText;
 	// --------------------------------------------------
 	public final TEvent<TTextFieldWidgetEvent_TextChanged> eTextChanged = TEventFactory.createLoop();
 	// ==================================================
@@ -57,6 +59,9 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 		if(invokeEvent)
 			this.eTextChanged.invoker().invoke(this, this.__text);
 	}
+	//
+	public final @Nullable Text getPlaceholderText() { return this.__placeholderText; }
+	public final void setPlaceholderText(@Nullable Text text) { this.__placeholderText = text; }
 	// --------------------------------------------------
 	/**
 	 * Sanitizes an input {@link String} that is being set as the
@@ -166,7 +171,6 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 	{
 		pencil.drawTFill(-16777216);
 		renderText(pencil);
-		pencil.disableScissor();
 	}
 	
 	/**
@@ -178,9 +182,10 @@ public @Virtual class TTextFieldWidget extends TClickableWidget implements IText
 	protected @Virtual void renderText(TDrawContext pencil)
 	{
 		pencil.enableScissor(getX(), getY(), getEndX(), getEndY());
-		final var align = (this.__displayTextWidth < (getWidth() - 6)) ?
-				HorizontalAlignment.LEFT : HorizontalAlignment.RIGHT;
-		pencil.drawTElementTextTH(this.__displayText, align);
+		final var align = (this.__displayTextWidth < (getWidth() - 6)) ? HorizontalAlignment.LEFT : HorizontalAlignment.RIGHT;
+		if(this.__text.length() > 0) pencil.drawTElementTextTH(this.__displayText, align);
+		else pencil.drawTElementTextTHC(this.__placeholderText, align, 0xFF656565);
+		pencil.disableScissor();
 	}
 	
 	public @Virtual @Override void postRender(TDrawContext pencil)

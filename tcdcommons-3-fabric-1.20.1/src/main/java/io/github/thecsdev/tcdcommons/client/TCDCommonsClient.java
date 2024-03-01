@@ -3,11 +3,9 @@ package io.github.thecsdev.tcdcommons.client;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
-import io.github.thecsdev.tcdcommons.api.client.gui.other.TEntityRendererElement;
 import io.github.thecsdev.tcdcommons.client.network.TCDCommonsClientNetworkHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.entity.EntityType;
 
 public final class TCDCommonsClient extends TCDCommons
 {
@@ -20,13 +18,5 @@ public final class TCDCommonsClient extends TCDCommons
 	{
 		//init stuff
 		TCDCommonsClientNetworkHandler.init();
-		
-		//pre-initialize components now to avoid lag spikes later
-		try
-		{
-			//trigger the loading of entity renderer classes
-			new TEntityRendererElement(0, 0, 1, 1, EntityType.MARKER);
-		}
-		catch(Throwable e) {}
 	}
 }
