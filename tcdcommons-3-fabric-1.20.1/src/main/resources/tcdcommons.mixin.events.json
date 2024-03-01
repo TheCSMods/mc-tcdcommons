@@ -18,7 +18,8 @@
 		"MixinLootableContainerBlockEntity",
 		"MixinLivingEntity",
 		"MixinPlayerEntity",
-		"MixinBlockItem"
+		"MixinBlockItem",
+		"MixinItemGroups"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
