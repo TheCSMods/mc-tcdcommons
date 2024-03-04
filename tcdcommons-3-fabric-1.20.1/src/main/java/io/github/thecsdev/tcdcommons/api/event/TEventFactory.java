@@ -13,7 +13,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.api.util.collections.IdealList;
-import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * An event system implementation inspired by and similar to
@@ -48,7 +47,7 @@ public final class TEventFactory
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
 		final T invoker = (T)Proxy.newProxyInstance(
-				EventFactory.class.getClassLoader(),
+				TEventFactory.class.getClassLoader(),
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
@@ -84,7 +83,7 @@ public final class TEventFactory
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
 		final T invoker = (T)Proxy.newProxyInstance(
-				EventFactory.class.getClassLoader(),
+				TEventFactory.class.getClassLoader(),
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
@@ -134,7 +133,7 @@ public final class TEventFactory
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
 		final T invoker = (T)Proxy.newProxyInstance(
-				EventFactory.class.getClassLoader(),
+				TEventFactory.class.getClassLoader(),
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
@@ -185,7 +184,7 @@ public final class TEventFactory
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
 		final T invoker = (T)Proxy.newProxyInstance(
-				EventFactory.class.getClassLoader(),
+				TEventFactory.class.getClassLoader(),
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
@@ -249,7 +248,7 @@ public final class TEventFactory
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
 		final T invoker = (T)Proxy.newProxyInstance(
-				EventFactory.class.getClassLoader(),
+				TEventFactory.class.getClassLoader(),
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{
@@ -285,7 +284,7 @@ public final class TEventFactory
 		//create the invoker for event listeners
         @SuppressWarnings("unchecked")
 		final T invoker = (T)Proxy.newProxyInstance(
-				EventFactory.class.getClassLoader(),
+				TEventFactory.class.getClassLoader(),
 				new Class[] { eventTypeClassGetter.getClass().getComponentType() },
 				(proxy, method, args) ->
 				{

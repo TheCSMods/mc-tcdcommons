@@ -1,0 +1,34 @@
+{
+	"tcdcommons": "TCDCommons",
+	"modmenu.summaryTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов.",
+	"modmenu.descriptionTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов. Создана с целью улучшить быстродействие, избегая написания одного и того же кода, а также ускорить процесс разработки модов.",
+	
+	"tcdcommons.translators.title": "Translators",
+	"tcdcommons.translators.tutorial": "The translators section below is in CSV format. Just place a comma (,) and write your unique GitHub username. Example: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "Felix14-v2,",
+	
+	"tcdcommons.client_side": "Клиентский",
+	"tcdcommons.server_side": "Серверный",
+	
+	"tcdcommons.api.badge.playerbadge": "Знак отличия",
+	"tcdcommons.api.badge.playerbadge.plural": "Знаки отличия",
+
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "Проводник",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "Сохранение файла",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "Открытие файла",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "Выбор папки",
+
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "Имя файла",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "Тип файлов",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "Сохранить",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "Открыть",
+
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "Все файлы (*.*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "Файлы %1$s (%1$s)",
+
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "Папка не существует",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Отказано в доступе",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Выберите..."
+}
