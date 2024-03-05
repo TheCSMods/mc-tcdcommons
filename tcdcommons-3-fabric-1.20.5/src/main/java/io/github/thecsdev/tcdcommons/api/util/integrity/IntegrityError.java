@@ -3,7 +3,6 @@ package io.github.thecsdev.tcdcommons.api.util.integrity;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
-import io.github.thecsdev.tcdcommons.api.util.exceptions.WhatTheFuckError;
 
 /**
  * Thrown to indicate that a {@link Class} or a set of {@link Class}es have been tampered with.
@@ -16,7 +15,7 @@ import io.github.thecsdev.tcdcommons.api.util.exceptions.WhatTheFuckError;
  *
  * @author TheCSDev
  */
-public @Virtual class IntegrityError extends WhatTheFuckError
+public @Virtual class IntegrityError extends Error
 {
 	// ==================================================
 	private static final long serialVersionUID = -8335931379266442615L;

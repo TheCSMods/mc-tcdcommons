@@ -16,6 +16,7 @@ import io.github.thecsdev.tcdcommons.api.util.exceptions.WhatTheFuckError;
  *
  * @author TheCSDev
  */
+@SuppressWarnings("removal")
 public @Virtual class IntegrityError extends WhatTheFuckError
 {
 	// ==================================================

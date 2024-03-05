@@ -21,6 +21,7 @@ import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
  * Something has injected its code into your code.
  * </blockquote>
  */
+@Deprecated(forRemoval = true)
 public @Virtual class WhatTheFuckError extends Error
 {
 	private static final long serialVersionUID = 5291684741840835617L;

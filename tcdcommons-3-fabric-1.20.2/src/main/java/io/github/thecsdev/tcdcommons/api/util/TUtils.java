@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.thecsdev.tcdcommons.api.util.io.mod.ModInfoProvider;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.crash.CrashException;
@@ -42,7 +43,9 @@ public final class TUtils
 	 * @return The name of the mod, or "*" if the argument is null.
 	 * @apiNote Not cross-platform. When porting to another platform, make sure to
 	 * rewrite this to work with the other platform.
+	 * @apiNote {@link Deprecated}. Use {@link ModInfoProvider} instead.
 	 */
+	@Deprecated(forRemoval = true)
 	public static String getModName(String modId)
 	{
 		if(StringUtils.isAllBlank(modId)) return "*";
