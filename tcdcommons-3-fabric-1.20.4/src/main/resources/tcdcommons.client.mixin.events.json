@@ -12,7 +12,8 @@
 		"MixinCustomPayloadS2CPacket",
 		"MixinDrawContext",
 		"MixinStatisticsS2CPacket",
-		"MixinClientPlayNetworkHandler"
+		"MixinClientPlayNetworkHandler",
+		"MixinNativeImage"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
