@@ -15,6 +15,8 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 {
 	// ==================================================
 	protected final TPanelElement target;
+	protected boolean isValueDirty = false;
+	protected boolean isKnobSizeDirty = false;
 	// ==================================================
 	public TScrollBarWidget(int x, int y, int width, int height, TPanelElement target) { this(x, y, width, height, target, true); }
 	public TScrollBarWidget(int x, int y, int width, int height, TPanelElement target, boolean autoSetScrollFlags)
@@ -39,14 +41,18 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 		final TPanelElementEvent_Scrolled onTargetScrollH = (element, scrollDelta) ->
 		{
 			if(this.getSliderDirection().isHorizontal())
-				this.refreshValue();
+				this.isValueDirty = true;
 		};
 		final TPanelElementEvent_Scrolled onTargetScrollV = (element, scrollDelta) ->
 		{
 			if(this.getSliderDirection().isVertical())
-				this.refreshValue();
+				this.isValueDirty = true;
 		};
-		final TElementEvent_ChildAR onTargetChildAR = (element, child, repositioned) -> refreshKnobSize();
+		final TElementEvent_ChildAR onTargetChildAR = (element, child, repositioned) ->
+		{
+			this.isKnobSizeDirty = true;
+			this.isValueDirty = true;
+		};
 		
 		this.target.eScrolledHorizontally.register(onTargetScrollH);
 		this.target.eScrolledVertically.register(onTargetScrollV);
@@ -56,6 +62,13 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 	// --------------------------------------------------
 	public final TPanelElement getTarget() { return this.target; }
 	// ==================================================
+	public @Virtual @Override void tick()
+	{
+		super.tick();
+		if(this.isKnobSizeDirty) refreshKnobSize();
+		if(this.isValueDirty) refreshValue();
+	}
+	// --------------------------------------------------
 	/**
 	 * Refreshes this slider's {@link #getValue()} based on
 	 * the {@link #getTarget()}'s current scroll value.
