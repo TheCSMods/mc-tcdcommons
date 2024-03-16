@@ -71,7 +71,7 @@ public final class CachedResourceManager
 			thread.setDaemon(true);
 			return thread;
 		});
-		MAID_SCHEDULER.scheduleAtFixedRate(() -> cleanUp(), 1, 5, TimeUnit.MINUTES);
+		MAID_SCHEDULER.scheduleAtFixedRate(() -> cleanUp(), 1, 60, TimeUnit.MINUTES);
 		
 		//prepare ram cache data
 		RESOURCE_CACHE = CacheBuilder.newBuilder()

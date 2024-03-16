@@ -225,7 +225,8 @@ import net.minecraft.util.Identifier;
 		//initialize starting directory if one is not present
 		if(directory == null || !directory.isDirectory())
 			directory = new File(CR);
-		
+
+		if(directory.exists() && directory.isDirectory())
 		try
 		{
 			//iterate all files and subdirectories
@@ -279,7 +280,7 @@ import net.minecraft.util.Identifier;
 		catch(Exception e)
 		{
 			//log any exceptions that come up
-			LOGGER.error("Failed to clean up cached files;",
+			LOGGER.warn("Failed to clean up cached files;",
 					e.getClass().getName(),
 					e.getMessage());
 		}
