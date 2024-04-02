@@ -17,7 +17,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
@@ -53,7 +53,7 @@ public final class StatArgumentType implements ArgumentType<Identifier>
 		{
 			@SuppressWarnings("unchecked")
 			final var ctx = (CommandContext<ServerCommandSource>)context;
-			statType = RegistryEntryArgumentType.getRegistryEntry(ctx, this.fallbackSTArgName, RegistryKeys.STAT_TYPE).value();
+			statType = RegistryEntryReferenceArgumentType.getRegistryEntry(ctx, this.fallbackSTArgName, RegistryKeys.STAT_TYPE).value();
 		}
 		catch(CommandSyntaxException | IllegalStateException | ClassCastException e) {}
 		if(statType == null) return ArgumentType.super.listSuggestions(context, builder);
