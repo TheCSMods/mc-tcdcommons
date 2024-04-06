@@ -24,6 +24,10 @@ import com.google.common.collect.Sets;
 import io.github.thecsdev.tcdcommons.api.util.collections.IdealList;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
+/**
+ * A utility that provides methods for scheduling tasks that can
+ * then be executed later on Minecraft's main {@link Thread}.
+ */
 public final class TaskScheduler
 {
 	// ==================================================

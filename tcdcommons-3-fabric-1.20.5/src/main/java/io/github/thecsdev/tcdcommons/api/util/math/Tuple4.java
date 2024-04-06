@@ -2,6 +2,9 @@ package io.github.thecsdev.tcdcommons.api.util.math;
 
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 
+/**
+ * A {@link Tuple3} that can hold a reference to one extra {@link Object} (4 total).
+ */
 public @Virtual class Tuple4<T1, T2, T3, T4> extends Tuple3<T1, T2, T3>
 {
 	// ==================================================

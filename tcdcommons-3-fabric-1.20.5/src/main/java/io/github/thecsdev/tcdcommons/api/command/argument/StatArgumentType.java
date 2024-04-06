@@ -25,6 +25,12 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
 
+/**
+ * An {@link Internal} {@link ArgumentType} used by "Better statistics screen".
+ * @apiNote Avoid using this yourself, as it is subject to changes and removal,
+ * as well as being disabled by the user.
+ * @apiNote Attempts to use this while disabled will result in potential crashes.
+ */
 @Internal
 @Experimental
 public final class StatArgumentType implements ArgumentType<Identifier>

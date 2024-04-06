@@ -1,11 +1,15 @@
 package io.github.thecsdev.tcdcommons.api.registry;
 
+import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResource;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceSerializer;
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
 
+/**
+ * {@link TCDCommons}'s registries.
+ */
 public final class TRegistries
 {
 	private TRegistries() {}

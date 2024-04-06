@@ -11,6 +11,10 @@ import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.ITextProviderSetter;
 import net.minecraft.text.Text;
 
+/**
+ * A {@link TButtonWidget} is a {@link TClickableWidget} that
+ * looks and behaves like a vanilla button.
+ */
 public @Virtual class TButtonWidget extends TClickableWidget implements ITextProviderSetter
 {
 	// ==================================================
@@ -55,13 +59,27 @@ public @Virtual class TButtonWidget extends TClickableWidget implements ITextPro
 	// --------------------------------------------------
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
-		pencil.drawTButton(getButtonTextureY());
 		renderBackground(pencil);
 		pencil.enableScissor(getX(), getY(), getEndX(), getEndY());
 		pencil.drawTElementTextTH(this.text, HorizontalAlignment.CENTER);
 		pencil.disableScissor();
 	}
+	
+	/**
+	 * By default, renders the "background" texture and icon for this {@link TButtonWidget}.
+	 * @param pencil The {@link TDrawContext}.
+	 */
 	protected @Virtual void renderBackground(TDrawContext pencil)
+	{
+		pencil.drawTButton(getButtonTextureY());
+		renderIcon(pencil);
+	}
+	
+	/**
+	 * By default, renders the "background" icon for this {@link TButtonWidget}.
+	 * @param pencil The {@link TDrawContext}.
+	 */
+	protected @Virtual void renderIcon(TDrawContext pencil)
 	{
 		if(this.icon != null)
 		{

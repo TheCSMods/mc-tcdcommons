@@ -12,6 +12,9 @@ import net.minecraft.util.Uuids;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 
+/**
+ * Contains miscellaneous functions that provide extra utility.
+ */
 public final class TUtils
 {
 	// ==================================================

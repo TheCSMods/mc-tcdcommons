@@ -2,6 +2,9 @@ package io.github.thecsdev.tcdcommons.api.util.math;
 
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 
+/**
+ * A tuple {@link Object} that can hold references to two other {@link Object}s.
+ */
 public @Virtual class Tuple2<T1, T2>
 {
 	// ==================================================

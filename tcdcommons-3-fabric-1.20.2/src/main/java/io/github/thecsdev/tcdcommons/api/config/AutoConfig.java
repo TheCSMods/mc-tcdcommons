@@ -28,6 +28,11 @@ import io.github.thecsdev.tcdcommons.api.util.TUtils;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import net.fabricmc.loader.api.FabricLoader;
 
+/**
+ * A config utility that represents a config JSON file.
+ * @see SerializedAs
+ * @see NonSerialized
+ */
 public @Virtual class AutoConfig implements ACJsonHandler<JsonObject>
 {
 	// ==================================================
@@ -235,7 +240,11 @@ public @Virtual class AutoConfig implements ACJsonHandler<JsonObject>
 			else throw exc;
 		}
 		
-		if(json != null) loadFromJson(json);
+		if(json != null)
+		{
+			loadFromJson(json);
+			if(log) LOGGER.info("Loaded '" + getClass().getSimpleName() + "' config from '" + fileName + "'.");
+		}
 	}
 	
 	/**
