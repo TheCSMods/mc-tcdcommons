@@ -9,7 +9,8 @@
 		"AccessorStatHandler",
 		"AccessorCustomPayloadNetwork",
 		"AccessorCustomPayloadC2SPacket",
-		"AccessorCustomPayloadS2CPacket"
+		"AccessorCustomPayloadS2CPacket",
+		"AccessorArgumentTypes"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

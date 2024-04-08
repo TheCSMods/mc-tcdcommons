@@ -7,7 +7,8 @@
 	[
 		"AccessorBiomeAccess",
 		"AccessorStatHandler",
-		"AccessorCustomPayloadNetwork"
+		"AccessorCustomPayloadNetwork",
+		"AccessorArgumentTypes"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
