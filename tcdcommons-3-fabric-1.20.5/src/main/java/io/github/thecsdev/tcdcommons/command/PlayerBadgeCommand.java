@@ -1,11 +1,13 @@
 package io.github.thecsdev.tcdcommons.command;
 
+import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.PLAYER_BADGE;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -14,12 +16,14 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.ServerPlayerBadgeHandler;
+import io.github.thecsdev.tcdcommons.api.client.badge.ClientPlayerBadge;
 import io.github.thecsdev.tcdcommons.api.util.TextUtils;
-import io.github.thecsdev.tcdcommons.command.argument.PlayerBadgeIdentifierArgumentType;
 import io.github.thecsdev.tcdcommons.util.TCDCT;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
@@ -53,7 +57,7 @@ public final class PlayerBadgeCommand
 	{
 		return literal("edit")
 				.then(argument("targets", EntityArgumentType.players())
-						.then(argument("badge", PlayerBadgeIdentifierArgumentType.pbId())
+						.then(argument("badge", IdentifierArgumentType.identifier()).suggests(SUGGEST_PB)
 								.then(literal("set")
 										.then(argument("value", IntegerArgumentType.integer(0))
 												.executes(ctx -> execute_edit(ctx, true))
@@ -77,12 +81,21 @@ public final class PlayerBadgeCommand
 	{
 		return literal("query")
 				.then(argument("target", EntityArgumentType.player())
-						.then(argument("badge", PlayerBadgeIdentifierArgumentType.pbId())
+						.then(argument("badge", IdentifierArgumentType.identifier()).suggests(SUGGEST_PB)
 								.executes(ctx -> execute_query(ctx))
 								)
 						);
 	}
-	// ==================================================
+	// --------------------------------------------------
+	private static SuggestionProvider<ServerCommandSource> SUGGEST_PB = (context, builder) ->
+	{
+		//suggest Identifier-s based on registered non-client-side player badges
+		return CommandSource.suggestMatching(
+				StreamSupport.stream(PLAYER_BADGE.spliterator(), false)
+					.filter(entry -> !(entry.getValue() instanceof ClientPlayerBadge))
+					.map(entry -> Objects.toString(entry.getKey())),
+				builder);
+	};// ==================================================
 	private static int execute_edit(CommandContext<ServerCommandSource> context, boolean setOrIncrease)
 	{
 		try
