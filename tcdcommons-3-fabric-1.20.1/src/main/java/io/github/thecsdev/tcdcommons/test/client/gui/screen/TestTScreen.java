@@ -9,6 +9,7 @@ import java.net.URI;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.layout.UIListLayout;
+import io.github.thecsdev.tcdcommons.api.client.gui.other.TProgressBarElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TTextureElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
@@ -159,6 +160,10 @@ public final class TestTScreen extends TScreenPlus
 			MC_CLIENT.setScreen(screen.getAsScreen());
 		});
 		panel.addChild(btn_st, true);
+		
+		final var prog = new TProgressBarElement(10, 55, 250, 20);
+		prog.setProgress(0.35f);
+		panel.addChild(prog, true);
 		
 		//return the panel
 		return panel;

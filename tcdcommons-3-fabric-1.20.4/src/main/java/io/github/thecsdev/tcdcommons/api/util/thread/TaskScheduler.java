@@ -177,5 +177,20 @@ public final class TaskScheduler
 		Objects.requireNonNull(command);
 		CONDITIONAL_TASK_QUEUE.add(new SimpleEntry<>(() -> minecraftClientOrServer.executeSync(command), condition));
 	}
+	// --------------------------------------------------
+	/**
+	 * Executes a {@link ProgressiveTask} asynchronously.
+	 * @param task The {@link ProgressiveTask} to execute.
+	 * @throws IllegalStateException If the {@link ProgressiveTask} is already being executed.
+	 */
+	public static void executeProgressiveTask(ProgressiveTask<?> task) throws IllegalStateException
+	{
+		//handle illegal states
+		if(task.isRunning())
+			throw new IllegalStateException("Task already running.");
+		
+		//execute the task async
+		SCHEDULER.schedule(() -> task.executeSync(), 0, TimeUnit.MILLISECONDS);
+	}
 	// ==================================================
 }
