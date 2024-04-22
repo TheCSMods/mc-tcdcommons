@@ -35,16 +35,13 @@ public abstract class DescriptiveProgressiveTask<T> extends ProgressiveTask<T>
 	 */
 	protected final void setProgressDescription(@Nullable Text description)
 	{
-		synchronized (this.__description)
-		{
-			//ignore objects with same pointers
-			if(this.__description == description) return;
-			//assign new value
-			this.__description = description;
-			//invoke the event, but suppress any errors
-			try { eProgressDescriptionChanged.invoker().invoke(description); }
-			catch(Exception e) {}
-		}
+		//ignore objects with same pointers
+		if(this.__description == description) return;
+		//assign new value
+		this.__description = description;
+		//invoke the event, but suppress any errors
+		try { eProgressDescriptionChanged.invoker().invoke(description); }
+		catch(Exception e) {}
 	}
 	// ==================================================
 	/**

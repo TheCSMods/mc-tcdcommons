@@ -126,7 +126,7 @@ public abstract class ProgressiveTask<T>
 		finally
 		{
 			//set ending flags
-			this.__progress = 1;
+			setProgress(1); //invokes the event
 			this.__isRunning = false;
 		}
 		
