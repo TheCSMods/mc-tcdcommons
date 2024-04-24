@@ -1,7 +1,6 @@
 package io.github.thecsdev.tcdcommons.util.io.http;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 
@@ -30,9 +29,9 @@ public final class TcdWebApiPerson
 			this.name      = this.data.get("name").getAsString();
 			this.contact   = new TcdContactInformation();
 			this.avatarUrl = this.data.has("avatar_url") ?
-					URI.create(this.data.get("avatar_url").getAsString()).toURL() :
+					new URL(this.data.get("avatar_url").getAsString()) :
 					this.contact.getJson().has("avatar_url") ?
-							URI.create(this.contact.getJson().get("avatar_url").getAsString()).toURL() :
+							new URL(this.contact.getJson().get("avatar_url").getAsString()) :
 							null;
 		}
 		catch(Exception e) { throw new IOException("Failed to read JSON data.", e); }
@@ -79,7 +78,7 @@ public final class TcdWebApiPerson
 				
 				//try to load fields
 				if(this.data.has("homepage"))
-					try { homepage = URI.create(this.data.get("homepage").getAsString()).toURL(); } catch(Exception e) {}
+					try { homepage = new URL(this.data.get("homepage").getAsString()); } catch(Exception e) {}
 				
 				//assign field values
 				this.homepageUrl = homepage;

@@ -3,7 +3,7 @@ package io.github.thecsdev.tcdcommons.util.io.http;
 import static io.github.thecsdev.tcdcommons.util.io.http.TcdWebApi.GSON;
 import static io.github.thecsdev.tcdcommons.util.io.http.TcdWebApi.getWebhookUrlsAsync;
 
-import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
@@ -48,7 +48,7 @@ public final class TcdCommonsWebApi
 			try
 			{
 				//obtain the url
-				final var stUrl = URI.create(webhooks.get("tcdcommons:special_thanks").getAsString()).toURL();
+				final var stUrl = new URL(webhooks.get("tcdcommons:special_thanks").getAsString());
 				
 				//fetch data from the url
 				CachedResourceManager.getResourceAsync(
@@ -99,7 +99,7 @@ public final class TcdCommonsWebApi
 			try
 			{
 				//obtain the url
-				final var stUrl = URI.create(webhooks.get("tcdcommons:featured_sponsors").getAsString()).toURL();
+				final var stUrl = new URL(webhooks.get("tcdcommons:featured_sponsors").getAsString());
 				
 				//fetch data from the url
 				CachedResourceManager.getResourceAsync(

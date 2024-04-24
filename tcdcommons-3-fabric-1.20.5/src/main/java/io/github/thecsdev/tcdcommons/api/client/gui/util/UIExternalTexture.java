@@ -115,7 +115,7 @@ public final class UIExternalTexture extends UITexture implements Closeable
 		this.textureManager.destroyTexture(getTextureID());
 		this.nativeImage.close();
 	}
-	@SuppressWarnings("removal")
+	@SuppressWarnings("deprecation")
 	protected final @Override void finalize() throws Throwable { try { close(); } finally { super.finalize(); } }
 	// ==================================================
 	/**

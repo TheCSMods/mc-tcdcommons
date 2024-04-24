@@ -56,9 +56,9 @@ public final class TCDCommonsClientNetworkHandler extends Object
 			if(!(currentScreen instanceof PlayerBadgeNetworkListener))
 				return;
 			final var listener = (PlayerBadgeNetworkListener)currentScreen;
-
+			
 			//invoke the listener event (on the main thread, to prevent threading and concurrency issues)
-			MC_CLIENT.executeSync(listener::onPlayerBadgesReady);
+			MC_CLIENT.executeSync(() -> listener.onPlayerBadgesReady());
 		});
 	}
 	// ==================================================

@@ -1,12 +1,10 @@
 package io.github.thecsdev.tcdcommons.network;
 
-import io.github.thecsdev.tcdcommons.api.network.TCustomPayload;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.networking.NetworkManager.Side;
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.badge.ServerPlayerBadgeHandler;
@@ -34,62 +32,56 @@ public final class TCDCommonsNetworkHandler extends Object
 	public static @Internal void init() {/*calls static*/}
 	static
 	{
-		//register TCDCommons's Custom Payload
-		PayloadTypeRegistry.configurationC2S().register(TCustomPayload.ID, TCustomPayload.CODEC);
-		PayloadTypeRegistry.configurationS2C().register(TCustomPayload.ID, TCustomPayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(TCustomPayload.ID, TCustomPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(TCustomPayload.ID, TCustomPayload.CODEC);
-
 		//obtain CPN packet ID
 		final var cpnPacketId = AccessorCustomPayloadNetwork.getCpnPacketId();
 		final var c2s = AccessorCustomPayloadNetwork.getC2S();
 		final var s2c = AccessorCustomPayloadNetwork.getS2C();
 		
 		//register receivers
-		if(TCDCommons.isClient()) ClientPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (payload, context) ->
+		NetworkManager.registerReceiver(Side.C2S, cpnPacketId, (buffer, context) ->
 		{
 			//immediately try to cast the player
-			final var player = (ClientPlayerEntity)context.player();
-
+			final var player = (ServerPlayerEntity)context.getPlayer();
+			
 			//read the payload id and data
-			final var packetId = payload.getPacketId();
-			final var packetData = new PacketByteBuf(payload.getPacketPayload());
-
-			//find the handler
-			final @Nullable var handler = s2c.getOrDefault(packetId, null);
-			if(handler == null) return;
-
-			//handle the event
-			handler.receiveCustomPayload(new PacketContext()
-			{
-				public ClientPlayerEntity getPlayer() { return player; }
-				public PacketListener getPacketListener() { return player.networkHandler; }
-				public NetworkSide getNetworkSide() { return NetworkSide.CLIENTBOUND; }
-
-				public Identifier getPacketId() { return packetId; }
-				public PacketByteBuf getPacketBuffer() { return packetData; }
-			});
-		});
-		ServerPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (payload, context) ->
-		{
-			//immediately try to cast the player
-			final var player = (ServerPlayerEntity)context.player();
-
-			//read the payload id and data
-			final var packetId = payload.getPacketId();
-			final var packetData = new PacketByteBuf(payload.getPacketPayload());
-
+			final var packetId = buffer.readIdentifier();
+			final var packetData = new PacketByteBuf(buffer.readSlice(buffer.readIntLE()));
+			
 			//find the handler
 			final @Nullable var handler = c2s.getOrDefault(packetId, null);
 			if(handler == null) return;
-
+			
 			//handle the event
 			handler.receiveCustomPayload(new PacketContext()
 			{
 				public ServerPlayerEntity getPlayer() { return player; }
 				public PacketListener getPacketListener() { return player.networkHandler; }
 				public NetworkSide getNetworkSide() { return NetworkSide.SERVERBOUND; }
-
+				
+				public Identifier getPacketId() { return packetId; }
+				public PacketByteBuf getPacketBuffer() { return packetData; }
+			});
+		});
+		NetworkManager.registerReceiver(Side.S2C, cpnPacketId, (buffer, context) ->
+		{
+			//immediately try to cast the player
+			final var player = (ClientPlayerEntity)context.getPlayer();
+			
+			//read the payload id and data
+			final var packetId = buffer.readIdentifier();
+			final var packetData = new PacketByteBuf(buffer.readSlice(buffer.readIntLE()));
+			
+			//find the handler
+			final @Nullable var handler = s2c.getOrDefault(packetId, null);
+			if(handler == null) return;
+			
+			//handle the event
+			handler.receiveCustomPayload(new PacketContext()
+			{
+				public ClientPlayerEntity getPlayer() { return player; }
+				public PacketListener getPacketListener() { return player.networkHandler; }
+				public NetworkSide getNetworkSide() { return NetworkSide.CLIENTBOUND; }
+				
 				public Identifier getPacketId() { return packetId; }
 				public PacketByteBuf getPacketBuffer() { return packetData; }
 			});

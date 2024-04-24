@@ -3,7 +3,7 @@ package io.github.thecsdev.tcdcommons.util.io.http;
 import static io.github.thecsdev.tcdcommons.util.io.http.TcdWebApi.GSON;
 import static io.github.thecsdev.tcdcommons.util.io.http.TcdWebApi.getWebhookUrlsAsync;
 
-import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -77,7 +77,7 @@ public final class TcdBetterstatsWebApi
 				//obtain the url
 				final var stUrlStr = webhooks.get("betterstats:stattype_phrases").getAsString() +
 						"?id=" + statTypeId.toString();
-				final var stUrl = URI.create(stUrlStr).toURL();
+				final var stUrl = new URL(stUrlStr);
 				
 				//fetch data from the url
 				CachedResourceManager.getResourceAsync(

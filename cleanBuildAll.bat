@@ -19,8 +19,9 @@ FOR /D %%D IN (*) DO (
 		rem if `gradlew.bat` is present, enter the directory...
         pushd %%D
 		
-		rem ...and then clean build the project by executing `gradlew.bat`...
-        call gradlew clean build
+		rem ...clean, and then build the project by executing `gradlew.bat`...
+        call gradlew clean
+        call gradlew build
 		
 		rem ...and then leave the directory, and continue iterating.
         popd

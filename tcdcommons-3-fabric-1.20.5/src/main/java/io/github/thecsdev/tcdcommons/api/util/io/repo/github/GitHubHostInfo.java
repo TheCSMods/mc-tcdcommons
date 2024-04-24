@@ -44,8 +44,8 @@ public final class GitHubHostInfo extends RepositoryHostInfo
 		try
 		{
 			ID = "github.com";
-			HTML_URL = URI.create("https://github.com/").toURL();
-			API_URL = URI.create("https://api.github.com/").toURL();
+			HTML_URL = new URL("https://github.com/");
+			API_URL = new URL("https://api.github.com/");
 			DISPLAY_NAME = "GitHub";
 		}
 		catch (MalformedURLException e) { throw new ExceptionInInitializerError(e); }

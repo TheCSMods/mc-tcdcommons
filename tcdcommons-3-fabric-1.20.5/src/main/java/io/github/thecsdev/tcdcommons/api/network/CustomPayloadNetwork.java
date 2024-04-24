@@ -1,21 +1,22 @@
 package io.github.thecsdev.tcdcommons.api.network;
 
-import io.github.thecsdev.tcdcommons.TCDCommons;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
-import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.Nullable;
+import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
+import org.jetbrains.annotations.ApiStatus.Internal;
+
+import dev.architectury.networking.NetworkManager;
+import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.ThreadExecutor;
 
 /**
  * This is a utility class that allows you to register custom payload receivers
@@ -33,7 +34,7 @@ public final class CustomPayloadNetwork extends Object
 	 * packets for the {@link CustomPayloadNetwork}.
 	 */
 	//note: Mixin Reflection used these variables. DO NOT RENAME THEM!
-	static final @Internal Identifier CPN_PACKET_ID = new Identifier(getModID(), "cpn");
+	private static final @Internal Identifier CPN_PACKET_ID = new Identifier(getModID(), "cpn");
 	// --------------------------------------------------
 	//note: Mixin Reflection used these variables. DO NOT RENAME THEM!
 	private static final Map<Identifier, CustomPayloadNetworkReceiver> C2S = new LinkedHashMap<>();
@@ -100,14 +101,17 @@ public final class CustomPayloadNetwork extends Object
 		Objects.requireNonNull(packetData);
 		if(!TCDCommons.isClient()) throw new IllegalStateException("NOT_CLIENT");
 		else if(packetData.refCnt() < 1) throw new IllegalStateException("REF_CNT");
-
-		//obtain connection
-		final var mc = net.minecraft.client.MinecraftClient.getInstance();
-		final @Nullable var conn = mc.getNetworkHandler();
-		if(conn == null) return;
-
+		
+		//create a buffer
+		final var buffer = new PacketByteBuf(Unpooled.buffer());
+		buffer.writeIdentifier(packetId);
+		buffer.writeIntLE(packetData.readableBytes());
+		buffer.writeBytes(packetData);
+		try { packetData.release(); } catch(Throwable e) {}
+		
 		//send data
-		conn.sendPacket(new CustomPayloadC2SPacket(new TCustomPayload(packetId, packetData)));
+		NetworkManager.sendToServer(CPN_PACKET_ID, buffer);
+		try { buffer.release(); } catch(Throwable e) {}
 	}
 	
 	/**
@@ -128,10 +132,17 @@ public final class CustomPayloadNetwork extends Object
 		Objects.requireNonNull(packetData);
 		//if(!TCDCommons.isServer()) throw new IllegalStateException("NOT_SERVER"); --hats off to me being stupid here
 		if(packetData.refCnt() < 1) throw new IllegalStateException("REF_CNT");
-
+		
+		//create a buffer
+		final var buffer = new PacketByteBuf(Unpooled.buffer());
+		buffer.writeIdentifier(packetId);
+		buffer.writeIntLE(packetData.readableBytes());
+		buffer.writeBytes(packetData);
+		try { packetData.release(); } catch(Throwable e) {}
+		
 		//send data
-		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(
-				new TCustomPayload(packetId, packetData)));
+		NetworkManager.sendToPlayer(player, CPN_PACKET_ID, buffer);
+		try { buffer.release(); } catch(Throwable e) {}
 	}
 	// ==================================================
 }
