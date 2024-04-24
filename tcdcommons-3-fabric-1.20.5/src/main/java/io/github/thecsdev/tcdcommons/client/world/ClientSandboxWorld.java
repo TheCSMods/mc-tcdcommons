@@ -11,6 +11,7 @@ import java.util.OptionalLong;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import net.minecraft.recipe.BrewingRecipeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.annotations.Beta;
@@ -79,7 +80,7 @@ public @Virtual class ClientSandboxWorld extends World
 		//COMBINED_DYNAMIC_REGISTRIES = comb_dyn_reg;
 		DIMENSION_TYPE = dim_type;
 		DIMENSION_TYPE_REGISTRY_ENTRY = dim_reg_en;
-		PROFILER = () -> MC_CLIENT.getProfiler();
+		PROFILER = MC_CLIENT::getProfiler;
 		IS_CLIENT = true;
 		DEBUG_WORLD = true;
 		BIOME_ACCESS = 0;
@@ -103,6 +104,8 @@ public @Virtual class ClientSandboxWorld extends World
 	protected final Map<MapIdComponent, MapState> mapStates;
 	protected final QueryableTickScheduler<Block> blockTickScheduler;
 	protected final QueryableTickScheduler<Fluid> fluidTickScheduler;
+	protected final TickManager tickManager;
+	protected final BrewingRecipeRegistry brewingRecipeRegistry;
 	// --------------------------------------------------
 	protected Scoreboard scoreboard;
 	// ==================================================
@@ -131,6 +134,9 @@ public @Virtual class ClientSandboxWorld extends World
 		this.fluidTickScheduler = new EmptyClientTickScheduler<>();
 		//
 		this.scoreboard = new Scoreboard();
+		//
+		this.tickManager = new TickManager();
+		this.brewingRecipeRegistry = BrewingRecipeRegistry.EMPTY;
 	}
 	// ==================================================
 	public final @Override void emitGameEvent(RegistryEntry<GameEvent> event, Vec3d emitterPos, Emitter emitter) {}
@@ -159,6 +165,7 @@ public @Virtual class ClientSandboxWorld extends World
 	protected final @Override EntityLookup<Entity> getEntityLookup() { return this.entityManager.getLookup(); }
 	public final @Override Entity getEntityById(int id) { return getEntityLookup().get(id); }
 	public final @Override RegistryEntry<Biome> getGeneratorStoredBiome(int biomeX, int biomeY, int biomeZ) { return getRegistryManager().get(RegistryKeys.BIOME).entryOf(BiomeKeys.PLAINS); }
-	public final @Override TickManager getTickManager() { return new TickManager(); }
+	public final @Override TickManager getTickManager() { return this.tickManager; }
+	public final @Override BrewingRecipeRegistry getBrewingRecipeRegistry() { return this.brewingRecipeRegistry; }
 	// ==================================================
 }
