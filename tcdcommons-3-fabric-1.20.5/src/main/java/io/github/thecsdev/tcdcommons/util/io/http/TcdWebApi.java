@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.util.io.http;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -87,7 +88,7 @@ public final @Internal class TcdWebApi
 	 */
 	private static final URL safeURL(String url)
 	{
-		try { return new URL(url); }
+		try { return URI.create(url).toURL(); }
 		catch(MalformedURLException e) { throw new ExceptionInInitializerError(e); }
 	}
 	// --------------------------------------------------
