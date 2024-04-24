@@ -67,8 +67,8 @@ public abstract class TElement implements TParentElement, ITooltipProvider
 	// ==================================================
 	public TElement(int x, int y, int width, int height)
 	{
-		this.x = Math.abs(x);
-		this.y = Math.abs(y);
+		this.x = x;
+		this.y = y;
 		this.width = Math.abs(width);
 		this.height = Math.abs(height);
 		this.alpha = 1;

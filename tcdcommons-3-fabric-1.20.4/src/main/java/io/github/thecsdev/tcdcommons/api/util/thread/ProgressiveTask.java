@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.util.thread;
 
+import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
+import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.event.TEvent;
@@ -122,7 +124,15 @@ public abstract class ProgressiveTask<T>
 			this.__isRunning = true;
 			this.__result = onExecuteTask();
 		}
-		catch(Throwable e) { this.__error = e; }
+		catch(Throwable e)
+		{
+			this.__error = e;
+			if(this instanceof DescriptiveProgressiveTask<?> dpt)
+				dpt.setProgressDescription(literal("")
+						.append(translatable("mco.errorMessage.generic"))
+						.append(e.getClass().getName() + ": ")
+						.append(e.getLocalizedMessage()));
+		}
 		finally
 		{
 			//set ending flags
