@@ -83,17 +83,22 @@ public @Virtual class FileListPanel extends AbstractFileListPanel<AbstractFileLi
 					currPath.toFile() :
 					currPath.getParent().toFile();
 			
+			final @Nullable var childDirectories = currFile.listFiles(File::isDirectory);
+			final @Nullable var childFiles = currFile.listFiles(File::isFile);
+			if(childDirectories == null || childFiles == null)
+				throw new SecurityException("Access denied.");
+			
 			//add a "go back" list entry, allowing the user to navigate to the previous folder
 			final var currFileParent = currFile.getParentFile();
 			if(currFileParent != null) addGoBackFileListItem(currFileParent);
 			
 			//iterate all child directories, and list them
-			for(final File childDir : currFile.listFiles(File::isDirectory))
+			for(final File childDir : childDirectories)
 				addFileListItem(childDir);
 			
 			//iterate all child non-directory files, and list them
-			for(final File childDir : currFile.listFiles(File::isFile))
-				addFileListItem(childDir);
+			for(final File childFile : childFiles)
+				addFileListItem(childFile);
 		}
 		catch(SecurityException se)
 		{

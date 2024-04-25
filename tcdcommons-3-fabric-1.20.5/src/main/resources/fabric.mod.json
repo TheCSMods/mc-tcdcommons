@@ -31,7 +31,8 @@
 	{
 		"fabricloader": ">=${project.properties.loader_version}",
 		"minecraft": "${project.properties.mod_depends_minecraft}",
-		"java": ">=17"
+		"java": ">=17",
+		"fabric-api": "*"
 	},
 	
 	"custom":
@@ -43,7 +44,6 @@
 			{
 				"modmenu.curseforge": "${project.properties.modmenu_link_curseforge}",
 				"modmenu.modrinth": "${project.properties.modmenu_link_modrinth}",
-				"modmenu.kofi": "${project.properties.modmenu_link_kofi}",
 				"modmenu.youtube": "${project.properties.modmenu_link_youtube}"
 			}
 		}

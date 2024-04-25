@@ -76,12 +76,12 @@ public final class CustomPayloadNetwork extends Object
 	public static boolean unregisterReceiver(NetworkSide side, Identifier packetId)
 	{
 		Objects.requireNonNull(packetId);
-		switch(Objects.requireNonNull(side))
+		return switch (Objects.requireNonNull(side))
 		{
-			case SERVERBOUND: return (C2S.remove(packetId) != null);
-			case CLIENTBOUND: return (S2C.remove(packetId) != null);
-			default: return false;
-		}
+			case SERVERBOUND -> (C2S.remove(packetId) != null);
+			case CLIENTBOUND -> (S2C.remove(packetId) != null);
+			default -> false;
+		};
 	}
 	// --------------------------------------------------
 	/**

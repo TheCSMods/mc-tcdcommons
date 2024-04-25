@@ -2,12 +2,14 @@ package io.github.thecsdev.tcdcommons.api.network;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
 import java.util.Objects;
 
 import static io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork.CPN_PACKET_ID;
@@ -21,26 +23,27 @@ public final class TCustomPayload implements CustomPayload
 {
 	// ==================================================
 	public static final Id<TCustomPayload> ID = new Id<>(CPN_PACKET_ID);
-	public static final PacketCodec<PacketByteBuf, TCustomPayload> CODEC =
-			PacketCodec.of(TCustomPayload::encode, TCustomPayload::decode);
+	public static final PacketCodec<PacketByteBuf, TCustomPayload> CODEC;
 	// --------------------------------------------------
 	private final Identifier packetId;
 	private final ByteBuf packetPayload;
 	// ==================================================
+	static
+	{
+		CODEC = PacketCodec.of(TCustomPayload::encode, TCustomPayload::decode);
+	}
+	// --------------------------------------------------
 	public TCustomPayload(Identifier packetId, ByteBuf packetPayload)
 	{
 		this.packetId = Objects.requireNonNull(packetId);
 		this.packetPayload = Objects.requireNonNull(packetPayload);
 	}
-	// --------------------------------------------------
+	// ==================================================
 	public final @Override Id<? extends CustomPayload> getId() { return ID; }
 	// --------------------------------------------------
 	@SuppressWarnings("removal")
 	protected final @Override void finalize() throws Throwable
 	{
-		//finialize super
-		super.finalize();
-
 		//finalize this
 		try
 		{
@@ -49,6 +52,7 @@ public final class TCustomPayload implements CustomPayload
 				this.packetPayload.release();
 		}
 		catch (Exception e) {}
+		finally { super.finalize(); } //finialize super
 	}
 	// ==================================================
 	public final Identifier getPacketId() { return  this.packetId; }
@@ -82,7 +86,11 @@ public final class TCustomPayload implements CustomPayload
 	 */
 	private static TCustomPayload decode(PacketByteBuf buffer)
 	{
-		return null;
+		final var packetId = buffer.readIdentifier();
+		final var packetDataLen = buffer.readIntLE();
+		final var packetDataBytes = new byte[packetDataLen];
+		buffer.readBytes(packetDataBytes);
+		return new TCustomPayload(packetId, Unpooled.wrappedBuffer(packetDataBytes));
 	}
 	// ==================================================
 }

@@ -22,7 +22,6 @@ import net.minecraft.util.Identifier;
 
 public final class TCDCommonsNetworkHandler extends Object
 {
-
 	// ==================================================
 	/**
 	 * The unique {@link Identifier} of the {@link CustomPayloadS2CPacket}
@@ -41,7 +40,7 @@ public final class TCDCommonsNetworkHandler extends Object
 		PayloadTypeRegistry.playS2C().register(TCustomPayload.ID, TCustomPayload.CODEC);
 
 		//obtain CPN packet ID
-		final var cpnPacketId = AccessorCustomPayloadNetwork.getCpnPacketId();
+		//final var cpnPacketId = AccessorCustomPayloadNetwork.getCpnPacketId();
 		final var c2s = AccessorCustomPayloadNetwork.getC2S();
 		final var s2c = AccessorCustomPayloadNetwork.getS2C();
 		
