@@ -1,5 +1,11 @@
 package io.github.thecsdev.tcdcommons.api.network;
 
+import static io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork.CPN_PACKET_ID;
+
+import java.util.Objects;
+
+import org.jetbrains.annotations.ApiStatus;
+
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -7,12 +13,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.ApiStatus;
-
-import java.util.List;
-import java.util.Objects;
-
-import static io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork.CPN_PACKET_ID;
 
 /**
  * An internal implementation of {@link CustomPayload} for {@link TCDCommons}.
