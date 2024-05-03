@@ -7,6 +7,10 @@ import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.AutomaticSize;
 
+/**
+ * {@link Deprecated} due to naming issues. Please use {@link UIAutomaticSizeLayout} instead.
+ */
+@Deprecated(since = "3.9.8")
 public @Virtual class UIAutomaticSize extends UILayout
 {
 	// ==================================================
@@ -14,7 +18,6 @@ public @Virtual class UIAutomaticSize extends UILayout
 	// ==================================================
 	public UIAutomaticSize(AutomaticSize automaticSize) { this.automaticSize = automaticSize; }
 	// ==================================================
-	@SuppressWarnings("removal")
 	public @Virtual @Override void apply(TParentElement parent)
 	{
 		//obtain parent

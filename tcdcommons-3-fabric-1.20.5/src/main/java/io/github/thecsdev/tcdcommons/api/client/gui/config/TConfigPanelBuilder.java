@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.layout.UILayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.other.TLabelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TCheckboxWidget;
@@ -132,10 +134,11 @@ public @Virtual class TConfigPanelBuilder<T extends TConfigPanelBuilder<T>> exte
 	/**
 	 * Returns the next free (global) Y coordinate at which to
 	 * place the next {@link TElement} that will be added to a given {@link TPanelElement}.
+	 * @deprecated Please use {@link UILayout#nextChildBottomY(TParentElement)} instead.
 	 */
+	@Deprecated(since = "3.9.8")
 	public static final int nextPanelBottomY(TPanelElement panel)
 	{
-		@SuppressWarnings("removal")
 		final TElement bottom = panel.getChildren().getTopmostElements().Item2;
 		return (bottom != null) ? bottom.getEndY() : panel.getY() + panel.getScrollPadding();
 	}
@@ -143,7 +146,9 @@ public @Virtual class TConfigPanelBuilder<T extends TConfigPanelBuilder<T>> exte
 	/**
 	 * Returns the next free (global-coordinate) space in the vertical
 	 * direction for the next {@link TElement} that will be added to a given {@link TPanelElement}.
+	 * @deprecated Please use {@link UILayout#nextChildVerticalRect(TParentElement)} instead.
 	 */
+	@Deprecated(since = "3.9.8")
 	public static final Rectangle nextPanelVerticalRect(TPanelElement panel)
 	{
 		final int sp = panel.getScrollPadding();

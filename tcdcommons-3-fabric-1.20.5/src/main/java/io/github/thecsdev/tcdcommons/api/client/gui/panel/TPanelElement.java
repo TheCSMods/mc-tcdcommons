@@ -199,6 +199,13 @@ public @Virtual class TPanelElement extends TElement
 	 */
 	public @Virtual void setSmoothScroll(boolean smoothScroll) { this.smoothScroll = smoothScroll; }
 	// --------------------------------------------------
+	/**
+	 * Makes the {@link TPanelElement} behave as if it has a "padding".
+	 * This "padding" applies a "distance" between the parent
+	 * {@link TPanelElement} and its child "content" elements.
+	 * @apiNote For greater control over this "padding", please avoid using
+	 * this feature, and instead add a nested element with the desired offets.
+	 */
 	//semi-deprecated; was used in v2.x; use nested panels instead
 	public final @Beta int getScrollPadding() { return this.scrollPadding; }
 	public @Virtual @Beta void setScrollPadding(int scrollPadding) { this.scrollPadding = scrollPadding; }
