@@ -1,5 +1,5 @@
 {
-	"tcdcommons": "TCDCommons",
+	"tcdcommons": "TCDCommons API",
 	
 	"tcdcommons.translators.title": "Translators",
 	"tcdcommons.translators.tutorial": "The translators section below is in CSV format. Just place a comma (,) and write your unique GitHub username. Example: 'TheCSDev, SomeOtherUser, AndSoOn'.",
@@ -40,5 +40,7 @@
 	"commands.badges.edit.output": "Edited the player badge stat '%s' for %s player(s).",
 	"commands.badges.clear.output": "Cleared all player badge stats for %s player(s).",
 	"commands.badges.chat_grant": "%s has earned the player badge %s.",
-	"commands.badges.query.output": "%s's player badge stat value for '%s' is %s."
+	"commands.badges.query.output": "%s's player badge stat value for '%s' is %s.",
+	
+	"tcdcommons.key.refresh_current_screen": "Refresh current screen"
 }

@@ -12,7 +12,8 @@
 		"MixinDrawContext",
 		"MixinStatisticsS2CPacket",
 		"MixinClientPlayNetworkHandler",
-		"MixinNativeImage"
+		"MixinNativeImage",
+		"MixinGameRenderer"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

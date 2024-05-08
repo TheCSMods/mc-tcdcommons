@@ -14,6 +14,8 @@ import net.minecraft.text.Text;
 public final @Internal class TCDCT
 {
 	// ==================================================
+	public static final String KEY_RCS = "tcdcommons.key.refresh_current_screen";
+	// --------------------------------------------------
 	private TCDCT() {}
 	// ==================================================
 	public static final MutableText tcdc() { return translatable("tcdcommons"); }
@@ -54,5 +56,7 @@ public final @Internal class TCDCT
 	public static final MutableText cmd_pb_clear_out(Text affectedPlayerCount)            { return translatable("commands.badges.clear.output", affectedPlayerCount); }
 	public static final MutableText cmd_pb_chatGrant(Text player, Text badge)             { return translatable("commands.badges.chat_grant", player, badge); }
 	public static final MutableText cmd_pb_query_out(Text player, Text badge, Text value) { return translatable("commands.badges.query.output", player, badge, value); }
+	// --------------------------------------------------
+	public static final MutableText key_refrshCurrentScreen() { return translatable(KEY_RCS); }
 	// ==================================================
 }
