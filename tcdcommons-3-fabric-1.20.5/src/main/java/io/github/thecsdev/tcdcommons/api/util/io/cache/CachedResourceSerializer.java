@@ -1,8 +1,8 @@
 package io.github.thecsdev.tcdcommons.api.util.io.cache;
 
+import static io.github.thecsdev.tcdcommons.TCDCommons.GSON;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.CACHED_RESOURCE_SERIALIZER;
-import static io.github.thecsdev.tcdcommons.util.io.http.TcdWebApi.GSON;
 
 import java.io.IOException;
 import java.io.InputStream;

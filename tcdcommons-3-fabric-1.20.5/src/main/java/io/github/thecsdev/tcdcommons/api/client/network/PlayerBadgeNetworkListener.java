@@ -2,7 +2,7 @@ package io.github.thecsdev.tcdcommons.api.client.network;
 
 import io.github.thecsdev.tcdcommons.api.badge.PlayerBadge;
 import io.github.thecsdev.tcdcommons.api.client.badge.ClientPlayerBadge;
-import io.github.thecsdev.tcdcommons.client.network.TCDCommonsClientNetworkHandler;
+import io.github.thecsdev.tcdcommons.client.network.TcdcClientPlayNetworkHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -14,7 +14,7 @@ public interface PlayerBadgeNetworkListener
 {
 	// ==================================================
 	/**
-	 * Called by {@link TCDCommonsClientNetworkHandler} when the
+	 * Called by {@link TcdcClientPlayNetworkHandler} when the
 	 * server sends the client their {@link PlayerBadge} statistics.
 	 * 
 	 * @apiNote <b>Important:</b> The server will <b>not</b> send a

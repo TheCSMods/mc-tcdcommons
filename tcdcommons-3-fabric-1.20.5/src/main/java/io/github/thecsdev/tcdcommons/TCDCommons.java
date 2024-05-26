@@ -1,15 +1,20 @@
 package io.github.thecsdev.tcdcommons;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
-import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
+import io.github.thecsdev.tcdcommons.network.TCDCommonsNetwork;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class TCDCommons extends Object
 {
+	// ==================================================
+	public static final @Internal Gson GSON = new Gson();
 	// ==================================================
 	public static final Logger LOGGER = LoggerFactory.getLogger(getModID());
 	// --------------------------------------------------
@@ -43,7 +48,7 @@ public class TCDCommons extends Object
 		this.config.loadFromFileOrCrash(true); //important to crash on fail, as there are important config variables
 		
 		//init stuff
-		TCDCommonsNetworkHandler.init();
+		TCDCommonsNetwork.init();
 		CachedResourceManager.init();
 		
 		//FIXME - Important checklist that is MUST-VERIFY before porting to higher version:

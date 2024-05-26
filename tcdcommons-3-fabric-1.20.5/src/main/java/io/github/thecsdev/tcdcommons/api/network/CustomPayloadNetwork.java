@@ -1,5 +1,13 @@
 package io.github.thecsdev.tcdcommons.api.network;
 
+import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.NetworkSide;
@@ -8,14 +16,6 @@ import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
-import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
 /**
  * This is a utility class that allows you to register custom payload receivers
@@ -29,16 +29,27 @@ public final class CustomPayloadNetwork extends Object
 	private CustomPayloadNetwork() {}
 	// --------------------------------------------------
 	/**
-	 * The unique {@link Identifier} of {@link TCDCommons}'s custom payload
+	 * The unique {@link Identifier} of {@link TCDCommons}'s {@link TCustomPayload}
 	 * packets for the {@link CustomPayloadNetwork}.
+	 * @see TCustomPayload#ID
 	 */
-	//note: Mixin Reflection used these variables. DO NOT RENAME THEM!
-	static final @Internal Identifier CPN_PACKET_ID = new Identifier(getModID(), "cpn");
+	public static final Identifier CPN_PACKET_ID = new Identifier(getModID(), "cpn");
 	// --------------------------------------------------
-	//note: Mixin Reflection used these variables. DO NOT RENAME THEM!
-	private static final Map<Identifier, CustomPayloadNetworkReceiver> C2S = new LinkedHashMap<>();
-	private static final Map<Identifier, CustomPayloadNetworkReceiver> S2C = new LinkedHashMap<>();
+	//Note: Mixin accessor are used for these variables. DO NOT RENAME THEM!
+	private static final Map<Identifier, CustomPayloadNetworkReceiver> C2S_PLAY = new LinkedHashMap<>();
+	private static final Map<Identifier, CustomPayloadNetworkReceiver> S2C_PLAY = new LinkedHashMap<>();
 	// ==================================================
+	/**
+	 * Please use {@link #registerPlayReceiver(NetworkSide, Identifier, CustomPayloadNetworkReceiver)}.<br/>
+	 * {@link Deprecated} because the method's name changed for clarity reasons.
+	 */
+	@Deprecated(since = "v3.11", forRemoval = true)
+	public static CustomPayloadNetworkReceiver registerReceiver
+	(NetworkSide side, Identifier packetId, CustomPayloadNetworkReceiver receiver)
+	{
+		return registerPlayReceiver(side, packetId, receiver);
+	}
+	
 	/**
 	 * Registers a {@link CustomPayloadNetworkReceiver} for a given custom payload packet.<p>
 	 * <b>Important:</b> Receivers are executed on the network thread.
@@ -53,18 +64,28 @@ public final class CustomPayloadNetwork extends Object
 	 * @apiNote {@link CustomPayloadNetworkReceiver}s are executed on the network thread.
 	 * @apiNote {@link NetworkSide#CLIENTBOUND} only works on the client-side.
 	 */
-	public static CustomPayloadNetworkReceiver registerReceiver
+	public static CustomPayloadNetworkReceiver registerPlayReceiver
 	(NetworkSide side, Identifier packetId, CustomPayloadNetworkReceiver receiver)
 	{
 		Objects.requireNonNull(packetId);
 		Objects.requireNonNull(receiver);
 		switch(Objects.requireNonNull(side))
 		{
-			case SERVERBOUND: C2S.put(packetId, receiver); break;
-			case CLIENTBOUND: S2C.put(packetId, receiver); break;
+			case SERVERBOUND: C2S_PLAY.put(packetId, receiver); break;
+			case CLIENTBOUND: S2C_PLAY.put(packetId, receiver); break;
 			default: throw new IllegalArgumentException("Unexpected network side " + side);
 		}
 		return receiver;
+	}
+	
+	/**
+	 * Please see {@link #unregisterPlayReceiver(NetworkSide, Identifier)}.<br/>
+	 * {@link Deprecated} because the method's name changed for clarity reasons.
+	 */
+	@Deprecated(since = "v3.11", forRemoval = true)
+	public static boolean unregisterReceiver(NetworkSide side, Identifier packetId)
+	{
+		return unregisterPlayReceiver(side, packetId);
 	}
 	
 	/**
@@ -73,13 +94,13 @@ public final class CustomPayloadNetwork extends Object
 	 * @param packetId The unique {@link Identifier} of the custom payload packets being listened.
 	 * @return {@code true} if the {@link CustomPayloadNetworkReceiver} was present before getting removed.
 	 */
-	public static boolean unregisterReceiver(NetworkSide side, Identifier packetId)
+	public static boolean unregisterPlayReceiver(NetworkSide side, Identifier packetId)
 	{
 		Objects.requireNonNull(packetId);
 		return switch (Objects.requireNonNull(side))
 		{
-			case SERVERBOUND -> (C2S.remove(packetId) != null);
-			case CLIENTBOUND -> (S2C.remove(packetId) != null);
+			case SERVERBOUND -> (C2S_PLAY.remove(packetId) != null);
+			case CLIENTBOUND -> (S2C_PLAY.remove(packetId) != null);
 			default -> false;
 		};
 	}

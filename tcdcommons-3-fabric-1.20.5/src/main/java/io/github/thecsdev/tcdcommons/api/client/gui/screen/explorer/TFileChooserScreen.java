@@ -1,6 +1,5 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer;
 
-import static io.github.thecsdev.tcdcommons.api.util.TextUtils.translatable;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MAGIC_ITEM_Z_OFFSET;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
@@ -25,6 +24,7 @@ import io.github.thecsdev.tcdcommons.api.client.util.interfaces.IParentScreenPro
 import io.github.thecsdev.tcdcommons.api.util.enumerations.FileChooserDialogType;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.TFileFilter;
 import io.github.thecsdev.tcdcommons.api.util.io.TExtensionFileFilter;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;
@@ -64,7 +64,7 @@ public final class TFileChooserScreen extends TScreenPlus implements IParentScre
 			@Nullable String targetExtension,
 			Consumer<TFileChooserResult> onComplete) throws NullPointerException
 	{
-		super(translatable("tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title"));
+		super(TCDCT.gui_explorer_title());
 		this.type = Objects.requireNonNull(type);
 		this.onComplete = Objects.requireNonNull(onComplete);
 		

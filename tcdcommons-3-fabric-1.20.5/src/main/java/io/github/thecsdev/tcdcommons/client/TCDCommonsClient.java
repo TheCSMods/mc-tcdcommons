@@ -3,7 +3,6 @@ package io.github.thecsdev.tcdcommons.client;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
-import io.github.thecsdev.tcdcommons.client.network.TCDCommonsClientNetworkHandler;
 import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
@@ -19,6 +18,10 @@ public final class TCDCommonsClient extends TCDCommons
 	//a z-offset value that makes GUI elements render on top of any 3D items on the screen
 	public static final @Internal int MAGIC_ITEM_Z_OFFSET = 50 + ItemRenderer.field_32934;
 	// --------------------------------------------------
+	/**
+	 * A {@link KeyBinding}, that when pressed, refreshes
+	 * the {@link MinecraftClient#currentScreen}.
+	 */
 	public static final KeyBinding KEY_RCS;
 	// ==================================================
 	static
@@ -30,10 +33,6 @@ public final class TCDCommonsClient extends TCDCommons
 				getModID()));
 	}
 	// --------------------------------------------------
-	public TCDCommonsClient()
-	{
-		//init stuff
-		TCDCommonsClientNetworkHandler.init();
-	}
+	public TCDCommonsClient() {}
 	// ==================================================
 }

@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler;
+import io.github.thecsdev.tcdcommons.network.TcdcServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.ServerStatHandler;
 
@@ -15,6 +15,6 @@ public abstract class MixinServerStatHandler
 	@Inject(method = "sendStats", at = @At("RETURN"))
 	public void onSendStats(ServerPlayerEntity player, CallbackInfo callback)
 	{
-		TCDCommonsNetworkHandler.s2c_sendPlayerBadges(player);
+		TcdcServerPlayNetworkHandler.of(player).sendPlayerBadges();
 	}
 }

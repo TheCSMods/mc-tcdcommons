@@ -6,7 +6,7 @@ import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.getCust
 import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.setCustomDataEntryG;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.PLAYER_BADGE;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.network.TCDCommonsNetworkHandler.S2C_PLAYER_BADGES;
+import static io.github.thecsdev.tcdcommons.network.TcdcServerPlayNetworkHandler.S2C_PLAYER_BADGES;
 
 import java.util.Collection;
 import java.util.Objects;

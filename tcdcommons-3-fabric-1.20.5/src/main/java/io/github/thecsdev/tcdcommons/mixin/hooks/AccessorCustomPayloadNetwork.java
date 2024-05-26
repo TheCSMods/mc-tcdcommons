@@ -12,7 +12,6 @@ import net.minecraft.util.Identifier;
 @Mixin(value = CustomPayloadNetwork.class, remap = false)
 public interface AccessorCustomPayloadNetwork
 {
-	static @Accessor("CPN_PACKET_ID") Identifier getCpnPacketId() { throw new AssertionError(); }
-	static @Accessor("C2S") Map<Identifier, CustomPayloadNetworkReceiver> getC2S() { throw new AssertionError(); }
-	static @Accessor("S2C") Map<Identifier, CustomPayloadNetworkReceiver> getS2C() { throw new AssertionError(); }
+	static @Accessor("C2S_PLAY") Map<Identifier, CustomPayloadNetworkReceiver> getPlayC2S() { throw new AssertionError(); }
+	static @Accessor("S2C_PLAY") Map<Identifier, CustomPayloadNetworkReceiver> getPlayS2C() { throw new AssertionError(); }
 }

@@ -23,22 +23,26 @@ public final class TCustomPayload implements CustomPayload
 {
 	// ==================================================
 	public static final Id<TCustomPayload> ID = new Id<>(CPN_PACKET_ID);
-	public static final PacketCodec<PacketByteBuf, TCustomPayload> CODEC;
+	public static final PacketCodec<PacketByteBuf, TCustomPayload> CODEC =
+			PacketCodec.of(TCustomPayload::encode, TCustomPayload::decode);
 	// --------------------------------------------------
 	private final Identifier packetId;
-	private final ByteBuf packetPayload;
+	private final ByteBuf    packetPayload;
 	// ==================================================
-	static
-	{
-		CODEC = PacketCodec.of(TCustomPayload::encode, TCustomPayload::decode);
-	}
-	// --------------------------------------------------
 	public TCustomPayload(Identifier packetId, ByteBuf packetPayload)
 	{
-		this.packetId = Objects.requireNonNull(packetId);
+		this.packetId      = Objects.requireNonNull(packetId);
 		this.packetPayload = Objects.requireNonNull(packetPayload);
 	}
 	// ==================================================
+	/**
+	 * Not to be confused with {@link #getPacketId()}!<br>
+	 * This method, {@link #getId()}, belongs to the game's code, and
+	 * refers to the ID of this payload on the game's network protocol.<br/>
+	 * Meanwhile, {@link #getPacketId()} refers to the ID of the packet payload
+	 * being sent over using {@link TCDCommons}'s {@link CustomPayloadNetwork}.<br/>
+	 * It is very likely that you are looking for {@link #getPacketId()}.
+	 */
 	public final @Override Id<? extends CustomPayload> getId() { return ID; }
 	// --------------------------------------------------
 	@SuppressWarnings("removal")
@@ -55,6 +59,9 @@ public final class TCustomPayload implements CustomPayload
 		finally { super.finalize(); } //finialize super
 	}
 	// ==================================================
+	/**
+	 * Not to be confused with {@link #getId()}!
+	 */
 	public final Identifier getPacketId() { return  this.packetId; }
 	public final ByteBuf getPacketPayload() { return this.packetPayload; }
 	// ==================================================
