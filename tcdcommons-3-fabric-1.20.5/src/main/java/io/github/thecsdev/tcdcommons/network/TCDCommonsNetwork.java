@@ -2,6 +2,7 @@ package io.github.thecsdev.tcdcommons.network;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -29,9 +30,11 @@ public final @Internal class TCDCommonsNetwork
 	// ==================================================
 	private TCDCommonsNetwork() {}
 	// --------------------------------------------------
+	public static final int COMMON_MAX_CUSTOM_PAYLOAD_SIZE = 1024 * 5;
+	//
 	public static final Identifier S2C_PLAYER_BADGES = new Identifier(getModID(), "player_badges");
-	public static final Identifier S2C_FCPNP         = new Identifier(getModID(), "f"); //fractured CPN packet
-	public static final Identifier C2S_FCPNP         = S2C_FCPNP;                       //fractured CPN packet
+	//
+	public static final Identifier S2C2C_FCPNP = new Identifier(getModID(), "f"); //fractured CPN packet
 	//^ fractured CPN packets divide a single large CPN packet into several smaller ones
 	// ==================================================
 	public static final void init() {}
@@ -49,7 +52,7 @@ public final @Internal class TCDCommonsNetwork
 			TcdcServerPlayNetworkHandler.of(context.player()).onCustomPayloadNetwork(payload));
 		
 		//fractured custom payload network packets
-		CustomPayloadNetwork.registerPlayReceiver(NetworkSide.SERVERBOUND, C2S_FCPNP, context ->
+		CustomPayloadNetwork.registerPlayReceiver(NetworkSide.SERVERBOUND, S2C2C_FCPNP, context ->
 			TcdcServerPlayNetworkHandler.of((ServerPlayerEntity)context.getPlayer()).onFracturedCustomPayloadNetwork(context));
 		
 		// ---------- PURE CLIENT-SIDE HANDLERS
@@ -60,7 +63,7 @@ public final @Internal class TCDCommonsNetwork
 				TcdcClientPlayNetworkHandler.of(context.player()).onCustomPayloadNetwork(payload));
 			
 			//fractured custom payload network packets
-			CustomPayloadNetwork.registerPlayReceiver(NetworkSide.CLIENTBOUND, S2C_FCPNP, context ->
+			CustomPayloadNetwork.registerPlayReceiver(NetworkSide.CLIENTBOUND, S2C2C_FCPNP, context ->
 				TcdcClientPlayNetworkHandler.of((ClientPlayerEntity)context.getPlayer()).onFracturedCustomPayloadNetwork(context));
 			
 			//client-sided player badge statistics packet handler
@@ -69,6 +72,58 @@ public final @Internal class TCDCommonsNetwork
 		}
 	}
 	// ==================================================
+	public static final @Internal void sendFracturedCpnPacket(
+			TCustomPayload fullPacket,
+			long fracturedPacketId,
+			Consumer<TCustomPayload> packetSender)
+	{
+		//requirements
+		Objects.requireNonNull(fullPacket);
+		Objects.requireNonNull(packetSender);
+		if(fracturedPacketId < 1)
+			throw new IllegalArgumentException("Fractured packet ID is < 1");
+		
+		final var fullPacketPayload = fullPacket.getPacketPayload();
+		
+		//begin
+		{
+			//send a payload indicating the start of this process
+			final var b = new PacketByteBuf(Unpooled.buffer());
+			b.writeByte(1);
+			b.writeLongLE(fracturedPacketId);
+			b.writeString(fullPacket.getPacketId().toString());
+			try { packetSender.accept(new TCustomPayload(S2C2C_FCPNP, b)); }
+			catch(Exception exc) { return; }
+		}
+		
+		//fractured data transmission
+		while(fullPacketPayload.readableBytes() > 0)
+		{
+			//read the next chunk of data
+			final int chunkDataLen = Math.min(fullPacketPayload.readableBytes(), COMMON_MAX_CUSTOM_PAYLOAD_SIZE);
+			final var chunkData = fullPacketPayload.readSlice(chunkDataLen);
+			
+			//send the next chunk of data
+			final var b = new PacketByteBuf(Unpooled.buffer());
+			b.writeLongLE(fracturedPacketId);
+			b.writeIntLE(chunkDataLen);
+			b.writeBytes(chunkData);
+			try { packetSender.accept(new TCustomPayload(S2C2C_FCPNP, b)); }
+			catch(Exception exc) { return; }
+			
+			//...repeat until done
+		}
+		
+		//end
+		{
+			//send a payload indicating the end of this process
+			final var b = new PacketByteBuf(Unpooled.buffer());
+			b.writeLongLE(fracturedPacketId);
+			try { packetSender.accept(new TCustomPayload(S2C2C_FCPNP, b)); }
+			catch(Exception exc) { return; }
+		}
+	}
+	
 	/**
 	 * When a {@link TCustomPayload} is "too large", it needs to be broken up into
 	 * smaller individual packets called "fractured CPN packets". These fractured

@@ -3,6 +3,7 @@ package io.github.thecsdev.tcdcommons.client.network;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.PLAYER_BADGE;
 import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
+import static io.github.thecsdev.tcdcommons.network.TCDCommonsNetwork.COMMON_MAX_CUSTOM_PAYLOAD_SIZE;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -162,9 +163,22 @@ public final @Internal class TcdcClientPlayNetworkHandler
 		Objects.requireNonNull(packetData);
 		if(packetData.refCnt() < 1) throw new IllegalStateException("REF_CNT");
 		
-		//send data
-		this.player.networkHandler.sendPacket(new CustomPayloadC2SPacket(
-				new TCustomPayload(packetId, packetData)));
+		//prepare the payload
+		final var payload = new TCustomPayload(packetId, packetData);
+		
+		//handle events where the payload is too large
+		//(in those cases, they aren't sent directly in full)
+		if(packetData.readableBytes() > COMMON_MAX_CUSTOM_PAYLOAD_SIZE)
+		{
+			TCDCommonsNetwork.sendFracturedCpnPacket(
+					payload,
+					nextC2SFracturedCpnPacketId(),
+					fp -> this.player.networkHandler.sendPacket(new CustomPayloadC2SPacket(fp)));
+			return;
+		}
+		
+		//send data in full, at once, if possible
+		else this.player.networkHandler.sendPacket(new CustomPayloadC2SPacket(payload));
 	}
 	// ==================================================
 	/**

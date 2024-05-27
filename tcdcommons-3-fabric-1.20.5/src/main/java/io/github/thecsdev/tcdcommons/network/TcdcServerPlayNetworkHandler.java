@@ -1,6 +1,7 @@
 package io.github.thecsdev.tcdcommons.network;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
+import static io.github.thecsdev.tcdcommons.network.TCDCommonsNetwork.COMMON_MAX_CUSTOM_PAYLOAD_SIZE;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -115,9 +116,22 @@ public final @Internal class TcdcServerPlayNetworkHandler
 		Objects.requireNonNull(packetData);
 		if(packetData.refCnt() < 1) throw new IllegalStateException("REF_CNT");
 		
-		//send data
-		this.player.networkHandler.sendPacket(new CustomPayloadS2CPacket(
-				new TCustomPayload(packetId, packetData)));
+		//prepare the payload
+		final var payload = new TCustomPayload(packetId, packetData);
+		
+		//handle events where the payload is too large
+		//(in those cases, they aren't sent directly in full)
+		if(packetData.readableBytes() > COMMON_MAX_CUSTOM_PAYLOAD_SIZE)
+		{
+			TCDCommonsNetwork.sendFracturedCpnPacket(
+					payload,
+					nextS2CFracturedCpnPacketId(),
+					fp -> this.player.networkHandler.sendPacket(new CustomPayloadS2CPacket(fp)));
+			return;
+		}
+		
+		//send data in full, at once, if possible
+		else this.player.networkHandler.sendPacket(new CustomPayloadS2CPacket(payload));
 	}
 	
 	/**
