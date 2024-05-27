@@ -6,7 +6,6 @@ import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.getCust
 import static io.github.thecsdev.tcdcommons.api.hooks.entity.EntityHooks.setCustomDataEntryG;
 import static io.github.thecsdev.tcdcommons.api.registry.TRegistries.PLAYER_BADGE;
 import static io.github.thecsdev.tcdcommons.api.util.TextUtils.literal;
-import static io.github.thecsdev.tcdcommons.network.TcdcServerPlayNetworkHandler.S2C_PLAYER_BADGES;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -19,6 +18,7 @@ import com.google.common.collect.Lists;
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.TCDCommonsConfig;
 import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork;
+import io.github.thecsdev.tcdcommons.network.TCDCommonsNetwork;
 import io.github.thecsdev.tcdcommons.util.TCDCT;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -202,10 +202,10 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 		}
 		
 		//create and send packet
-		try { CustomPayloadNetwork.sendS2C(player, S2C_PLAYER_BADGES, data); }
+		try { CustomPayloadNetwork.sendS2C(player, TCDCommonsNetwork.S2C_PLAYER_BADGES, data); }
 		catch(Exception e)
 		{
-			LOGGER.debug("Failed to send " + S2C_PLAYER_BADGES + " packet; " + e.getMessage());
+			LOGGER.debug("Failed to send " + TCDCommonsNetwork.S2C_PLAYER_BADGES + " packet; " + e.getMessage());
 			throw e;
 		}
 	}

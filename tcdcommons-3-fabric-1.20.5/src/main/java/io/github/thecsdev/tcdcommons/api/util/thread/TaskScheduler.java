@@ -106,7 +106,7 @@ public final class TaskScheduler
 						.collect(Collectors.toList());
 				
 				//clear any "expired" entries that have been garbage collected
-				CACHE_CLEANUP.removeIf(entry -> entry.get() == null);
+				CACHE_CLEANUP.removeIf(entry -> entry.refersTo(null));
 				
 				//clean the caches
 				caches.forEach(cache -> { synchronized(cache) { cache.cleanUp(); } });

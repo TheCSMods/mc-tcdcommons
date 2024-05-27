@@ -6,13 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
 import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.api.network.packet.TCustomPayload;
+import io.github.thecsdev.tcdcommons.client.network.TcdcClientPlayNetworkHandler;
+import io.github.thecsdev.tcdcommons.network.TcdcServerPlayNetworkHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
@@ -117,18 +116,15 @@ public final class CustomPayloadNetwork extends Object
 		throws IllegalStateException, NullPointerException
 	{
 		//requirements
-		Objects.requireNonNull(packetId);
-		Objects.requireNonNull(packetData);
 		if(!TCDCommons.isClient()) throw new IllegalStateException("NOT_CLIENT");
-		else if(packetData.refCnt() < 1) throw new IllegalStateException("REF_CNT");
 
-		//obtain connection
-		final var mc = net.minecraft.client.MinecraftClient.getInstance();
-		final @Nullable var conn = mc.getNetworkHandler();
-		if(conn == null) return;
+		//obtain player
+		@SuppressWarnings("resource")
+		final var player = net.minecraft.client.MinecraftClient.getInstance().player;
+		if(player == null || player.networkHandler == null) return;
 
 		//send data
-		conn.sendPacket(new CustomPayloadC2SPacket(new TCustomPayload(packetId, packetData)));
+		TcdcClientPlayNetworkHandler.of(player).sendCustomPayloadNetwork(packetId, packetData);
 	}
 	
 	/**
@@ -143,16 +139,8 @@ public final class CustomPayloadNetwork extends Object
 	public static final void sendS2C(ServerPlayerEntity player, Identifier packetId, ByteBuf packetData)
 			throws IllegalStateException, NullPointerException
 	{
-		//requirements
 		Objects.requireNonNull(player);
-		Objects.requireNonNull(packetId);
-		Objects.requireNonNull(packetData);
-		//if(!TCDCommons.isServer()) throw new IllegalStateException("NOT_SERVER"); --hats off to me being stupid here
-		if(packetData.refCnt() < 1) throw new IllegalStateException("REF_CNT");
-
-		//send data
-		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(
-				new TCustomPayload(packetId, packetData)));
+		TcdcServerPlayNetworkHandler.of(player).sendCustomPayloadNetwork(packetId, packetData);
 	}
 	// ==================================================
 }

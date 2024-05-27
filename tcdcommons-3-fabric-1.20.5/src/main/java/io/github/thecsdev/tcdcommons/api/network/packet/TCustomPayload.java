@@ -1,12 +1,13 @@
-package io.github.thecsdev.tcdcommons.api.network;
+package io.github.thecsdev.tcdcommons.api.network.packet;
 
 import static io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork.CPN_PACKET_ID;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
+import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
@@ -16,9 +17,10 @@ import net.minecraft.util.Identifier;
 
 /**
  * An internal implementation of {@link CustomPayload} for {@link TCDCommons}.
- * @apiNote There's nothing useful here. You may ignore this file.
+ * @apiNote a {@link CustomPayload} implementation for the {@link CustomPayloadNetwork}.
+ * @apiNote {@link Internal}. Please do not try to interact with this directly.
  */
-@ApiStatus.Internal
+@Internal
 public final class TCustomPayload implements CustomPayload
 {
 	// ==================================================
