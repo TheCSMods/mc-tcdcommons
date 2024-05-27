@@ -105,6 +105,7 @@ public final @Internal class TCDCommonsNetwork
 			
 			//send the next chunk of data
 			final var b = new PacketByteBuf(Unpooled.buffer());
+			b.writeByte(2);
 			b.writeLongLE(fracturedPacketId);
 			b.writeIntLE(chunkDataLen);
 			b.writeBytes(chunkData);
@@ -118,6 +119,7 @@ public final @Internal class TCDCommonsNetwork
 		{
 			//send a payload indicating the end of this process
 			final var b = new PacketByteBuf(Unpooled.buffer());
+			b.writeByte(3);
 			b.writeLongLE(fracturedPacketId);
 			try { packetSender.accept(new TCustomPayload(S2C2C_FCPNP, b)); }
 			catch(Exception exc) { return; }
