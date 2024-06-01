@@ -25,17 +25,19 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 		this.target = Objects.requireNonNull(target);
 		
 		//try to smartly predict the slider direction based on dimensions
-		if(autoSetScrollFlags)
 		{
 			final boolean b = (height >= width);
-			final int sf = this.target.getScrollFlags();
 			setSliderDirection(b ? Direction2D.DOWN : Direction2D.RIGHT);
-			this.target.setScrollFlags(b ? (sf | SCROLL_VERTICAL) : (sf | SCROLL_HORIZONTAL));
+			if(autoSetScrollFlags)
+			{
+				final int sf = this.target.getScrollFlags();
+				this.target.setScrollFlags(b ? (sf | SCROLL_VERTICAL) : (sf | SCROLL_HORIZONTAL));
+			}
 		}
 		
 		//refresh the value here
-		refreshValue();
 		refreshKnobSize();
+		refreshValue();
 		
 		//handle panel events
 		final TPanelElementEvent_Scrolled onTargetScrollH = (element, scrollDelta) ->
