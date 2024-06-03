@@ -41,14 +41,6 @@ java
  */
 jar
 {
-	//exclude all .class files outside of the maven group
-	def includeOnlyPackage = project.maven_group.replaceAll('\\.', '/')
-	eachFile { fileCopyDetails ->
-		if (fileCopyDetails.name.endsWith('.class') && !fileCopyDetails.relativePath.pathString.startsWith(includeOnlyPackage)) {
-			fileCopyDetails.exclude()
-		}
-	}
-	
 	//include the license file
-	from("LICENSE");
+	from("LICENSE") { rename { fileName -> "LICENSE-${project.mod_id}" } }
 }
