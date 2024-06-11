@@ -1,0 +1,32 @@
+{
+	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "번역가들",
+	"tcdcommons.translators.tutorial": "아래 번역가 섹션은 CSV 형식입니다. 그냥 쉼표(,)를 올리고 개인적인 GitHub 사용자 이름을 작성하십시오. 예를 들어: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "openai:gpt-4,",
+	
+	"tcdcommons.client_side": "클라이언트-사이드",
+	"tcdcommons.server_side": "서버-사이드",
+	
+	"tcdcommons.api.badge.playerbadge": "플레이어 배지",
+	"tcdcommons.api.badge.playerbadge.plural": "플레이어 배지들",
+
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "파일 탐색기",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "파일 저장",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "파일 열기",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "폴더 선택",
+
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "파일 이름",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "파일 유형",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "저장",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "열기",
+
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "모든 파일 (*.*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s 파일 (%1$s)",
+
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "이 디렉토리는 존재하지 않습니다...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "이 디렉토리를 읽을 권한이 없습니다...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "옵션 선택..."
+}
