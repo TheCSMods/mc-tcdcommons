@@ -25,6 +25,7 @@ import net.minecraft.util.thread.ThreadExecutor;
  * Provides information about a given user whose account is registered on a repository hosting platform.
  * @see RepositoryHostInfo
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public abstract class RepositoryUserInfo
 {
 	// ==================================================

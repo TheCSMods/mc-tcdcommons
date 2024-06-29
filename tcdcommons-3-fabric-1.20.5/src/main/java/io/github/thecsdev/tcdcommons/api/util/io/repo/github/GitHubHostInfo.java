@@ -26,6 +26,7 @@ import net.minecraft.util.thread.ThreadExecutor;
 /**
  * {@link RepositoryHostInfo} for <code>github.com</code>.
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public final class GitHubHostInfo extends RepositoryHostInfo
 {
 	// ==================================================

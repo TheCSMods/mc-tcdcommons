@@ -27,6 +27,7 @@ import net.minecraft.util.thread.ThreadExecutor;
  * A utility {@link Class} that parses repository {@link URI}s and
  * attempts to fetch information about said repositories.
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public abstract class RepositoryInfoProvider
 {
 	// ==================================================

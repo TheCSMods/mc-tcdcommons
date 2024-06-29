@@ -13,6 +13,7 @@ import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
 /**
  * Provides information about a repository hosting platform.
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public abstract class RepositoryHostInfo
 {
 	// ==================================================

@@ -14,6 +14,7 @@ import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryUserInfo;
 /**
  * {@link RepositoryUserInfo} for users of GitHub.
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public final class GitHubUserInfo extends RepositoryUserInfo
 {
 	// ==================================================

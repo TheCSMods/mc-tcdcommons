@@ -10,6 +10,7 @@ import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryInfoProvider;
 /**
  * {@link TCDCommons}'s registries.
  */
+@SuppressWarnings("removal")
 public final class TRegistries
 {
 	private TRegistries() {}

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryHostInfo;
 
+@Deprecated(since = "v3.12", forRemoval = true)
 public abstract class RepositoryInfo extends RepositoryUGC
 {
 	// ==================================================

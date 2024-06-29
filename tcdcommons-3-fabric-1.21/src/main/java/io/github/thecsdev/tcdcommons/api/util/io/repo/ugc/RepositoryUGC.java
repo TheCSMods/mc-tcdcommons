@@ -11,6 +11,7 @@ import io.github.thecsdev.tcdcommons.api.util.io.repo.RepositoryUserInfo;
  * @see RepositoryUserInfo
  * @see RepositoryHostInfo
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public abstract class RepositoryUGC
 {
 	// ==================================================

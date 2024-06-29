@@ -3,22 +3,42 @@ package io.github.thecsdev.tcdcommons.api.util.io;
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.StackWalker.Option;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.JsonElement;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.annotations.CallerSensitive;
@@ -49,6 +69,7 @@ public final class HttpUtils
 	 * @see #isEnabled()
 	 * @apiNote No caching is performed here. It is advised to use the {@link CachedResourceManager} alongside this.
 	 */
+	@Deprecated(since = "v3.12", forRemoval = true)
 	@CallerSensitive
 	public static final String httpGetSyncS(final URI endpoint, final Header... httpHeaders)
 			throws UnsupportedOperationException, NullPointerException, IOException
@@ -68,6 +89,7 @@ public final class HttpUtils
 	 * @see #isEnabled()
 	 * @apiNote No caching is performed here. It is advised to use the {@link CachedResourceManager} alongside this.
 	 */
+	@Deprecated(since = "v3.12", forRemoval = true)
 	@CallerSensitive
 	public static final byte[] httpGetSyncB(final URI endpoint, final Header... httpHeaders)
 			throws UnsupportedOperationException, NullPointerException, IOException
@@ -82,6 +104,7 @@ public final class HttpUtils
 	 * @param endpoint The {@link URI} endpoint to send the request to.
 	 * @param httpHeaders The HTTP {@link Header}s to use in the request.
 	 */
+	@Deprecated(since = "v3.12", forRemoval = true)
 	@SuppressWarnings("unchecked")
 	private static final @Internal <T> T httpGetSync(
 			Class<T> requestedType,
@@ -162,6 +185,227 @@ public final class HttpUtils
 					"%s has been disabled via the '%s' config file.",
 					HttpUtils.class.getSimpleName(),
 					getModID()));
+	}
+	// ==================================================
+	/**
+	 * Synchronously performs an HTTP request to a given endpoint.
+	 * @param url The {@link String} representation of the endpoint that will accept the request.
+	 * @param options The {@link FetchOptions} containing information about the request.
+	 */
+	@CallerSensitive
+	public static final CloseableHttpResponse fetchSync(String url, FetchOptions options)
+			throws NullPointerException, UnsupportedOperationException, URISyntaxException,
+			ClientProtocolException, IOException
+	{
+		//prepare
+		assertEnabled();
+		Objects.requireNonNull(url);
+		Objects.requireNonNull(options);
+		final String httpMethod = options.method();
+		Objects.requireNonNull(httpMethod);
+		final var requestee = STACK_WALKER.getCallerClass();
+		
+		//perform the operation
+		final var method = httpMethod.toUpperCase(Locale.ENGLISH).trim();
+		final var result = switch(method)
+		{
+			case "GET"     -> fetch_get    (url, options, requestee);
+			case "HEAD"    -> fetch_head   (url, options, requestee);
+			case "POST"    -> fetch_post   (url, options, requestee);
+			case "PUT"     -> fetch_put    (url, options, requestee);
+			case "DELETE"  -> fetch_delete (url, options, requestee);
+			case "OPTIONS" -> fetch_options(url, options, requestee);
+			case "TRACE"   -> fetch_trace  (url, options, requestee);
+			case "PATCH"   -> fetch_patch  (url, options, requestee);
+			default        -> throw new UnsupportedOperationException("HTTP " + httpMethod);
+		};
+		if(result.getEntity() != null && result.getEntity().getContentLength() > 100000000)
+		{
+			IOUtils.closeQuietly(result);
+			throw new IOException("Response 'Content-Length' is too large!");
+		}
+		return result;
+	}
+	
+	private static final CloseableHttpResponse fetch_get(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//validity check
+		if(options.body() != null)
+			throw new UnsupportedOperationException("HTTP GET does not support having a request body.");
+		
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpGet(new URI(url));
+		
+		//handle http headers, and execute the request
+		fetch_setHeaders(request, options, requestee);
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_head(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//validity check
+		if(options.body() != null)
+			throw new UnsupportedOperationException("HTTP HEAD does not support having a request body.");
+		
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpHead(new URI(url));
+		
+		//handle http headers, and execute the request
+		fetch_setHeaders(request, options, requestee);
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_post(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpPost(new URI(url));
+		
+		//handle http headers, and handle the body
+		fetch_setHeaders(request, options, requestee);
+		final @Nullable var body = fetch_bodyToEntity(options.body());
+		if(body != null) request.setEntity(body);
+		
+		//execute the request
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_put(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpPut(new URI(url));
+		
+		//handle http headers, and handle the body
+		fetch_setHeaders(request, options, requestee);
+		final @Nullable var body = fetch_bodyToEntity(options.body());
+		if(body != null) request.setEntity(body);
+		
+		//execute the request
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_delete(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//validity check
+		if(options.body() != null)
+			throw new UnsupportedOperationException("HTTP DELETE does not support having a request body.");
+		
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpDelete(new URI(url));
+		
+		//handle http headers, and execute the request
+		fetch_setHeaders(request, options, requestee);
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_options(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//validity check
+		if(options.body() != null)
+			throw new UnsupportedOperationException("HTTP OPTIONS does not support having a request body.");
+		
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpOptions(new URI(url));
+		
+		//handle http headers, and execute the request
+		fetch_setHeaders(request, options, requestee);
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_trace(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//validity check
+		if(options.body() != null)
+			throw new UnsupportedOperationException("HTTP TRACE does not support having a request body.");
+		
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpTrace(new URI(url));
+		
+		//handle http headers, and execute the request
+		fetch_setHeaders(request, options, requestee);
+		return client.execute(request);
+	}
+	
+	private static final CloseableHttpResponse fetch_patch(String url, FetchOptions options, Class<?> requestee)
+			throws URISyntaxException, ClientProtocolException, IOException
+	{
+		//prepare
+		final var client  = HttpClients.createDefault();
+		final var request = new HttpPatch(new URI(url));
+		
+		//handle http headers, and handle the body
+		fetch_setHeaders(request, options, requestee);
+		final @Nullable var body = fetch_bodyToEntity(options.body());
+		if(body != null) request.setEntity(body);
+		
+		//execute the request
+		return client.execute(request);
+	}
+	// -------
+	private static final void fetch_setHeaders(AbstractHttpMessage request, FetchOptions options, Class<?> requestee)
+	{
+		request.setHeader("User-Agent",             TCDCommons.getInstance().userAgent);
+		request.setHeader("x-tcdcommons-requestee", requestee.getName());
+		
+		final @Nullable var headers = options.headers();
+		if(headers != null)
+			for(final var header : headers)
+				request.setHeader(header);
+	}
+	
+	private static final @Nullable HttpEntity fetch_bodyToEntity(@Nullable Object body) throws UnsupportedEncodingException
+	{
+		if(body == null) return null;
+		else if(body instanceof HttpEntity bodyEntity) return bodyEntity;
+		else if(body instanceof JsonElement jsEl) return new StringEntity(jsEl.toString());
+		else if(body instanceof Boolean bodyBool) return new StringEntity(Boolean.toString(bodyBool).toLowerCase(Locale.ENGLISH));
+		else if(ClassUtils.isPrimitiveOrWrapper(body.getClass())) return new StringEntity(Objects.toString(body));
+		else throw new UnsupportedEncodingException("Unsupported HTTP body type: " + body.getClass().getName());
+	}
+	// --------------------------------------------------
+	/**
+	 * Contains settings that defines the behavior of {@link HttpUtils#fetchSync(String)}.
+	 */
+	public static interface FetchOptions
+	{
+		/**
+		 * The HTTP method to perform. Defaults to "GET".
+		 * @apiNote Must <b>not</b> be {@code null}!
+		 */
+		default String method() { return "GET"; }
+		
+		/**
+		 * An array of {@link Header}s to include in the HTTP request.
+		 * Defaults to {@code null}.
+		 */
+		default @Nullable Header[] headers() { return null; }
+		
+		/**
+		 * The body to include in the HTTP request. Defaults to {@code null}.
+		 * 
+		 * @apiNote It is recommended to provide an {@link HttpEntity} as the body.
+		 * 
+		 * @apiNote Supports {@code null}, {@link HttpEntity}s, primitive types, and {@link JsonElement}s.
+		 * All other types will throw an {@link UnsupportedOperationException}.
+		 * 
+		 * @apiNote Not all HTTP methods support having a request body.
+		 * Attempting to provide a body while using such methods will
+		 * result in an {@link UnsupportedOperationException} being thrown.
+		 */
+		default @Nullable Object body() { return null; }
 	}
 	// ==================================================
 }

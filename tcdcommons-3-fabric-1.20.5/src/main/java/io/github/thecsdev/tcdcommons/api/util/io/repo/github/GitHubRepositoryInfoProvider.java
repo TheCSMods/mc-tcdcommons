@@ -14,6 +14,7 @@ import io.github.thecsdev.tcdcommons.api.util.io.repo.ugc.RepositoryInfo;
 /**
  * A {@link RepositoryInfoProvider} for GitHub.
  */
+@Deprecated(since = "v3.12", forRemoval = true)
 public final class GitHubRepositoryInfoProvider extends RepositoryInfoProvider
 {
 	// ==================================================
