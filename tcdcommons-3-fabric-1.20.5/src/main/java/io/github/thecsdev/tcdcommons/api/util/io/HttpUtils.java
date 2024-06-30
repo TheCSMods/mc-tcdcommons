@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -188,6 +189,17 @@ public final class HttpUtils
 	}
 	// ==================================================
 	/**
+	 * Same as {@link #fetch(String, FetchOptions, Class)}, but with default {@link FetchOptions}.
+	 * @param url The {@link String} representation of the endpoint that will accept the request.
+	 */
+	public static final CloseableHttpResponse fetchSync(String url)
+			throws NullPointerException, UnsupportedOperationException, URISyntaxException,
+			ClientProtocolException, IOException
+	{
+		return fetch(url, new FetchOptions() {}, STACK_WALKER.getCallerClass());
+	}
+	
+	/**
 	 * Synchronously performs an HTTP request to a given endpoint.
 	 * @param url The {@link String} representation of the endpoint that will accept the request.
 	 * @param options The {@link FetchOptions} containing information about the request.
@@ -197,13 +209,19 @@ public final class HttpUtils
 			throws NullPointerException, UnsupportedOperationException, URISyntaxException,
 			ClientProtocolException, IOException
 	{
+		return fetch(url, options, STACK_WALKER.getCallerClass());
+	}
+	
+	private static final CloseableHttpResponse fetch(String url, FetchOptions options, Class<?> requestee)
+			throws NullPointerException, UnsupportedOperationException, URISyntaxException,
+			ClientProtocolException, IOException
+	{
 		//prepare
 		assertEnabled();
 		Objects.requireNonNull(url);
 		Objects.requireNonNull(options);
 		final String httpMethod = options.method();
 		Objects.requireNonNull(httpMethod);
-		final var requestee = STACK_WALKER.getCallerClass();
 		
 		//perform the operation
 		final var method = httpMethod.toUpperCase(Locale.ENGLISH).trim();
@@ -219,7 +237,12 @@ public final class HttpUtils
 			case "PATCH"   -> fetch_patch  (url, options, requestee);
 			default        -> throw new UnsupportedOperationException("HTTP " + httpMethod);
 		};
-		if(result.getEntity() != null && result.getEntity().getContentLength() > 100000000)
+		final long contentLength = result.getEntity() != null ? result.getEntity().getContentLength() : 0;
+		LOGGER.info("HTTP " + method + " " + url + " | Response: HTTP " +
+				result.getStatusLine().getStatusCode() + " " + result.getStatusLine().getReasonPhrase() + " | " +
+				"Content-Length: " + contentLength +
+				" | Requested by: " + requestee.getName());
+		if(contentLength > 100000000)
 		{
 			IOUtils.closeQuietly(result);
 			throw new IOException("Response 'Content-Length' is too large!");
@@ -368,16 +391,21 @@ public final class HttpUtils
 	
 	private static final @Nullable HttpEntity fetch_bodyToEntity(@Nullable Object body) throws UnsupportedEncodingException
 	{
-		if(body == null) return null;
-		else if(body instanceof HttpEntity bodyEntity) return bodyEntity;
-		else if(body instanceof JsonElement jsEl) return new StringEntity(jsEl.toString());
-		else if(body instanceof Boolean bodyBool) return new StringEntity(Boolean.toString(bodyBool).toLowerCase(Locale.ENGLISH));
-		else if(ClassUtils.isPrimitiveOrWrapper(body.getClass())) return new StringEntity(Objects.toString(body));
-		else throw new UnsupportedEncodingException("Unsupported HTTP body type: " + body.getClass().getName());
+		if(body == null)
+			return null;
+		else if(body instanceof HttpEntity bodyEntity)
+			return bodyEntity;
+		else if(body instanceof JsonElement jsEl)
+			return new StringEntity(jsEl.toString(), ContentType.APPLICATION_JSON);
+		else if(body instanceof Boolean bodyBool)
+			return new StringEntity(Boolean.toString(bodyBool).toLowerCase(Locale.ENGLISH), (ContentType)null);
+		else if(body instanceof String || ClassUtils.isPrimitiveOrWrapper(body.getClass()))
+			return new StringEntity(Objects.toString(body), (ContentType)null);
+		else throw new IllegalArgumentException("Unsupported HTTP body type: " + body.getClass().getName());
 	}
 	// --------------------------------------------------
 	/**
-	 * Contains settings that defines the behavior of {@link HttpUtils#fetchSync(String)}.
+	 * Contains settings that defines the behavior of {@link HttpUtils#fetchSync(String, FetchOptions)}.
 	 */
 	public static interface FetchOptions
 	{

@@ -90,12 +90,12 @@ public final class CachedResource<R>
 		Objects.requireNonNull(expirationDate);
 		final Instant now = Instant.now();
 		
-		//check if too early
-		if(expirationDate.isBefore(now.plusSeconds(60 * 4)))
+		//check if too early -- As of v3.12, this is no longer a restriction.
+		/*if(expirationDate.isBefore(now.plusSeconds(60 * 4)))
 			return now.plusSeconds(60 * 5);
 		
 		//check if too late
-		else if(expirationDate.isAfter(now.plus(Duration.ofDays(32))))
+		else */if(expirationDate.isAfter(now.plus(Duration.ofDays(32))))
 			return now.plus(Duration.ofDays(31));
 		
 		//return as usual
