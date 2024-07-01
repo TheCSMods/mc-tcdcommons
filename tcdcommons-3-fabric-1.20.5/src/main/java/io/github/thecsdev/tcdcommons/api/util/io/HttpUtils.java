@@ -44,6 +44,7 @@ import com.google.gson.JsonElement;
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.util.annotations.CallerSensitive;
 import io.github.thecsdev.tcdcommons.api.util.io.cache.CachedResourceManager;
+import net.fabricmc.loader.api.FabricLoader;
 
 /**
  * Provides utilities for performing HTTP requests.
@@ -238,10 +239,17 @@ public final class HttpUtils
 			default        -> throw new UnsupportedOperationException("HTTP " + httpMethod);
 		};
 		final long contentLength = result.getEntity() != null ? result.getEntity().getContentLength() : 0;
-		LOGGER.info("HTTP " + method + " " + url + " | Response: HTTP " +
-				result.getStatusLine().getStatusCode() + " " + result.getStatusLine().getReasonPhrase() + " | " +
-				"Content-Length: " + contentLength +
-				" | Requested by: " + requestee.getName());
+		if(FabricLoader.getInstance().isDevelopmentEnvironment())
+		{
+			//Warning:
+			//This logging must NOT be executed in production environment, as it would pose a HUGE
+			//security vulnerability such as having private and sensitive information exposed in
+			//log files. If you are porting this to ForgeMC, do NOT port this line in production env:
+			LOGGER.info("HTTP " + method + " " + url + " | Response: HTTP " +
+					result.getStatusLine().getStatusCode() + " " + result.getStatusLine().getReasonPhrase() + " | " +
+					"Content-Length: " + contentLength +
+					" | Requested by: " + requestee.getName());
+		}
 		if(contentLength > 100000000)
 		{
 			IOUtils.closeQuietly(result);
