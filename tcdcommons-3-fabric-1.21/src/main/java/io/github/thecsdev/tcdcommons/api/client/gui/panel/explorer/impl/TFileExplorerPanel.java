@@ -70,10 +70,7 @@ public final class TFileExplorerPanel extends TRefreshablePanelElement
 		this.type = proxy.getDialogType();
 		this.extension = TExtensionFileFilter.sanitizeExtension(proxy.getTargetFileExtension());
 
-		this.dragHelper = new MouseDragHelper()
-		{
-			protected final @Override void apply(int deltaX, int deltaY) { move(deltaX, deltaY); }
-		};
+		this.dragHelper = MouseDragHelper.forTElement(this);
 	}
 	// ==================================================
 	/**

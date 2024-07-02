@@ -68,6 +68,18 @@ public abstract class MouseDragHelper extends Object
 	protected abstract void apply(int deltaX, int deltaY);
 	// ==================================================
 	/**
+	 * Creates a {@link MouseDragHelper} instance for a given {@link TElement}.
+	 * @param element The {@link TElement} which the {@link MouseDragHelper} is for.
+	 */
+	public static final MouseDragHelper forTElement(TElement element)
+	{
+		return new MouseDragHelper()
+		{
+			protected final @Override void apply(int deltaX, int deltaY) { element.move(deltaX, deltaY); }
+		};
+	}
+	
+	/**
 	 * Checks if the given {@link TElement} is outside of its {@link TParentElement}
 	 * bounds, and if it it, it will get snapped back in.
 	 * @param element The target {@link TElement}.

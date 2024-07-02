@@ -6,9 +6,9 @@ import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.layout.UIHorizontalGridLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.panel.TStackTracePanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
-import io.github.thecsdev.tcdcommons.api.client.gui.screen.TDialogBoxScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
@@ -21,7 +21,8 @@ public final class TestTScreen extends TScreenPlus
 	// ==================================================
 	public TestTScreen(Screen parent)
 	{
-		super(literal(TestTScreen.class.getSimpleName())); this.parent = parent;
+		super(literal(TestTScreen.class.getSimpleName()));
+		this.parent = parent;
 	}
 	// --------------------------------------------------
 	public final void open() { MC_CLIENT.setScreen(getAsScreen()); }
@@ -88,22 +89,16 @@ public final class TestTScreen extends TScreenPlus
 		addChild(panel);
 		
 		//add testing stuff to the panel
-		final var dontAsk = new TButtonWidget(0, 0, panel.getWidth() - 10, 20, literal("Don't ask.. You shouldn't even be here.."));
+		final var dontAsk = new TButtonWidget(0, 0, panel.getWidth() - 10, 20, literal("Testing button that will do something random..."));
 		dontAsk.setOnClick(__ ->
 		{
-			MC_CLIENT.setScreen(new TDialogBoxScreen(
-					getAsScreen(),
-					literal("Testing dialog box"),
-					literal("Hello world! How you doing? This testing dialog's purpose is to test how dialogs work, "
-							+ "because obviously, you'd wanna make sure it all works properly before using it in "
-							+ "production and stuff.. Speaking of which, I ran out of words to type, so I am just "
-							+ "writing random nonsense just to fill up more space in the dialog and like.. y'know.. "
-							+ "So yea, this should be enough text. Maybe even too much.. Okay I will stop typing "
-							+ "now before I forget how to stop typing and, uh oh.. we have a problem.. I don't "
-							+ "feel like stopping.. Somebody help please!!!! Oh wait, what's that over there? "
-							+ "It looks like a person in the distance.. looking at.. me??? And why are they "
-							+ "holding a snip-"))
-				.getAsScreen());
+			final var stp = new TStackTracePanel(
+					getWidth() / 4, 25, getWidth() / 2, getHeight() - 50,
+					new Exception("A fox did not wish to sleep.",
+							new RuntimeException("As a consequence, I have put a reference to them, in this debug error dialog.",
+									new Error("If you are reading this, tell them to go to sleep, NOW!"))));
+			stp.setZOffset(64);
+			addChild(stp);
 		});
 		panel.addChild(dontAsk);
 		

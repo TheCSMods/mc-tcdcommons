@@ -3,13 +3,18 @@ package io.github.thecsdev.tcdcommons.api.client.gui.layout;
 import java.awt.Rectangle;
 import java.util.Objects;
 
+import org.apache.http.annotation.Experimental;
 import org.jetbrains.annotations.Nullable;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.TParentElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.config.TConfigPanelBuilder;
+import io.github.thecsdev.tcdcommons.api.client.gui.other.TBlankElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
+import net.minecraft.client.font.MultilineText;
+import net.minecraft.text.Text;
 
 /**
  * An {@link Object} used to enforce certain
@@ -122,6 +127,52 @@ public abstract class UILayout extends Object
 		
 		//construct and return a rectangle
 		return new Rectangle(nextX, nextY, nextW, 20); //next-height defaults to 20 units
+	}
+	// ==================================================
+	/**
+	 * Adds a {@link MultilineText} to a {@link TPanelElement}.
+	 * @param panel The {@link TPanelElement} onto which to add the {@link MultilineText} to.
+	 * @param color The text color.
+	 * @param texts The {@link Text}s to turn into a {@link MultilineText}.
+	 */
+	@Experimental
+	public static final void initLines(TPanelElement panel, int color, Text...texts)
+	{
+		final var tr = panel.getTextRenderer();
+		final var fh = tr.fontHeight;
+		final var mt = MultilineText.create(tr, texts);
+		
+		final var n1 = nextChildVerticalRect(panel);
+		final var el = new TBlankElement(n1.x, n1.y, mt.getMaxWidth(), (mt.count() * fh) + (2 * fh))
+		{
+			public final @Override void render(TDrawContext pencil) {
+				mt.draw(pencil, getX(), getY(), fh + 2, color);
+			}
+		};
+		panel.addChild(el, false);
+	}
+	
+	/**
+	 * Wraps a {@link Text} into lines, and then adds the lines to the {@link TPanelElement}.
+	 * @param panel The {@link TPanelElement} onto which the wrapped text will be added.
+	 * @param textToWrap The {@link Text} to wrap into lines.
+	 * @param color The {@link Text} color.
+	 */
+	public static final void initWrappedLines(TPanelElement panel, Text textToWrap, int color)
+	{
+		final var tr    = panel.getTextRenderer();
+		final int fh    = tr.fontHeight;
+		final var lines = tr.wrapLines(textToWrap, panel.getWidth() - (panel.getScrollPadding() * 2));
+		for(final var line : lines)
+		{
+			final var n1 = nextChildVerticalRect(panel);
+			final var el = new TBlankElement(n1.x, n1.y, n1.width, fh + 2) {
+				public final @Override void render(TDrawContext pencil) {
+					pencil.drawText(tr, line, getX(), getY(), color, true);
+				}
+			};
+			panel.addChild(el, false);
+		}
 	}
 	// ==================================================
 }
