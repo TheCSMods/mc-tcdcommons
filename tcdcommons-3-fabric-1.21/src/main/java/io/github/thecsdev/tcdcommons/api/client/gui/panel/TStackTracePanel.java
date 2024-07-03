@@ -23,7 +23,7 @@ import io.github.thecsdev.tcdcommons.api.client.gui.widget.TScrollBarWidget;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.Axis2D;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.HorizontalAlignment;
 import io.github.thecsdev.tcdcommons.api.util.enumerations.VerticalAlignment;
-import io.github.thecsdev.tcdcommons.client.TCDCommonsClient;
+import io.github.thecsdev.tcdcommons.util.TCDCT;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -47,12 +47,11 @@ public final class TStackTracePanel extends TRefreshablePanelElement
 	public TStackTracePanel(int x, int y, int width, int height, Throwable throwable)
 		throws NullPointerException
 	{
-		super(x, y, width, height);
+		super(x, y, Math.max(width, 100), Math.max(height, 100));
 		setScrollFlags(0);
 		setScrollPadding(0);
 		setBackgroundColor(0xff8a8a8a);
 		setOutlineColor(0xFF000000);
-		setZOffset(TCDCommonsClient.MAGIC_ITEM_Z_OFFSET);
 		
 		this.throwable = throwable;
 		this.closeAction = () ->
@@ -90,9 +89,6 @@ public final class TStackTracePanel extends TRefreshablePanelElement
 				new NullPointerException("No Throwable was provided for this panel.");
 		final var title = (this.title != null) ? this.title : translatable("mco.errorMessage.generic").getString();
 		final var description = (this.description != null) ? this.description : throwable.getLocalizedMessage();
-		
-		final var tr = getTextRenderer();
-		final var fh = tr.fontHeight;
 		
 		//title-bar
 		final var panel_title = new TPanelElement(0, 0, getWidth(), getTextRenderer().fontHeight + 14)
@@ -163,6 +159,7 @@ public final class TStackTracePanel extends TRefreshablePanelElement
 			panel_d.setScrollPadding(0);
 			panel_d.setBackgroundColor(0);
 			panel_d.setOutlineColor(0);
+			panel_d.setTooltip(Tooltip.of(TCDCT.gui_panel_scrollTip()));
 			panel_content.addChild(panel_d);
 			
 			final var pd_lines = Arrays.stream(description.split("\\r?\\n")).map(s -> literal(s)).toArray(Text[]::new);
@@ -187,17 +184,18 @@ public final class TStackTracePanel extends TRefreshablePanelElement
 				panel_st.setOutlineColor(0xff000000);
 				panel_t.addChild(panel_st);
 				{
+					//add stack trade elements to the stack trace panel
 					Arrays.stream(ExceptionUtils.getStackTrace(throwable).split("\\r?\\n"))
-						.map(s ->
+						.forEach(stackTraceElement ->
 						{
-							final var el = new TLabelElement(0, 0, tr.getWidth(s) + 30, fh + 4);
-							el.setTextHorizontalAlignment(HorizontalAlignment.LEFT);
-							el.setText(literal(s.replaceAll("\t", "    ")));
-							el.setTextColor(s.startsWith("\t") ? 0xffaaa398 : 0xffc0c398);
-							return el;
-						})
-						.forEach(el -> panel_st.addChild(el, false));
-					new UIListLayout(Axis2D.Y, VerticalAlignment.TOP, HorizontalAlignment.LEFT).apply(panel_st);
+							final var color   = stackTraceElement.startsWith("\t") ? 0xffaaa398 : 0xffc0c398;
+							stackTraceElement = stackTraceElement.replaceAll("\t", "    "); //the game can't render \t
+							
+							final var s_lines = Arrays.stream(stackTraceElement.split("\\r?\\n"))
+									.map(sLine -> literal(sLine))
+									.toArray(Text[]::new);
+							UILayout.initLines(panel_st, color, s_lines);
+						});
 				}
 				
 				final var scroll_h = new StpSbw(

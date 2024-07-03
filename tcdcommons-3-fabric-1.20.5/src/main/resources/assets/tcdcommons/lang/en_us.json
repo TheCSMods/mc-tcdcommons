@@ -31,6 +31,8 @@
 	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "All files (*.*)",
 	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s files (%1$s)",
 
+	"tcdcommons.api.client.gui.panel.tpanelelement.mouse_scroll_tip": "Use the mouse scroll-wheel or left-click+drag to scroll this section...",
+	
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "This directory does not exist...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "No permission to read this directory...",
 	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",

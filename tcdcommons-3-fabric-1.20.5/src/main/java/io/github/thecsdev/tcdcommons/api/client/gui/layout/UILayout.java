@@ -143,7 +143,7 @@ public abstract class UILayout extends Object
 		final var mt = MultilineText.create(tr, texts);
 		
 		final var n1 = nextChildVerticalRect(panel);
-		final var el = new TBlankElement(n1.x, n1.y, mt.getMaxWidth(), (mt.count() * fh) + (2 * fh))
+		final var el = new TBlankElement(n1.x, n1.y, mt.getMaxWidth() + 10, (mt.count() * fh) + 4)
 		{
 			public final @Override void render(TDrawContext pencil) {
 				mt.draw(pencil, getX(), getY(), fh + 2, color);

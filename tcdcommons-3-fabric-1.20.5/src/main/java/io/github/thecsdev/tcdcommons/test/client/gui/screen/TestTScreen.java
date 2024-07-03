@@ -6,10 +6,10 @@ import static io.github.thecsdev.tcdcommons.client.TCDCommonsClient.MC_CLIENT;
 
 import io.github.thecsdev.tcdcommons.api.client.gui.layout.UIHorizontalGridLayout;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.TPanelElement;
-import io.github.thecsdev.tcdcommons.api.client.gui.panel.TStackTracePanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TContextMenuPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.panel.menu.TMenuBarPanel;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
+import io.github.thecsdev.tcdcommons.api.client.gui.screen.TStackTraceScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
@@ -92,13 +92,11 @@ public final class TestTScreen extends TScreenPlus
 		final var dontAsk = new TButtonWidget(0, 0, panel.getWidth() - 10, 20, literal("Testing button that will do something random..."));
 		dontAsk.setOnClick(__ ->
 		{
-			final var stp = new TStackTracePanel(
-					getWidth() / 4, 25, getWidth() / 2, getHeight() - 50,
-					new Exception("A fox did not wish to sleep.",
-							new RuntimeException("As a consequence, I have put a reference to them, in this debug error dialog.",
-									new Error("If you are reading this, tell them to go to sleep, NOW!"))));
-			stp.setZOffset(64);
-			addChild(stp);
+			final var err = new Exception("Testing error, to see how it will work",
+					new RuntimeException("User clicking a button",
+							new Exception("User opening a debug menu",
+									new RuntimeException("User choosing to do this instead of touching grass."))));
+			MC_CLIENT.setScreen(new TStackTraceScreen(getAsScreen(), err).getAsScreen());
 		});
 		panel.addChild(dontAsk);
 		

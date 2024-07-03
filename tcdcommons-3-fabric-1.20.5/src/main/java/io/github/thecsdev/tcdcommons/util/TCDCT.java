@@ -46,9 +46,11 @@ public final @Internal class TCDCT
 	public static final MutableText gui_explorer_fileFilter_allFiles()               { return translatable("tcdcommons.api.util.interfaces.tfilefilter.all_files"); }
 	public static final MutableText gui_explorer_fileFilter_extFiles(Text extension) { return translatable("tcdcommons.api.util.interfaces.tfilefilter.x_files", extension); }
 	//
-	public static final MutableText gui_explorer_fileList_errNoSuchDir()       { return translatable("This directory does not exist..."); }
-	public static final MutableText gui_explorer_fileList_errNoAccess()        { return translatable("No permission to read this directory..."); }
+	public static final MutableText gui_explorer_fileList_errNoSuchDir()       { return translatable("tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir"); }
+	public static final MutableText gui_explorer_fileList_errNoAccess()        { return translatable("tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess"); }
 	public static final MutableText gui_explorer_fileList_errOther(Text error) { return translatable("tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other", error); }
+	// --------------------------------------------------
+	public static final MutableText gui_panel_scrollTip() { return translatable("tcdcommons.api.client.gui.panel.tpanelelement.mouse_scroll_tip"); }
 	// --------------------------------------------------
 	public static final MutableText gui_wSelect_defLabel() { return translatable("tcdcommons.api.client.gui.widget.tselectwidget.default_label"); }
 	// --------------------------------------------------
