@@ -17,4 +17,10 @@ public class MixinScreen
 	{
 		ScreenEvent.INIT_POST.invoker().invoke((Screen)(Object)this);
 	}
+	
+	@Inject(method = "clearAndInit", at = @At("RETURN"))
+	private void onClearAndInit(CallbackInfo callback)
+	{
+		ScreenEvent.INIT_POST.invoker().invoke((Screen)(Object)this);
+	}
 }
