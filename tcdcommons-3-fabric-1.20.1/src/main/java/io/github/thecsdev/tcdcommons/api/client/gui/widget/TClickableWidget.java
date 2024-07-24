@@ -4,16 +4,14 @@ import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 import static net.minecraft.client.util.InputUtil.GLFW_KEY_ENTER;
 import static net.minecraft.client.util.InputUtil.GLFW_KEY_KP_ENTER;
 
-import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.client.gui.TElement;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.GuiUtils;
+import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
 import io.github.thecsdev.tcdcommons.api.event.TEvent;
 import io.github.thecsdev.tcdcommons.api.event.TEventFactory;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
 import io.github.thecsdev.tcdcommons.api.util.interfaces.IEnableStateProviderSetter;
-import io.github.thecsdev.tcdcommons.client.mixin.hooks.AccessorPressableWidget;
-import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.util.Identifier;
 
 /**
@@ -32,15 +30,6 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 {
 	// ==================================================
 	public static final int BUTTON_TEXTURE_SLICE_SIZE = 3;
-	
-	/**
-	 * Vanilla-game button textures.
-	 */
-	public static final ButtonTextures BUTTON_TEXTURES = AccessorPressableWidget.getButtonTextures();
-	
-	/**
-	 * {@link TCDCommons}'s widget textures image.
-	 */
 	public static final Identifier T_WIDGETS_TEXTURE = new Identifier(getModID(), "textures/gui/widgets.png");
 	// --------------------------------------------------
 	protected boolean enabled;
@@ -121,6 +110,25 @@ public abstract class TClickableWidget extends TElement implements IEnableStateP
 		
 		//if the input wasn't handled, return false
 		return false;
+	}
+	// ==================================================
+	/**
+	 * @see #getButtonTextureY(boolean, boolean)
+	 */
+	public final int getButtonTextureY() { return getButtonTextureY(this.enabled, isHovered() || isFocused()); }
+	
+	/**
+	 * Used when rendering buttons, to obtain the button texture
+	 * UV Y coordinates, depending on whether the button is enabled and hovered.
+	 * @param enabled Is the button enabled?
+	 * @param hovered Is the button hovered?
+	 * @see TDrawContext#drawTButton(int)
+	 */
+	public static int getButtonTextureY(boolean enabled, boolean hovered)
+	{
+		if(!enabled) return 46;
+		else if(hovered) return 86;
+		else return 66;
 	}
 	// ==================================================
 	public static interface TClickableWidgetEvent_Clicked { public void invoke(TClickableWidget element); }

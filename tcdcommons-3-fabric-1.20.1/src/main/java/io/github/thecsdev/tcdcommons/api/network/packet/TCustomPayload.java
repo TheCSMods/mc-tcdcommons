@@ -14,8 +14,8 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 /**
- * An internal implementation of {@link CustomPayload} for {@link TCDCommons}.
- * @apiNote a {@link CustomPayload} implementation for the {@link CustomPayloadNetwork}.
+ * An internal implementation of "CustomPayload" for {@link TCDCommons}.
+ * @apiNote A "CustomPayload" implementation for the {@link CustomPayloadNetwork}.
  * @apiNote {@link Internal}. Please do not try to interact with this directly.
  */
 @Internal
@@ -47,9 +47,6 @@ public final class TCustomPayload
 		finally { super.finalize(); } //finalize super
 	}
 	// ==================================================
-	/**
-	 * Not to be confused with {@link #id()}!
-	 */
 	public final Identifier getPacketId() { return  this.packetId; }
 	public final ByteBuf getPacketPayload() { return this.packetPayload; }
 	// --------------------------------------------------

@@ -10,8 +10,7 @@
 		"AccessorEntityRenderDispatcher",
 		"AccessorButtonWidget",
 		"AccessorGridWidget",
-		"AccessorTScreen",
-		"AccessorCheckboxWidget"
+		"AccessorTScreen"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

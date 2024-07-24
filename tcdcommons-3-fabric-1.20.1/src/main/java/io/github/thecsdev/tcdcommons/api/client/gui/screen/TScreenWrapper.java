@@ -123,8 +123,8 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	    this.target.forEachChild(c -> c.tick(), true);
 	}
 	// --------------------------------------------------
-	public final void Screen_super_renderBackground(DrawContext context, int mouseX, int mouseY, float delta) { super.renderBackground(context, mouseX, mouseY, delta); }
-	public final @Override void renderBackground(DrawContext context, int mouseX, int mouseY, float delta)
+	public final void Screen_super_renderBackground(DrawContext context) { super.renderBackground(context); }
+	public final @Override void renderBackground(DrawContext context)
 	{
 		/* This method started causing visual bugs, and as such, has been removed.
 		 * The reason for the bugs is because `super.render` is used in `#render`
@@ -215,13 +215,13 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 		return input(ofMouseDrag(mouseX, mouseY, deltaX, deltaY, this.target.__draggingButton));
 	}
 	// --------------------------------------------------
-	public final @Override boolean mouseScrolled(double mouseX, double mouseY, double hAmount, double vAmount)
+	public final @Override boolean mouseScrolled(double mouseX, double mouseY, double vAmount)
 	{
 		//Screen takes priority here, as its elements are rendered on top of TElement-s
-		if(super.mouseScrolled(mouseX, mouseY, hAmount, vAmount))
+		if(super.mouseScrolled(mouseX, mouseY, vAmount))
 			return true;
 		//if the Screen doesn't handle it, forward it to TScreen
-		return input(ofMouseScroll(mouseX, mouseY, hAmount, vAmount));
+		return input(ofMouseScroll(mouseX, mouseY, 0, vAmount));
 	}
 	// --------------------------------------------------
 	/**

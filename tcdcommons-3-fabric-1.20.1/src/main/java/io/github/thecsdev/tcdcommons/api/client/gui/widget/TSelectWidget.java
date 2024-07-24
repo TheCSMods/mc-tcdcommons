@@ -80,7 +80,7 @@ public @Virtual class TSelectWidget<T extends TSelectWidget.Entry> extends TButt
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
 		//draw the button
-		pencil.drawTButton(this.enabled, isFocusedOrHovered());
+		pencil.drawTButton(getButtonTextureY());
 		pencil.enableScissor(getX(), getY(), getEndX(), getEndY());
 		pencil.drawTElementTextTH(this.text, HorizontalAlignment.LEFT);
 		pencil.disableScissor();

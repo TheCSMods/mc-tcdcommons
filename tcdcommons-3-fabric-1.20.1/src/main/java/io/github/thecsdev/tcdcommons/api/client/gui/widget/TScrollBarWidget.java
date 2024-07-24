@@ -25,19 +25,17 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 		this.target = Objects.requireNonNull(target);
 		
 		//try to smartly predict the slider direction based on dimensions
+		if(autoSetScrollFlags)
 		{
 			final boolean b = (height >= width);
+			final int sf = this.target.getScrollFlags();
 			setSliderDirection(b ? Direction2D.DOWN : Direction2D.RIGHT);
-			if(autoSetScrollFlags)
-			{
-				final int sf = this.target.getScrollFlags();
-				this.target.setScrollFlags(b ? (sf | SCROLL_VERTICAL) : (sf | SCROLL_HORIZONTAL));
-			}
+			this.target.setScrollFlags(b ? (sf | SCROLL_VERTICAL) : (sf | SCROLL_HORIZONTAL));
 		}
 		
 		//refresh the value here
-		refreshKnobSize();
 		refreshValue();
+		refreshKnobSize();
 		
 		//handle panel events
 		final TPanelElementEvent_Scrolled onTargetScrollH = (element, scrollDelta) ->
@@ -138,10 +136,11 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 		{
 			//handle mouse scrolling
 			case MOUSE_SCROLL:
-				final boolean h = getSliderDirection().isHorizontal();
-				final int amount = (int)(double)(h ? inputContext.getScrollAmount().x : inputContext.getScrollAmount().y);
-				if(h) return target.inputHorizontalScroll(target.getScrollSensitivity() * amount);
-				else return target.inputVerticalScroll(target.getScrollSensitivity() * amount);
+				final int amountX = (int)inputContext.getScrollAmount().x;
+				final int amountY = (int)inputContext.getScrollAmount().y;
+				if(getSliderDirection().isHorizontal())
+					return target.inputHorizontalScroll(target.getScrollSensitivity() * amountX);
+				else return target.inputVerticalScroll(target.getScrollSensitivity() * amountY);
 				
 			//break for all other input types
 			default: break;

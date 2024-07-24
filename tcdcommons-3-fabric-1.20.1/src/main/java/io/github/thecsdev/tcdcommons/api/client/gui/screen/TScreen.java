@@ -143,7 +143,7 @@ public abstract class TScreen implements TParentElement
 	public @Virtual void renderBackground(TDrawContext pencil)
 	{
 		if(this.client.world == null)
-			this.__wrapper.Screen_super_renderBackground(pencil, pencil.mouseX, pencil.mouseY, pencil.deltaTime);
+			this.__wrapper.Screen_super_renderBackground(pencil);
 	}
 	// --------------------------------------------------
 	/**

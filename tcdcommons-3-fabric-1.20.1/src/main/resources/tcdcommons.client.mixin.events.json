@@ -12,7 +12,6 @@
 		"MixinDrawContext",
 		"MixinStatisticsS2CPacket",
 		"MixinClientPlayNetworkHandler",
-		"MixinNativeImage",
 		"MixinGameRenderer",
 		"MixinCustomPayloadS2CPacket"
 	],

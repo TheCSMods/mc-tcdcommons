@@ -1,5 +1,7 @@
 package io.github.thecsdev.tcdcommons.api.client.gui.widget;
 
+import static net.minecraft.client.gui.widget.ClickableWidget.WIDGETS_TEXTURE;
+
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TDrawContext;
 import io.github.thecsdev.tcdcommons.api.client.gui.util.TInputContext;
 import io.github.thecsdev.tcdcommons.api.util.annotations.Virtual;
@@ -11,6 +13,9 @@ import net.minecraft.util.math.MathHelper;
 public @Virtual class TSliderWidget extends TButtonWidget
 {
 	// ==================================================
+	protected static final int BUTTON_Y_ENABLED = getButtonTextureY(true, false);
+	protected static final int BUTTON_Y_DISABLED = getButtonTextureY(false, false);
+	// --------------------------------------------------
 	protected Direction2D sliderDirection;
 	protected double value;
 	protected int knobSize;
@@ -74,7 +79,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 	// ==================================================
 	public @Virtual @Override void render(TDrawContext pencil)
 	{
-		pencil.drawTButton(false, false);
+		pencil.drawTButton(BUTTON_Y_DISABLED);
 		renderSliderProgressBar(pencil);
 		renderSliderKnob(pencil);
 		pencil.drawTElementTextTH(this.text, HorizontalAlignment.CENTER);
@@ -110,9 +115,9 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		}
 		
 		//render the progress button
-	    pencil.pushTShaderColor(0.8f, 0.8f, 0.8f, 1);
+	    pencil.pushTShaderColor(0.6f, 0.6f, 0.6f, 1);
 	    pencil.enableScissor(sX, sY, sX + sW, sY + sH);
-	    pencil.drawTButton(this.enabled, isFocusedOrHovered());
+	    pencil.drawTButton(getButtonTextureY());
 	    pencil.disableScissor();
 	    pencil.popTShaderColor();
 	}
@@ -171,7 +176,12 @@ public @Virtual class TSliderWidget extends TButtonWidget
 	 */
 	public @Virtual void renderSliderKnob(TDrawContext pencil, int knobX, int knobY, int knobWidth, int knobHeight)
 	{
-		pencil.drawGuiTexture(BUTTON_TEXTURES.get(this.enabled, isFocusedOrHovered()), knobX, knobY, knobWidth, knobHeight);
+		pencil.drawTNineSlicedTexture(WIDGETS_TEXTURE,
+				knobX, knobY, knobWidth, knobHeight, //GUI coordinates
+				0, getButtonTextureY(), 200, 20, //UV coordinates
+				256, 256, //texture size
+				BUTTON_TEXTURE_SLICE_SIZE //slicing size
+		);
 	}
 	// ==================================================
 	public @Virtual @Override boolean input(TInputContext inputContext)

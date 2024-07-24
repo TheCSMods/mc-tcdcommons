@@ -71,7 +71,7 @@ public @Virtual class TButtonWidget extends TClickableWidget implements ITextPro
 	 */
 	protected @Virtual void renderBackground(TDrawContext pencil)
 	{
-		pencil.drawTButton(this.enabled, isFocusedOrHovered());
+		pencil.drawTButton(getButtonTextureY());
 		renderIcon(pencil);
 	}
 	
