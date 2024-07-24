@@ -1,0 +1,32 @@
+{
+	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "Çevirmenler",
+	"tcdcommons.translators.tutorial": "Aşağıdaki çevirmenler bölümü CSV formatındadır. Sadece bir virgül (,) koyun ve benzersiz GitHub kullanıcı adınızı yazın. Örnek: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "openai:gpt-4,",
+	
+	"tcdcommons.client_side": "İstemci tarafı",
+	"tcdcommons.server_side": "Sunucu tarafı",
+	
+	"tcdcommons.api.badge.playerbadge": "Oyuncu rozeti",
+	"tcdcommons.api.badge.playerbadge.plural": "Oyuncu rozetleri",
+
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "Dosya Gezgini",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "Dosyayı kaydet",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "Dosyayı aç",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "Klasör seç",
+
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "Dosya adı",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "Dosya türü",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "Kaydet",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "Aç",
+
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "Tüm dosyalar (*.*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s dosyaları (%1$s)",
+
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "Bu dizin mevcut değil...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Bu dizini okuma yetkisi yok...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Bir seçenek seçin..."
+}

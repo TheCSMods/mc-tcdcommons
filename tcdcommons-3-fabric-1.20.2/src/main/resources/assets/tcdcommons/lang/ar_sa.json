@@ -1,0 +1,32 @@
+{
+	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "المترجمين",
+	"tcdcommons.translators.tutorial": "تتمثل قائمة المترجمين الموجودة أدناه في تنسيق CSV. فقط ضع فاصلة (،) واكتب اسم المستخدم الفريد الخاص بك على GitHub. مثال: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "openai:gpt-4,",
+	
+	"tcdcommons.client_side": "جهة العميل",
+	"tcdcommons.server_side": "جهة الخادم",
+	
+	"tcdcommons.api.badge.playerbadge": "شارة اللاعب",
+	"tcdcommons.api.badge.playerbadge.plural": "شارات اللاعب",
+
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "مستكشف الملفات",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "حفظ الملف",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "فتح الملف",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "اختر المجلد",
+
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "اسم الملف",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "نوع الملف",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "حفظ",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "فتح",
+
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "كل الملفات (*.*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s الملفات (%1$s)",
+
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "هذا الدليل غير موجود...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "لا يوجد إذن لقراءة هذا الدليل...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "اختر خيارا..."
+}

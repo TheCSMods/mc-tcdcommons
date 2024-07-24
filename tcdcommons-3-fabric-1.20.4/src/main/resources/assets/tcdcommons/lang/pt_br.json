@@ -1,0 +1,32 @@
+{
+	"tcdcommons": "TCDCommons",
+	
+	"tcdcommons.translators.title": "Tradutores",
+	"tcdcommons.translators.tutorial": "A seção de tradutores abaixo está no formato CSV. Apenas coloque uma vírgula (,) e escreva seu nome de usuário único do GitHub. Exemplo: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+	"tcdcommons.translators": "openai:gpt-4,",
+	
+	"tcdcommons.client_side": "Lado do cliente",
+	"tcdcommons.server_side": "Lado do servidor",
+	
+	"tcdcommons.api.badge.playerbadge": "Crachá de jogador",
+	"tcdcommons.api.badge.playerbadge.plural": "Crachás de jogador",
+
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "Explorador de Arquivos",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "Salvar arquivo",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "Abrir arquivo",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "Selecionar pasta",
+
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "Nome do arquivo",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "Tipo do arquivo",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "Salvar",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "Abrir",
+
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "Todos os arquivos (*.*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s arquivos (%1$s)",
+
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "Este diretório não existe...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Sem permissão para ler este diretório...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Selecione uma opção..."
+}
