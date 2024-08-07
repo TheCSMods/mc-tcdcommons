@@ -12,4 +12,5 @@ import io.github.thecsdev.tcdcommons.api.util.enumerations.AutomaticSize;
 public @Virtual class UIAutomaticSizeLayout extends UIAutomaticSize
 {
 	public UIAutomaticSizeLayout(AutomaticSize automaticSize) { super(automaticSize); }
+	public @Virtual @Override void apply(TParentElement parent) { super.apply(parent); }
 }
