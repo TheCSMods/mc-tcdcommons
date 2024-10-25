@@ -112,8 +112,8 @@ public @Virtual class UITexture extends Object
 				RenderLayer::getGuiTextured,
 				this.textureId,
 				x, y,
-				width, height,
 				this.textureUVs.x, this.textureUVs.y,
+				width, height,
 				this.textureUVs.width, this.textureUVs.height,
 				this.textureSize.width, this.textureSize.height);
 	}
