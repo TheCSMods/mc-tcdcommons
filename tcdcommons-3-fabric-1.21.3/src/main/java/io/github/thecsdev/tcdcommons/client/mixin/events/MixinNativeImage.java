@@ -14,7 +14,7 @@ import net.minecraft.client.texture.NativeImage;
  * the game even fails to validate PNG properly most the time anyways, so this
  * is kind of more of a bug fix in a way.
  */
-@Mixin(value = NativeImage.class, priority = 9001)
+@Mixin(value = NativeImage.class)
 public class MixinNativeImage
 {
 	@Redirect(
