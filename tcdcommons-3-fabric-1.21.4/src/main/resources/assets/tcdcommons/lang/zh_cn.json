@@ -1,0 +1,48 @@
+{
+	"tcdcommons": "TCDCommons API",
+
+	"tcdcommons.translators.title": "翻译者",
+	"tcdcommons.translators.tutorial": "下面的翻译者部分是以CSV格式寫成的。只需放置一個逗號 (,)，然後寫下你的獨一無二的GitHub用戶名。例如：'TheCSDev, SomeOtherUser, AndSoOn'。",
+	"tcdcommons.translators": "openai:gpt-4, is52hertz",
+
+	"tcdcommons.client_side": "客户端",
+	"tcdcommons.server_side": "服务器端",
+
+	"tcdcommons.api.badge.playerbadge": "玩家徽章",
+	"tcdcommons.api.badge.playerbadge.plural": "玩家徽章",
+
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "文件浏览器",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "保存文件",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "打开文件",
+	"tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "选择文件夹",
+
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "文件名",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "文件类型",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "保存",
+	"tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "打开",
+
+	"tcdcommons.api.util.interfaces.tfilefilter.all_files": "所有文件 (*.*)",
+	"tcdcommons.api.util.interfaces.tfilefilter.x_files": "%1$s 文件 (%1$s)",
+
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "这个目录不存在...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "无权读取此目录...",
+	"tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+	"tcdcommons.api.client.gui.widget.tselectwidget.default_label": "选择一个选项...",
+	
+	"tcdcommons.github.sponsors": "GitHub 赞助",
+	"tcdcommons.github.sponsors.no_sponsors": "目前还没有人赞助这个项目。",
+	"tcdcommons.special_thanks": "特别感谢",
+	"tcdcommons.featured": "featured",
+	"tcdcommons.featured.no_one": "目前还没有人在这份名单上。",
+	"tcdcommons.fetch_fail": "获取信息失败。",
+
+	"tcdcommons.api.client.gui.panel.tpanelelement.mouse_scroll_tip": "使用鼠标滚轮或左键并拖动来滚动此部分...",
+
+	"commands.badges.edit.output": "编辑了徽章数据 '%s' 对于 %s 的玩家。",
+	"commands.badges.clear.output": "清除了 %s 玩家的所有徽章统计数据。",
+	"commands.badges.chat_grant": "%s 获得了玩家徽章 %s。",
+	"commands.badges.query.output": "%s 的玩家徽章统计值对于 %s 为 %s。",
+	
+	"tcdcommons.key.refresh_current_screen": "刷新当前屏幕"
+}

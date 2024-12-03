@@ -1,0 +1,24 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "io.github.thecsdev.tcdcommons.mixin.events",
+	"compatibilityLevel": "JAVA_21",
+	"mixins":
+	[
+		"MixinEntity",
+		"MixinServerPlayerEntity",
+		"MixinCommandManager",
+		"MixinServerStatHandler",
+		"MixinClientConnection",
+		"MixinPlayerManager",
+		"MixinServerPlayNetworkHandler",
+		"MixinMinecraftServer",
+		"MixinItemEntity",
+		"MixinLootableContainerBlockEntity",
+		"MixinLivingEntity",
+		"MixinPlayerEntity",
+		"MixinBlockItem",
+		"MixinItemGroups"
+	],
+	"injectors": { "defaultRequire": 1 }
+}
