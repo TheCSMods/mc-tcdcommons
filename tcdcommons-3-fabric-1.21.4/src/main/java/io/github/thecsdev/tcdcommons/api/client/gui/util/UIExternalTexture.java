@@ -9,6 +9,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -165,7 +166,7 @@ public final class UIExternalTexture extends UITexture implements Closeable
 				Long.toString(nextTexId),
 				Long.toString(uuid.getMostSignificantBits()),
 				Long.toString(uuid.getLeastSignificantBits()));
-		return Identifier.of(getModID(), UIExternalTexture.class.getSimpleName().toLowerCase() + "/" + uid);
+		return Identifier.of(getModID(), UIExternalTexture.class.getSimpleName().toLowerCase(Locale.ENGLISH) + "/" + uid);
 	}
 	// --------------------------------------------------
 	/**
