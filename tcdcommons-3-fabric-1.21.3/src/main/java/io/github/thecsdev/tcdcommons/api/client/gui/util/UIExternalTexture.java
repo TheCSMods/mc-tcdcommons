@@ -150,7 +150,7 @@ public final class UIExternalTexture extends UITexture implements Closeable
 	 */
 	public final int getNativeColor(int x, int y) throws IllegalArgumentException
 	{
-		return ((AccessorNativeImage)(Object)this.nativeImage).getColor(x, y);
+		return ((AccessorNativeImage)(Object)this.nativeImage).tcdcommons_getColor(x, y);
 	}
 	// ==================================================
 	private static long nextTexId = 0;

@@ -8,6 +8,6 @@ import net.minecraft.client.texture.NativeImage;
 @Mixin(NativeImage.class)
 public interface AccessorNativeImage
 {
-	public @Invoker("getColor") int getColor(int x, int y);
-	public @Invoker("setColor") void setColor(int x, int y, int color);
+	public @Invoker("getColor") int tcdcommons_getColor(int x, int y);
+	public @Invoker("setColor") void tcdcommons_setColor(int x, int y, int color);
 }
