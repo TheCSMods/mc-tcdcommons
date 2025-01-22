@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "io.github.thecsdev.tcdcommons.client.mixin.hooks",
+	"compatibilityLevel": "JAVA_21",
+	"client":
+	[
+		"AccessorDrawContext",
+		"AccessorScreen",
+		"AccessorEntityRenderDispatcher",
+		"AccessorButtonWidget",
+		"AccessorGridWidget",
+		"AccessorTScreen",
+		"AccessorPressableWidget",
+		"AccessorCheckboxWidget",
+		"AccessorNativeImage"
+	],
+	"injectors": { "defaultRequire": 1 }
+}
