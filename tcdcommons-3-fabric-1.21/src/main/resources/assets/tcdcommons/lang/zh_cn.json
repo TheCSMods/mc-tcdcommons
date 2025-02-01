@@ -1,12 +1,13 @@
 {
+	"modmenu.descriptionTranslation.tcdcommons": "我的mod的个人API库。它旨在通过避免重写相同的代码来提高性能，并加快mod的开发过程。",
 	"tcdcommons": "TCDCommons API",
 
 	"tcdcommons.translators.title": "翻译者",
 	"tcdcommons.translators.tutorial": "下面的翻译者部分是以CSV格式寫成的。只需放置一個逗號 (,)，然後寫下你的獨一無二的GitHub用戶名。例如：'TheCSDev, SomeOtherUser, AndSoOn'。",
-	"tcdcommons.translators": "openai:gpt-4, is52hertz",
+	"tcdcommons.translators": "openai:gpt-4, is52hertz, Q2297045667",
 
 	"tcdcommons.client_side": "客户端",
-	"tcdcommons.server_side": "服务器端",
+	"tcdcommons.server_side": "服务端",
 
 	"tcdcommons.api.badge.playerbadge": "玩家徽章",
 	"tcdcommons.api.badge.playerbadge.plural": "玩家徽章",
