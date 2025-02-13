@@ -26,7 +26,7 @@ public abstract class MixinGameRenderer
 		if(!client.skipGameRender)
 		{
 			//invoke the event
-			GameRendererEvent.RENDER_POST.invoker().invoke(tickCounter.getTickDelta(false));
+			GameRendererEvent.RENDER_POST.invoker().invoke(tickCounter.getTickProgress(false));
 		}
 	}
 	// ==================================================

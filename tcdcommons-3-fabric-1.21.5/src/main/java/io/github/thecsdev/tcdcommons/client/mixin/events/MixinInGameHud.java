@@ -29,7 +29,7 @@ public abstract class MixinInGameHud
 			callback.cancel();
 		
 		//invoke the pre-render event
-		else if(InGameHudEvent.RENDER_PRE.invoker().invoke(pencil, tickCounter.getTickDelta(false)).isEventCancelled())
+		else if(InGameHudEvent.RENDER_PRE.invoker().invoke(pencil, tickCounter.getTickProgress(false)).isEventCancelled())
 			//if the event got cancelled, then also cancel the rendering of the game hud
 			callback.cancel();
 	}
@@ -56,14 +56,14 @@ public abstract class MixinInGameHud
 					continue;
 				
 				//render the screen onto the in-game-hud
-				entry.getValue().render(pencil, i, j, tickCounter.getTickDelta(false));
+				entry.getValue().render(pencil, i, j, tickCounter.getTickProgress(false));
 				
 				//note: ticking has been deprecated here, to avoid weird visual bugs
 			}
 		}
 		
 		//invoke the post render event
-		InGameHudEvent.RENDER_POST.invoker().invoke(pencil, tickCounter.getTickDelta(false));
+		InGameHudEvent.RENDER_POST.invoker().invoke(pencil, tickCounter.getTickProgress(false));
 	}
 	// ==================================================
 }
