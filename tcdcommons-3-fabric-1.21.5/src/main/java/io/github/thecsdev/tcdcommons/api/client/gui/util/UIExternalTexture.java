@@ -101,7 +101,7 @@ public final class UIExternalTexture extends UITexture implements Closeable
 		super(generateTextureIdentifier());
 		
 		this.nativeImage = Objects.requireNonNull(image);
-		this.nativeImageBackedTexture = new NativeImageBackedTexture(this.nativeImage);
+		this.nativeImageBackedTexture = new NativeImageBackedTexture(() -> getTextureID().toString(), this.nativeImage);
 		
 		this.textureManager = MC_CLIENT.getTextureManager();
 		this.textureManager.registerTexture(getTextureID(), this.nativeImageBackedTexture);

@@ -537,7 +537,7 @@ public final class TDrawContext extends DrawContext
 		getMatrices().multiplyPositionMatrix((new Matrix4f()).scaling(size, size, -size));
 		getMatrices().translate(vector3f.x, vector3f.y, vector3f.z);
 		getMatrices().multiply(quaternionf);
-		DiffuseLighting.method_34742();
+		DiffuseLighting.enableGuiShaderLighting();
 		if (quaternionf2 != null)
 		{
 			quaternionf2.conjugate();

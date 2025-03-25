@@ -152,7 +152,7 @@ public @Virtual class ClientSandboxWorld extends World
 	public final @Override List<? extends PlayerEntity> getPlayers() { return this.players; }
 	public final @Override FeatureSet getEnabledFeatures() { return FeatureFlags.DEFAULT_ENABLED_FEATURES; }
 	public final @Override float getBrightness(Direction direction, boolean shaded) { return 1; }
-	public final @Override MapIdComponent increaseAndGetMapId() { return new MapIdComponent(0); }
+	//public final @Override MapIdComponent increaseAndGetMapId() { return new MapIdComponent(0); }
 	public final @Override Scoreboard getScoreboard() { return this.scoreboard; }
 	public final void setScoreboard(Scoreboard scoreboard)
 	{
@@ -166,7 +166,7 @@ public @Virtual class ClientSandboxWorld extends World
 	public final @Override void updateListeners(BlockPos pos, BlockState oldState, BlockState newState, int flags) {}
 	public final @Override RecipeManager getRecipeManager() { return this.recipeManager; }
 	public final @Override MapState getMapState(MapIdComponent id) { return this.mapStates.get(id); }
-	public final @Override void putMapState(MapIdComponent id, MapState state) { this.mapStates.put(id, state); }
+	//public final @Override void putMapState(MapIdComponent id, MapState state) { this.mapStates.put(id, state); }
 	public final @Override QueryableTickScheduler<Block> getBlockTickScheduler() { return this.blockTickScheduler; }
 	public final @Override QueryableTickScheduler<Fluid> getFluidTickScheduler() { return this.fluidTickScheduler; }
 	protected final @Override EntityLookup<Entity> getEntityLookup() { return this.entityManager.getLookup(); }

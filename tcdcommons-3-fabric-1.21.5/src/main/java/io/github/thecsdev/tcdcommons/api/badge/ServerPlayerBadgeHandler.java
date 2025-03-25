@@ -25,7 +25,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -94,14 +93,14 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 	{
 		//check if there are any badges stored
 		final var modId = getModID();
-		if(!nbt.contains(modId, NbtElement.COMPOUND_TYPE)) return;
-		final var nbt_modId = nbt.getCompound(modId);
+		if(!nbt.contains(modId)) return;
+		final var nbt_modId = nbt.getCompound(modId).orElse(new NbtCompound());
 		
 		//read player badges
 		// ========== LEGACY DATA LOADING - FOR BACKWARDS COMPATIBILITY
-		if(nbt_modId.contains("player_badges", NbtElement.STRING_TYPE))
+		if(nbt_modId.contains("player_badges"))
 		{
-			final var badgeListStr = nbt_modId.getString("player_badges").trim();
+			final var badgeListStr = nbt_modId.getString("player_badges").orElse("").trim();
 			if(StringUtils.isBlank(badgeListStr)) return; //do not read blank
 			final var badgeList = badgeListStr.split("\\R");
 			for(final String badgeItem : badgeList)
@@ -109,16 +108,16 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 					increaseValue(Identifier.of(badgeItem), 1);
 		}
 		// ========== NEW DATA LOADING METHOD
-		else if(nbt_modId.contains("player_badges", NbtElement.COMPOUND_TYPE))
+		else if(nbt_modId.contains("player_badges"))
 		{
-			final var badgeList = nbt_modId.getCompound("player_badges");
+			final var badgeList = nbt_modId.getCompound("player_badges").orElse(new NbtCompound());
 			for(final String badgeIdStr : badgeList.getKeys())
 			{
 				//skip invalid data; value must be an integer
-				if(!badgeList.contains(badgeIdStr, NbtElement.INT_TYPE)) continue;
+				if(!badgeList.contains(badgeIdStr)) continue;
 				
 				//obtain value, and put value
-				setValue(Identifier.of(badgeIdStr), badgeList.getInt(badgeIdStr));
+				setValue(Identifier.of(badgeIdStr), badgeList.getInt(badgeIdStr).orElse(0));
 			}
 		}
 	}
@@ -137,14 +136,14 @@ public final class ServerPlayerBadgeHandler extends PlayerBadgeHandler
 		
 		//get or create modId compound
 		final String modId = getModID();
-		if(!nbt.contains(modId, NbtElement.COMPOUND_TYPE))
+		if(!nbt.contains(modId))
 			nbt.put(modId, new NbtCompound());
-		final NbtCompound nbt_modId = nbt.getCompound(modId);
+		final NbtCompound nbt_modId = nbt.getCompound(modId).orElse(new NbtCompound());
 		
 		//obtain mod list compound
-		if(!nbt_modId.contains("player_badges", NbtElement.COMPOUND_TYPE))
+		if(!nbt_modId.contains("player_badges"))
 			nbt_modId.put("player_badges", new NbtCompound());
-		final var badgeList = nbt_modId.getCompound("player_badges");
+		final var badgeList = nbt_modId.getCompound("player_badges").orElse(new NbtCompound());
 		
 		//iterate player badges, and put them
 		for(final var badgeEntry : this)
