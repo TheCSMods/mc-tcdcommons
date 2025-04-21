@@ -75,6 +75,7 @@ public final @Internal class TcdcServerPlayNetworkHandler
 		//read the payload id and data
 		final var packetId = payload.getPacketId();
 		final var packetData = new PacketByteBuf(payload.getPacketPayload());
+		if(packetData.refCnt() < 1) return; //mod conflict mitigation - some other mods may misbehave
 
 		//find the handler
 		final @Nullable var handler = AccessorCustomPayloadNetwork.getPlayC2S().getOrDefault(packetId, null);
