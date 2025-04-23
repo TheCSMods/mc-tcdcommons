@@ -47,6 +47,7 @@ public abstract class MixinCustomPayloadC2SPacket
 		//execute receiver
 		final var tPayload_packetId = tPayload.getPacketId();
 		final var tPayload_packetPayload = new PacketByteBuf(tPayload.getPacketPayload());
+		if(tPayload_packetPayload.refCnt() < 1) return;
 		receiverC2S.receiveCustomPayload(new PacketContext()
 		{
 			public @Override @Nullable PlayerEntity getPlayer() { return player; }

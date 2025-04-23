@@ -44,6 +44,7 @@ public abstract class MixinCustomPayloadS2CPacket
 			//execute the reciever
 			final var tPayload_packetId = getChannel();
 			final var tPayload_packetPayload = new PacketByteBuf(data);
+			if(tPayload_packetPayload.refCnt() < 1) return;			
 			receiverS2C.receiveCustomPayload(new PacketContext()
 			{
 				public @Override @Nullable PlayerEntity getPlayer() { return MC_CLIENT.player; }
