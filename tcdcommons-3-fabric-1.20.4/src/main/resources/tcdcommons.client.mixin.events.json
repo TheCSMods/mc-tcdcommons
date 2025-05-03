@@ -13,8 +13,7 @@
 		"MixinStatisticsS2CPacket",
 		"MixinClientPlayNetworkHandler",
 		"MixinNativeImage",
-		"MixinGameRenderer",
-		"MixinCustomPayloadS2CPacket"
+		"MixinGameRenderer"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

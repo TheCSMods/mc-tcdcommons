@@ -12,8 +12,7 @@
 		"MixinDrawContext",
 		"MixinStatisticsS2CPacket",
 		"MixinClientPlayNetworkHandler",
-		"MixinGameRenderer",
-		"MixinCustomPayloadS2CPacket"
+		"MixinGameRenderer"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

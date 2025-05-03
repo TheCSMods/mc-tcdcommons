@@ -2,7 +2,6 @@ package io.github.thecsdev.tcdcommons.network;
 
 import static io.github.thecsdev.tcdcommons.TCDCommons.getModID;
 
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -10,20 +9,17 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.cache.Cache;
-import com.google.common.collect.ImmutableMap;
 
 import io.github.thecsdev.tcdcommons.TCDCommons;
 import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetwork;
 import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetworkReceiver.PacketContext;
 import io.github.thecsdev.tcdcommons.api.network.packet.TCustomPayload;
 import io.github.thecsdev.tcdcommons.client.network.TcdcClientPlayNetworkHandler;
-import io.github.thecsdev.tcdcommons.mixin.hooks.AccessorCustomPayloadC2SPacket;
-import io.github.thecsdev.tcdcommons.mixin.hooks.AccessorCustomPayloadS2CPacket;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -44,11 +40,12 @@ public final @Internal class TCDCommonsNetwork
 	{
 		// ---------- REGISTER CUSTOM PAYLOAD TYPE TO THE GAME'S REGISTRY
 		// ---------- (Fabric API was ditched here because I couldn't get it to work, so the old solution will do...)
+		// ---------- (edit 2025-5-3: reintroduced fabric api due to technical difficulties)
 		/* because the vanilla game makes their maps immutable,
 		 * this here is created with the intent to override vanilla, and make the maps mutable
 		 */
 		//obtain the maps and ensure they are mutable
-		final var ogC2S = AccessorCustomPayloadC2SPacket.getIdToReader();
+		/*final var ogC2S = AccessorCustomPayloadC2SPacket.getIdToReader();
 		final var ogS2C = AccessorCustomPayloadS2CPacket.getIdToReader();
 		final boolean immutable = (ogC2S instanceof ImmutableMap) || (ogS2C instanceof ImmutableMap);
 		
@@ -68,12 +65,12 @@ public final @Internal class TCDCommonsNetwork
 		{
 			AccessorCustomPayloadC2SPacket.setIdToReader(c2s);
 			AccessorCustomPayloadS2CPacket.setIdToReader(s2c);
-		}
+		}*/
 		
 		// ---------- SINGLEPLAYER/DEDICATED SERVER HANDLERS
 		//vanilla custom payload registration for the T-Custom-Payload
-		/*ServerPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (server, player, playerNh, payload, sender) ->
-			TcdcServerPlayNetworkHandler.of(player).onCustomPayloadNetwork(TCustomPayload.read(payload)));*/
+		ServerPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (server, player, playerNh, payload, sender) ->
+			TcdcServerPlayNetworkHandler.of(player).onCustomPayloadNetwork(TCustomPayload.read(payload)));
 		
 		//fractured custom payload network packets
 		CustomPayloadNetwork.registerPlayReceiver(NetworkSide.SERVERBOUND, S2C2C_FCPNP, context ->

@@ -16,6 +16,8 @@ import io.github.thecsdev.tcdcommons.api.network.CustomPayloadNetworkReceiver.Pa
 import io.github.thecsdev.tcdcommons.api.network.packet.TCustomPayload;
 import io.github.thecsdev.tcdcommons.client.network.TcdcClientPlayNetworkHandler;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
@@ -39,8 +41,8 @@ public final @Internal class TCDCommonsNetwork
 	{
 		// ---------- SINGLEPLAYER/DEDICATED SERVER HANDLERS
 		//vanilla custom payload registration for the T-Custom-Payload
-		/*ServerPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (server, player, playerNh, payload, sender) ->
-			TcdcServerPlayNetworkHandler.of(player).onCustomPayloadNetwork(TCustomPayload.read(payload)));*/
+		ServerPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (server, player, playerNh, payload, sender) ->
+			TcdcServerPlayNetworkHandler.of(player).onCustomPayloadNetwork(TCustomPayload.read(payload)));
 		
 		//fractured custom payload network packets
 		CustomPayloadNetwork.registerPlayReceiver(NetworkSide.SERVERBOUND, S2C2C_FCPNP, context ->
@@ -50,8 +52,8 @@ public final @Internal class TCDCommonsNetwork
 		if(TCDCommons.isClient())
 		{
 			//vanilla custom payload registration for the T-Custom-Payload
-			/*ClientPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (client, playerNh, payload, sender) ->
-				TcdcClientPlayNetworkHandler.of(client.player).onCustomPayloadNetwork(TCustomPayload.read(payload)));*/
+			ClientPlayNetworking.registerGlobalReceiver(TCustomPayload.ID, (client, playerNh, payload, sender) ->
+				TcdcClientPlayNetworkHandler.of(client.player).onCustomPayloadNetwork(TCustomPayload.read(payload)));
 			
 			//fractured custom payload network packets
 			CustomPayloadNetwork.registerPlayReceiver(NetworkSide.CLIENTBOUND, S2C2C_FCPNP, context ->

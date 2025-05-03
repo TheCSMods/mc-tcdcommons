@@ -18,8 +18,7 @@
 		"MixinLivingEntity",
 		"MixinPlayerEntity",
 		"MixinBlockItem",
-		"MixinItemGroups",
-		"MixinCustomPayloadC2SPacket"
+		"MixinItemGroups"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
