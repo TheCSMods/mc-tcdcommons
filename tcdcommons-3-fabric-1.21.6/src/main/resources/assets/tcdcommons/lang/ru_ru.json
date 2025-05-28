@@ -1,0 +1,50 @@
+{
+  "tcdcommons": "TCDCommons API",
+  "modmenu.summaryTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов.",
+  "modmenu.descriptionTranslation.tcdcommons": "Моя собственная библиотека с API для моих модов. Создана с целью улучшить быстродействие, избегая написания одного и того же кода, а также ускорить процесс разработки модов.",
+
+  "tcdcommons.translators.title": "Переводчики",
+  "tcdcommons.translators.tutorial": "Раздел переводчиков ниже представлен в формате CSV. Просто поставьте запятую (,) и введите свое уникальное имя пользователя на GitHub. Пример: 'TheCSDev, SomeOtherUser, AndSoOn'.",
+  "tcdcommons.translators": "Felix14-v2,mpustovoi,",
+
+  "tcdcommons.github.sponsors": "Спонсоры GitHub",
+  "tcdcommons.github.sponsors.no_sponsors": "На данный момент никто не спонсирует этот проект.",
+  "tcdcommons.special_thanks": "Особая благодарность",
+  "tcdcommons.featured": "При участии",
+  "tcdcommons.featured.no_one": "На данный момент в этом списке никого нет.",
+  "tcdcommons.fetch_fail": "Не удалось получить информацию.",
+
+  "tcdcommons.client_side": "Клиентский",
+  "tcdcommons.server_side": "Серверный",
+
+  "tcdcommons.api.badge.playerbadge": "Знак отличия",
+  "tcdcommons.api.badge.playerbadge.plural": "Знаки отличия",
+
+  "tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title": "Проводник",
+  "tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_save": "Сохранение файла",
+  "tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_open": "Открытие файла",
+  "tcdcommons.api.client.gui.screen.explorer.tfilechooserscreen.title_seldir": "Выбор папки",
+
+  "tcdcommons.api.client.gui.panel.explorer.actionbar.file_name": "Имя файла",
+  "tcdcommons.api.client.gui.panel.explorer.actionbar.file_type": "Тип файла",
+  "tcdcommons.api.client.gui.panel.explorer.actionbar.save_file": "Сохранить",
+  "tcdcommons.api.client.gui.panel.explorer.actionbar.open_file": "Открыть",
+
+  "tcdcommons.api.util.interfaces.tfilefilter.all_files": "Все файлы (*.*)",
+  "tcdcommons.api.util.interfaces.tfilefilter.x_files": "Файлы %1$s (%1$s)",
+
+  "tcdcommons.api.client.gui.panel.tpanelelement.mouse_scroll_tip": "Используйте колёсико мыши или щелкните ЛКМ + перетащите, чтобы прокрутить этот раздел...",
+
+  "tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_nosuchdir": "Каталог не существует",
+  "tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_noaccess": "Отказано в доступе",
+  "tcdcommons.api.client.gui.panel.explorer.filelistpanel.err_other": "%s",
+
+  "tcdcommons.api.client.gui.widget.tselectwidget.default_label": "Выберите...",
+
+  "commands.badges.edit.output": "Отредактирована статистика знака отличия '%s' для %s игроков.",
+  "commands.badges.clear.output": "Удалена статистика всех знаков отличия для %s игроков.",
+  "commands.badges.chat_grant": "%s заработал знак отличия %s.",
+  "commands.badges.query.output": "Значение статистики знака отличия %s для '%s' равно %s.",
+
+  "tcdcommons.key.refresh_current_screen": "Обновить текущий экран"
+}
