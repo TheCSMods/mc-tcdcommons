@@ -40,7 +40,10 @@ public @Virtual class TEntityRendererElement extends TBlankElement
 		setEntityScale(0.9);
 		setFollowsCursor(true);
 		setEntity(entityType); //set this last
-		this.entityErrorState = true; //FIXME - Had to due this due to 1.21.6 mod-breaking changes.
+		
+		//FIXME - Had to do this due to 1.21.6 mod-breaking changes. Fix entity rendering.
+		if(entityType != EntityType.PLAYER)
+			this.entityErrorState = true;
 	}
 	// --------------------------------------------------
 	public @Virtual @Override void setSize(int width, int height, int flags)

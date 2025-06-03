@@ -105,8 +105,8 @@ public abstract class MixinMinecraftClient
 		MinecraftClientEvent.JOINED_WORLD.invoker().invoke(MC_CLIENT, clientWorld);
 	}*/
 	// --------------------------------------------------
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
-	public void onDisconnect(Screen screen, CallbackInfo callback)
+	@Inject(method = "disconnect", at = @At("RETURN"))
+	public void onDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo callback)
 	{
 		//invoke event
 		MinecraftClientEvent.DISCONNECTED.invoker().invoke((MinecraftClient)(Object)this);

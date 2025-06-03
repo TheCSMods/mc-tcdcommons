@@ -108,9 +108,9 @@ public @Virtual class TCheckboxWidget extends TButtonWidget
 	    if(this.showText)
 	    {
 	    	if(textAlignment != HorizontalAlignment.CENTER)
-	    		pencil.drawTextWithShadow(textRenderer, getText(), this.x + tX, this.y + tY, 0xE0E0E0);
+	    		pencil.drawTextWithShadow(textRenderer, getText(), this.x + tX, this.y + tY, 0xffE0E0E0);
 	    	else
-	    		pencil.drawCenteredTextWithShadow(textRenderer, getText(), this.x + tX, this.y + tY, 0xE0E0E0);
+	    		pencil.drawCenteredTextWithShadow(textRenderer, getText(), this.x + tX, this.y + tY, 0xffE0E0E0);
 	    }
 	}
 	// ==================================================

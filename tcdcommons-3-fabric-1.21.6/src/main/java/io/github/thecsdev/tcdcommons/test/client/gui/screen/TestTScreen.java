@@ -12,8 +12,10 @@ import io.github.thecsdev.tcdcommons.api.client.gui.screen.TDialogBoxScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.TScreenPlus;
 import io.github.thecsdev.tcdcommons.api.client.gui.screen.explorer.TFileChooserScreen;
 import io.github.thecsdev.tcdcommons.api.client.gui.widget.TButtonWidget;
+import io.github.thecsdev.tcdcommons.api.client.gui.widget.TCheckboxWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.text.Text;
 
 public final class TestTScreen extends TScreenPlus
 {
@@ -117,6 +119,9 @@ public final class TestTScreen extends TScreenPlus
 					"\nHello world!\nHow you doing?\nI am just testing tooltips...")));
 			panel.addChild(btn);
 		}
+		
+		final var checkbox = new TCheckboxWidget(0, 0, 100, 20, Text.literal("Hello World!"), false);
+		panel.addChild(checkbox);
 		
 		new UIHorizontalGridLayout().apply(panel);
 		
