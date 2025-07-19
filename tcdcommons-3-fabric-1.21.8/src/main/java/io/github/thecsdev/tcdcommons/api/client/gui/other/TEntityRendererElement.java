@@ -18,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.MathHelper;
 
+@Deprecated(since = "3.12.8")
 public @Virtual class TEntityRendererElement extends TBlankElement
 {
 	// ==================================================

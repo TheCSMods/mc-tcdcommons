@@ -11,13 +11,13 @@ public interface EntityEvent
 {
 	/**
 	 * Invoked when a {@link ServerPlayerEntity}'s NBT data is being read from an {@link NbtCompound}.
-	 * @see ServerPlayerEntityNBTCallback#invoke(ServerPlayerEntity, NbtCompound)
+	 * @see ServerPlayerCustomDataReadCallback#invoke(ServerPlayerEntity, ReadView)
 	 */
 	TEvent<ServerPlayerCustomDataReadCallback> SERVER_PLAYER_READ_NBT = TEventFactory.createLoop();
 	
 	/**
 	 * Invoked when a {@link ServerPlayerEntity}'s NBT data is being written to an {@link NbtCompound}.
-	 * @see ServerPlayerEntityNBTCallback#invoke(ServerPlayerEntity, NbtCompound)
+	 * @see ServerPlayerCustomDataWriteCallback#invoke(ServerPlayerEntity, WriteView)
 	 */
 	TEvent<ServerPlayerCustomDataWriteCallback> SERVER_PLAYER_WRITE_NBT = TEventFactory.createLoop();
 	
