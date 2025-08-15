@@ -1,0 +1,17 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "io.github.thecsdev.tcdcommons.client.mixin.events",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"MixinClientPlayNetworkHandler",
+		"MixinGameMenuScreen",
+		"MixinGameRenderer",
+		"MixinInGameHud",
+		"MixinMinecraftClient",
+		"MixinNativeImage",
+		"MixinScreen",
+		"MixinStatisticsS2CPacket"
+	],
+	"injectors": { "defaultRequire": 1 }
+}
