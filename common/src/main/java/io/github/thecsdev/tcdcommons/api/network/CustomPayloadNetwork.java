@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -74,17 +73,21 @@ public final class CustomPayloadNetwork
 		return receiver;
 	}
 	// --------------------------------------------------
-	public static final void sendC2S(ResourceLocation id, ByteBuf buffer) {
+	public static final void sendC2S(ResourceLocation id, ByteBuf buffer)
+	{
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(buffer);
-		NetworkManager.sendToServer(id, new RegistryFriendlyByteBuf(buffer, Minecraft.getInstance().getConnection().registryAccess()));
+		try { NetworkManager.sendToServer(id, new RegistryFriendlyByteBuf(buffer, Minecraft.getInstance().getConnection().registryAccess())); }
+		catch(Exception e) { /*packet loss go brr*/ }
 	}
 
-	public static final void sendS2C(ServerPlayer player, ResourceLocation id, ByteBuf buffer) {
+	public static final void sendS2C(ServerPlayer player, ResourceLocation id, ByteBuf buffer)
+	{
 		Objects.requireNonNull(player);
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(buffer);
-		NetworkManager.sendToPlayer(player, id, new RegistryFriendlyByteBuf(buffer, player.registryAccess()));
+		try { NetworkManager.sendToPlayer(player, id, new RegistryFriendlyByteBuf(buffer, player.registryAccess())); }
+		catch(Exception e) { /*packet loss go brr*/ }
 	}
 	// ==================================================
 }
